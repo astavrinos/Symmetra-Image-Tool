@@ -1,6 +1,8 @@
+import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
@@ -25,23 +27,22 @@ public class Controller {
 			// to start browsing for an image
 
 			// https://docs.oracle.com/javase/7/docs/api/javax/swing/JFileChooser.html
-			while (true) {
-				JFileChooser chooser = new JFileChooser(System.getProperty("user.home") + "//Pictures");
-				FileNameExtensionFilter filter = new FileNameExtensionFilter("JPG & PNG Images", "jpg", "png");
-				chooser.setFileFilter(filter);
-				int returnVal = chooser.showOpenDialog(null);
-				if (returnVal == JFileChooser.APPROVE_OPTION) {
-					if (filter.accept(chooser.getSelectedFile())) {
-						System.out.println("You chose to open this file: " + chooser.getSelectedFile().getName());
-						view.setImgPath(chooser.getSelectedFile().getAbsolutePath());
 
-						// here it does not work! ffs
-						view.revalidate();
-						view.repaint();
-						break;
-					}
+			JFileChooser chooser = new JFileChooser(System.getProperty("user.home") + "//Pictures");
+			FileNameExtensionFilter filter = new FileNameExtensionFilter("JPG & PNG Images", "jpg", "png");
+			chooser.setFileFilter(filter);
+			int returnVal = chooser.showOpenDialog(null);
+			if (returnVal == JFileChooser.APPROVE_OPTION) {
+				if (filter.accept(chooser.getSelectedFile())) {
 
+					ImageIcon i = new ImageIcon(chooser.getSelectedFile().getAbsolutePath());
+					view.imgPreview.setIcon(i);
+
+					view.status.setForeground(Color.green);
+					view.status.setText("Ready");
+					view.analyzeBtn.setEnabled(true);
 				}
+
 			}
 
 		}

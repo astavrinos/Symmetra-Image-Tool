@@ -7,8 +7,6 @@ public class Main {
 		View view = new View();
 		
 		Controller controller = new Controller(view, model);
-		
-		view.setVisible(true);
 	}
 
 }
