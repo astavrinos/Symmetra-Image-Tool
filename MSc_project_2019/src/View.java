@@ -10,6 +10,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
+import javax.swing.border.LineBorder;
 
 public class View extends JFrame {
 	JPanel panel = new JPanel(new BorderLayout());
@@ -18,31 +19,41 @@ public class View extends JFrame {
 	ImageIcon image;
 
 	public JLabel introMsg = new JLabel(
-			"<html>Welcome to Image Analyzer Tool.<br>Press the browse button to start.</html>");
+			"<html>Welcome to Image Analyzer Tool.<br>Press the browse button to start.<br><br><center>Image Preview</center></html>");
 	public JPanel bottomBtns = new JPanel();
 	public JButton browseBtn = new JButton("Browse");
 	public JLabel status = new JLabel("Waiting");
 	public JButton analyzeBtn = new JButton("Analyze");
 
 	View() {
+
+		// this is for the background
+
+//		try {
+//			this.setContentPane(new JLabel(new ImageIcon(ImageIO.read(new File("C://Users//user//git//MSc_Project_2019//MSc_project_2019//src//bgimg.jpg")))));
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//		}
+
 		// initGUI
 		// Window title
 		this.setTitle("Image Analyzer Tool");
 		// Exit on close
 		setDefaultCloseOperation(this.EXIT_ON_CLOSE);
 		// Set the size of the window
-		setSize(550, 500);
+		setSize(600, 600);
 		setVisible(true);
 
 		// intro msg
 		introMsg.setFont(new Font("Segoe UI", Font.PLAIN, 16));
 		introMsg.setHorizontalAlignment(SwingConstants.CENTER);
+		panel.setForeground(Color.WHITE);
+		panel.setBorder(new LineBorder(null, 20));
 		panel.add(introMsg, BorderLayout.NORTH);
-		imgPreview.setText("Image Preview when selected.");
-		imgPreview.setHorizontalAlignment(SwingConstants.CENTER);
-		imgPreview.setToolTipText("");
 
 		// img preview
+		imgPreview.setText("Image Preview when selected.");
+		imgPreview.setHorizontalAlignment(SwingConstants.CENTER);
 
 		panel.add(imgPreview, BorderLayout.CENTER);
 

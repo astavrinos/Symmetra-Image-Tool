@@ -1,4 +1,5 @@
 import java.awt.Color;
+import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -36,8 +37,12 @@ public class Controller {
 				if (filter.accept(chooser.getSelectedFile())) {
 
 					ImageIcon i = new ImageIcon(chooser.getSelectedFile().getAbsolutePath());
-					view.imgPreview.setIcon(i);
-
+					Image img = i.getImage();
+					Image scaledImg = img.getScaledInstance(view.imgPreview.getWidth(), view.imgPreview.getHeight(),
+							Image.SCALE_SMOOTH);
+					ImageIcon image = new ImageIcon(scaledImg);
+					view.imgPreview.setIcon(image);
+					view.imgPreview.setText(null);
 					view.status.setForeground(Color.green);
 					view.status.setText("Ready");
 					view.analyzeBtn.setEnabled(true);
