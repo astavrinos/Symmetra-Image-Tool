@@ -4,12 +4,18 @@ public class ImageDetails {
 
 	ImageIcon actualImage;
 	String imageName;
-	double imageSize;
+	String imageSize;
 
-	public ImageDetails(ImageIcon actualImage, String imageName, double imageSize) {
+	public ImageDetails(ImageIcon actualImage, String imageName, String imageSize) {
 		this.actualImage = actualImage;
 		this.imageName = imageName;
 		this.imageSize = imageSize;
+	}
+
+	// check the values
+	public String toString() {
+		String foo = "Image: " + getActualImage() + ". Image Name:" + getImageName() + ". Image Size:" + getImageSize(); // example
+		return foo;
 	}
 
 	public ImageIcon getActualImage() {
@@ -28,11 +34,11 @@ public class ImageDetails {
 		this.imageName = imageName;
 	}
 
-	public double getImageSize() {
-		return imageSize;
+	public String getImageSize() {
+		return imageSize + "MB";
 	}
 
-	public void setImageSize(double imageSize) {
+	public void setImageSize(String imageSize) {
 		this.imageSize = imageSize;
 	}
 

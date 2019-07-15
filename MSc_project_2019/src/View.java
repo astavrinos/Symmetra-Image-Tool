@@ -28,7 +28,8 @@ public class View extends JFrame {
 	public JLabel status = new JLabel("Waiting");
 	public JButton analyzeBtn = new JButton("Analyze");
 	public JComboBox comboBox = new JComboBox();
-	public JLabel imageSizeStatus = new JLabel("");
+	public JLabel imageSizeStatus = new JLabel();
+	public JButton removeImageBtn = new JButton("Remove Image");
 
 	View() {
 
@@ -65,6 +66,7 @@ public class View extends JFrame {
 		bottomBtns.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
 		bottomBtns.add(browseBtn);
 
+		// program status
 		status.setFont(new Font("Segoe UI", Font.BOLD, 14));
 		status.setForeground(Color.ORANGE);
 		bottomBtns.add(status);
@@ -75,14 +77,19 @@ public class View extends JFrame {
 		bottomBtns.add(comboBox);
 
 		// imageSizeStatus
-
 		bottomBtns.add(imageSizeStatus);
 
+		// remove image button
+		removeImageBtn.setVisible(false);
+		bottomBtns.add(removeImageBtn);
+
+		// analyze button
 		analyzeBtn.setEnabled(false);
 		bottomBtns.add(analyzeBtn);
 
-		JProgressBar pbar;
+		// next window stuff after pressed analyze button
 
+		JProgressBar pbar;
 		pbar = new JProgressBar();
 		panel2.add(pbar, BorderLayout.CENTER);
 
@@ -97,8 +104,12 @@ public class View extends JFrame {
 		analyzeBtn.addActionListener(ProceedAnalyze);
 	}
 
-	public void addComboBoxSelect(ActionListener ComboBoxSelect) {
+	void addComboBoxSelect(ActionListener ComboBoxSelect) {
 		comboBox.addActionListener(ComboBoxSelect);
+	}
+
+	void addRemoveImageButtonListener(ActionListener RemoveImageButton) {
+		removeImageBtn.addActionListener(RemoveImageButton);
 	}
 
 }
