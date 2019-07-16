@@ -1,8 +1,10 @@
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
 import java.text.DecimalFormat;
 import java.util.Iterator;
 
@@ -10,13 +12,27 @@ import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
-public class Controller {
+public class Controller extends Main {
 
 	private View view;
 	private Model model;
 	private static DecimalFormat df2 = new DecimalFormat("#.##");
+	private JFileChooser chooser;
+	private int returnVal;
+	private ImageIcon i;
+	private String imageName;
+	private String path;
+	private String imageSize;
+	private int nThreads;
+	private BufferedImage bi;
+	private FileNameExtensionFilter filter;
+	private Image image;
+	private Image scaledImage;
+	private Thread[] threads;
+	private CalculatePixelsColors[] cal;
+	private Graphics g;
 
-	public Controller(View view, Model model) {
+	protected Controller(View view, Model model) {
 		this.view = view;
 		this.model = model;
 
@@ -29,38 +45,23 @@ public class Controller {
 	/*
 	 * ACTION LISTENERS
 	 */
-	class MainViewListener implements ActionListener {
-		@SuppressWarnings("unchecked")
+	private class MainViewListener implements ActionListener {
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			// add function so the user when press the button
-			// to start browsing for an image
 			// https://docs.oracle.com/javase/7/docs/api/javax/swing/JFileChooser.html
-			JFileChooser chooser = new JFileChooser(System.getProperty("user.home") + "//Pictures");
-			FileNameExtensionFilter filter = new FileNameExtensionFilter("JPG & PNG Images", "jpg", "png");
+			chooser = new JFileChooser(System.getProperty("user.home") + "//Pictures");
+			filter = new FileNameExtensionFilter("JPG & PNG Images", "jpg", "png");
 			chooser.setFileFilter(filter);
-			int returnVal = chooser.showOpenDialog(null);
+			returnVal = chooser.showOpenDialog(null);
 			if (returnVal == JFileChooser.APPROVE_OPTION) {
 				if (filter.accept(chooser.getSelectedFile())) {
-					ImageIcon i = new ImageIcon(chooser.getSelectedFile().getAbsolutePath());
-					view.setSize(1000, 1000);
-					view.imgPreview.setVisible(true);
-					view.imgPreview.setText(null);
-					view.status.setForeground(Color.green);
-					view.status.setText("Ready");
-					view.analyzeBtn.setEnabled(true);
-					String imageName = chooser.getSelectedFile().getName();
-					String imageSize = df2.format(chooser.getSelectedFile().length() / (1 * Math.pow(10, 6)));
-					addingElementsList(resizeImage(i, view.getWidth(), view.getHeight(), false), imageName, imageSize);
-					addItemsToComboBox();
-					view.comboBox.setVisible(true);
-					view.removeImageBtn.setVisible(true);
+					proceedActionIfTrue();
 				}
 			}
 		}
 	}
 
-	class ProceedAnalyze implements ActionListener {
+	private class ProceedAnalyze implements ActionListener {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			view.getContentPane().removeAll();
@@ -70,10 +71,11 @@ public class Controller {
 		}
 	}
 
-	class RemoveImageButton implements ActionListener {
+	private class RemoveImageButton implements ActionListener {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			Object selected = view.comboBox.getSelectedItem();
+			@SuppressWarnings("unused")
 			Iterator<ImageDetails> iter = model.imageDetailsList.iterator();
 			for (int i = 0; i < model.imageDetailsList.size(); i++) {
 				if (model.imageDetailsList.get(i).getImageName().equals(selected)) {
@@ -91,21 +93,9 @@ public class Controller {
 			printTheValuesOfAList();
 		}
 
-		public void returnEverythingToNormal() {
-			view.removeImageBtn.setVisible(false);
-			view.analyzeBtn.setEnabled(false);
-			view.comboBox.setVisible(false);
-			view.setSize(500, 200);
-			view.status.setText("Waiting");
-			view.status.setForeground(Color.ORANGE);
-			view.imageSizeStatus.setText(null);
-		}
 	}
 
-	// TODO
-	// HERE NEEDS SOME TIEDY UP
-
-	class ComboBoxSelect implements ActionListener {
+	private class ComboBoxSelect implements ActionListener {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			Object selected = null;
@@ -118,7 +108,7 @@ public class Controller {
 					Iterator<ImageDetails> iter = model.imageDetailsList.iterator();
 					while (iter.hasNext()) {
 						ImageDetails yp = iter.next();
-						if (yp.imageName.equals(selected)) {
+						if (yp.getImageName().equals(selected)) {
 							view.imgPreview.setIcon(yp.getActualImage());
 							view.imageSizeStatus.setText("Image size: " + yp.getImageSize());
 						}
@@ -133,30 +123,31 @@ public class Controller {
 	 */
 
 	// https://codereview.stackexchange.com/questions/11214/image-resizing-methods
-	public static ImageIcon resizeImage(ImageIcon imageIcon, int width, int height, boolean max) {
-		Image image = imageIcon.getImage();
-		Image newimg = image.getScaledInstance(-1, height, java.awt.Image.SCALE_SMOOTH);
-		int width1 = newimg.getWidth(null);
-		if ((max && width1 > width) || (!max && width1 < width)) {
-			newimg = image.getScaledInstance(width, -1, java.awt.Image.SCALE_SMOOTH);
+	@SuppressWarnings("unused")
+	private ImageIcon resizeImage(ImageIcon imageIcon, int width, int height) {
+		setImage(imageIcon.getImage());
+		setScaledImage(getImage().getScaledInstance(-1, height, java.awt.Image.SCALE_SMOOTH));
+		int width1 = getScaledImage().getWidth(null);
+		if ((false && width1 > width) || (!false && width1 < width)) {
+			setScaledImage(image.getScaledInstance(width, -1, java.awt.Image.SCALE_SMOOTH));
 		}
-		return new ImageIcon(newimg);
+		return new ImageIcon(getScaledImage());
 	}
 
 	@SuppressWarnings("unchecked")
-	public void addItemsToComboBox() {
+	private void addItemsToComboBox() {
 		view.comboBox.removeAllItems();
 		Iterator<ImageDetails> iter = model.imageDetailsList.iterator();
 		while (iter.hasNext()) {
 			ImageDetails yp = iter.next();
 			view.comboBox.addItem(yp.getImageName());
 			view.comboBox.setSelectedItem(yp.getImageName());
-			view.imgPreview.setIcon(yp.actualImage);
+			view.imgPreview.setIcon(yp.getActualImage());
 		}
 	}
 
-	public void addingElementsList(ImageIcon actualImage, String imageName, String imageSize) {
-		ImageDetails imgDetails = new ImageDetails(actualImage, imageName, imageSize);
+	private void addingElementsList(ImageIcon actualImage, String imageName, String imageSize, int imageArea) {
+		ImageDetails imgDetails = new ImageDetails(actualImage, imageName, imageSize, imageArea);
 
 		model.imageDetailsList.add(imgDetails);
 
@@ -168,7 +159,7 @@ public class Controller {
 	}
 
 	// print the values of a list
-	public void printTheValuesOfAList() {
+	private void printTheValuesOfAList() {
 		int t = 0;
 		Iterator<ImageDetails> it = model.imageDetailsList.iterator();
 		if (it.hasNext()) {
@@ -179,5 +170,94 @@ public class Controller {
 		} else {
 			System.out.println("List is empty");
 		}
+	}
+
+	private void returnEverythingToNormal() {
+		view.removeImageBtn.setVisible(false);
+		view.analyzeBtn.setEnabled(false);
+		view.comboBox.setVisible(false);
+		view.setSize(500, 200);
+		view.status.setText("Waiting");
+		view.status.setForeground(Color.ORANGE);
+		view.imageSizeStatus.setText(null);
+	}
+
+	private void proceedActionIfTrue() {
+		path = chooser.getSelectedFile().getAbsolutePath();
+		i = new ImageIcon(path);
+
+		callViewToChange();
+
+		imageName = chooser.getSelectedFile().getName();
+		imageSize = df2.format(chooser.getSelectedFile().length() / (1 * Math.pow(10, 6)));
+
+		convertFromImageIconToBufferedImage();
+
+		
+		/*
+		 * NEEDS FIXING TODO!-----------------------------------------------------------------
+		 */
+		//runTheProcessOfGettingColors();
+
+		addingElementsList(resizeImage(i, view.getWidth(), view.getHeight()), imageName, imageSize,
+				model.calculateArea(i));
+		addItemsToComboBox();
+		view.comboBox.setVisible(true);
+		view.removeImageBtn.setVisible(true);
+
+	}
+
+	private void callViewToChange() {
+		view.setSize(1000, 1000);
+		view.imgPreview.setVisible(true);
+		view.imgPreview.setText(null);
+		view.status.setForeground(Color.green);
+		view.status.setText("Ready");
+		view.analyzeBtn.setEnabled(true);
+	}
+
+	private void runTheProcessOfGettingColors() {
+		nThreads = i.getIconHeight();
+		threads = new Thread[nThreads];
+		cal = new CalculatePixelsColors[nThreads];
+		for (int n = 0; n < nThreads; n++) {
+			cal[n] = new CalculatePixelsColors(path, bi, i.getIconWidth(), i.getIconHeight(), n);
+			threads[n] = new Thread(cal[n]);
+			threads[n].start();
+		}
+
+		for (int n = 0; n < nThreads; n++) {
+			try {
+				threads[n].join();
+			} catch (InterruptedException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+		}
+
+	}
+
+	private void convertFromImageIconToBufferedImage() {
+		bi = new BufferedImage(i.getIconWidth(), i.getIconHeight(), BufferedImage.TYPE_INT_RGB);
+		g = bi.createGraphics();
+		// paint the Icon to the BufferedImage.
+		i.paintIcon(null, g, 0, 0);
+		g.dispose();
+	}
+
+	public Image getImage() {
+		return image;
+	}
+
+	public void setImage(Image image) {
+		this.image = image;
+	}
+
+	public Image getScaledImage() {
+		return scaledImage;
+	}
+
+	public void setScaledImage(Image scaledImage) {
+		this.scaledImage = scaledImage;
 	}
 }
