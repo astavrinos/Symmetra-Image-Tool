@@ -38,7 +38,7 @@ public class View extends JFrame {
 	protected View() {
 		// initGUI
 		initializeGUI();
-	}
+	}// end of constructor
 
 	private void initializeGUI() {
 		// Window title
@@ -99,23 +99,28 @@ public class View extends JFrame {
 		JProgressBar pbar;
 		pbar = new JProgressBar();
 		panel2.add(pbar, BorderLayout.CENTER);
-	}
+	}// end of initialize gui method
 
-	// function when you press the button
+	/*
+	 * ACTION LISTENERS
+	 */
+	// function when you press the browse button
 	protected void addMainViewListener(ActionListener listenImageButton) {
 		browseBtn.addActionListener(listenImageButton);
-	}
+	}// end of add main view listeners
 
+	// function when your press the analyze button
 	protected void addProceedAnalyzeListener(ActionListener ProceedAnalyze) {
 		analyzeBtn.addActionListener(ProceedAnalyze);
-	}
+	}// end of add proceed analyze listener
 
+	// function when you press the combo box to select something inside it
 	protected void addComboBoxSelect(ActionListener ComboBoxSelect) {
 		comboBox.addActionListener(ComboBoxSelect);
-	}
+	}// end of add combo box select
 
 	protected void addRemoveImageButtonListener(ActionListener RemoveImageButton) {
 		removeImageBtn.addActionListener(RemoveImageButton);
-	}
+	}// end of add remove image button listener
 
-}
+}// end of view class

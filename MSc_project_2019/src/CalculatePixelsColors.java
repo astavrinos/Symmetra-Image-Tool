@@ -25,7 +25,7 @@ public class CalculatePixelsColors implements Runnable {
 		this.width = width;
 		this.height = height;
 		this.times = times;
-	}
+	}// end of constructor
 
 	@Override
 	public void run() {
@@ -35,8 +35,9 @@ public class CalculatePixelsColors implements Runnable {
 		// an avg of three tries is 57.92 seconds
 		// https://www.tutorialspoint.com/java_dip/understand_image_pixels.htm
 
+		// start the method of calculation
 		startCalculation();
-	}
+	}// end of run thread
 
 	private void startCalculation() {
 		try {
@@ -51,46 +52,50 @@ public class CalculatePixelsColors implements Runnable {
 					count++;
 					c = new Color(image.getRGB(j, i));
 					System.out.println("Red: " + c.getRed() + "  Green: " + c.getGreen() + " Blue: " + c.getBlue());
-				}
-			}
+				}// End of inside for
+			}// End of outer for
 
+			// Check how many pixels has been calculated
 			System.out.println("Total count " + count);
 
 		} catch (Exception e) {
 			e.printStackTrace();
-		}
-	}
+		}// end of try-catch
+	}// end of start Calculation
 
+	/*
+	 * GETTERS AND SETTERS
+	 */
 	public String getTheImagePath() {
 		return theImagePath;
-	}
+	}// end of get the image path
 
 	public void setTheImagePath(String theImagePath) {
 		this.theImagePath = theImagePath;
-	}
+	}// end of set the image path
 
 	public BufferedImage getImage() {
 		return image;
-	}
+	}// end of get image
 
 	public void setImage(BufferedImage image) {
 		this.image = image;
-	}
+	}// end of set image
 
 	public int getWidth() {
 		return width;
-	}
+	}// end of get width of the image
 
 	public void setWidth(int width) {
 		this.width = width;
-	}
+	}// end of set width of the image
 
 	public int getHeight() {
 		return height;
-	}
+	}// end of get height of image
 
 	public void setHeight(int height) {
 		this.height = height;
-	}
+	}// end of set height of image
 
-}
+}// end of calculate pixels colors class

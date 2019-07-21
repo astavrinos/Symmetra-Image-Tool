@@ -6,9 +6,12 @@
 
 public class Main {
 	public static void main(String[] args) {
+		// init model
 		Model model = new Model();
+		// init view
 		View view = new View();
+		// init controller
 		@SuppressWarnings("unused")
 		Controller controller = new Controller(view, model);
-	}
-}
+	}// end of main
+}// end of main class
