@@ -148,6 +148,7 @@ public class Controller extends Main {
 		} // end of while
 	}// end of add items to combo box method
 
+	// add the elements to the array list of image details
 	private void addingElementsList(ImageIcon actualImage, String imageName, String imageSize, int imageArea) {
 		ImageDetails imgDetails = new ImageDetails(actualImage, imageName, imageSize, imageArea);
 
