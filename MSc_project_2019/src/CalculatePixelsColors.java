@@ -1,10 +1,11 @@
 import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
-public class CalculatePixelsColors implements Runnable {
+public class CalculatePixelsColors {
 
 	private static int count = 0;
 
@@ -12,55 +13,46 @@ public class CalculatePixelsColors implements Runnable {
 	private BufferedImage image;
 	private int width;
 	private int height;
-	private int i;
-	private int times;
 	private File input;
 	private Color c;
+	Model model = new Model();
 
 	// maybe theImagePath could not be called each time?
 
-	protected CalculatePixelsColors(String theImagePath, BufferedImage image, int width, int height, int times) {
+	protected CalculatePixelsColors(String theImagePath, BufferedImage image, int width, int height) {
 		this.theImagePath = theImagePath;
 		this.image = image;
 		this.width = width;
 		this.height = height;
-		this.times = times;
+
+		startCalculation();
+
 	}// end of constructor
 
-	@Override
-	public void run() {
-		// for an image with 9000000 pixels it needs 54.61 seconds
-		// second try without changing anything 60.31 seconds
-		// third try without changing anything 58.84 seconds
-		// an avg of three tries is 57.92 seconds
-		// https://www.tutorialspoint.com/java_dip/understand_image_pixels.htm
-
-		// start the method of calculation
-		startCalculation();
-	}// end of run thread
-
 	private void startCalculation() {
+		input = new File(getTheImagePath());
+		System.out.println(theImagePath);
 		try {
-			input = new File(getTheImagePath());
-			System.out.println(theImagePath);
 			image = ImageIO.read(input);
-			width = image.getWidth();
-			height = image.getHeight();
-
-			for (i = times; i < times + 1; i++) {
-				for (int j = 0; j < width; j++) {
-					count++;
-					c = new Color(image.getRGB(j, i));
-					System.out.println("Red: " + c.getRed() + "  Green: " + c.getGreen() + " Blue: " + c.getBlue());
-				}// End of inside for
-			}// End of outer for
-
-			// Check how many pixels has been calculated
-			System.out.println("Total count " + count);
-
-		} catch (Exception e) {
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}// end of try-catch
+		}
+		width = image.getWidth();
+		height = image.getHeight();
+
+		for (int i = 0; i < height; i++) {
+			for (int j = 0; j < width; j++) {
+				count++;
+				c = new Color(image.getRGB(j, i));
+//				System.out.println("Red: " + c.getRed() + "  Green: " + c.getGreen() + " Blue: " + c.getBlue());
+
+			} // End of inside for
+		} // End of outer for
+
+		// Check how many pixels has been calculated
+		System.out.println("Total count " + count);
+
 	}// end of start Calculation
 
 	/*

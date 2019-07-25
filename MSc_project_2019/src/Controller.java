@@ -23,13 +23,10 @@ public class Controller extends Main {
 	private String imageName;
 	private String path;
 	private String imageSize;
-	private int nThreads;
 	private BufferedImage bi;
 	private FileNameExtensionFilter filter;
 	private Image image;
 	private Image scaledImage;
-	private Thread[] threads;
-	private CalculatePixelsColors[] cal;
 	private Graphics g;
 
 	protected Controller(View view, Model model) {
@@ -54,12 +51,13 @@ public class Controller extends Main {
 			chooser.setFileFilter(filter);
 			returnVal = chooser.showOpenDialog(null);
 			if (returnVal == JFileChooser.APPROVE_OPTION) {
-				if (filter.accept(chooser.getSelectedFile())) {
+				if (filter.accept(chooser.getSelectedFile()) && checkIfExistAlready() == true) {
 					proceedActionIfTrue();
+					
 				} // end of if
 			} // end of if
 		}// end of action performed
-	}// end of main view listener
+	}
 
 	private class ProceedAnalyze implements ActionListener {
 		@Override
@@ -75,7 +73,6 @@ public class Controller extends Main {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			Object selected = view.comboBox.getSelectedItem();
-			@SuppressWarnings("unused")
 			Iterator<ImageDetails> iter = model.imageDetailsList.iterator();
 			for (int i = 0; i < model.imageDetailsList.size(); i++) {
 				if (model.imageDetailsList.get(i).getImageName().equals(selected)) {
@@ -176,7 +173,7 @@ public class Controller extends Main {
 	}// end of print the values of a list method
 
 	// if every image is removed then this method will
-	// return everything to normal as the beginning 
+	// return everything to normal as the beginning
 	private void returnEverythingToNormal() {
 		view.removeImageBtn.setVisible(false);
 		view.analyzeBtn.setEnabled(false);
@@ -203,7 +200,7 @@ public class Controller extends Main {
 		 * NEEDS FIXING
 		 * TODO!-----------------------------------------------------------------
 		 */
-		// runTheProcessOfGettingColors();
+		runTheProcessOfGettingColors();
 
 		addingElementsList(resizeImage(i, view.getWidth(), view.getHeight()), imageName, imageSize,
 				model.calculateArea(i));
@@ -225,25 +222,9 @@ public class Controller extends Main {
 
 	// method that will start the process of calculate each pixel
 	// which color might be
-	private void runTheProcessOfGettingColors() {
-		nThreads = i.getIconHeight();
-		threads = new Thread[nThreads];
-		cal = new CalculatePixelsColors[nThreads];
-		for (int n = 0; n < nThreads; n++) {
-			cal[n] = new CalculatePixelsColors(path, bi, i.getIconWidth(), i.getIconHeight(), n);
-			threads[n] = new Thread(cal[n]);
-			threads[n].start();
-		} // end of for
 
-		for (int n = 0; n < nThreads; n++) {
-			try {
-				threads[n].join();
-			} catch (InterruptedException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			} // end of try catch
-		} // end of for
-
+	private synchronized void runTheProcessOfGettingColors() {
+		CalculatePixelsColors cal = new CalculatePixelsColors(path, bi, i.getIconWidth(), i.getIconHeight());
 	}// end of run the process of getting colors method
 
 	// method that will convert an imageicon to bufferedimage to be used
@@ -274,4 +255,20 @@ public class Controller extends Main {
 	public void setScaledImage(Image scaledImage) {
 		this.scaledImage = scaledImage;
 	}// end of set scaled image
+
+	@SuppressWarnings("unused")
+	private boolean checkIfExistAlready() {
+
+		for (int i = 0; i < view.comboBox.getComponentCount(); i++) {
+			if (!chooser.getSelectedFile().getName().equals(view.comboBox.getItemAt(i)) && (view.comboBox.getComponentCount() <= 3)) {
+				System.out.println(view.comboBox.getComponentCount());
+				return true;
+			} else {
+				view.msgbox("You already imported this image.");
+				return false;
+			}
+		}
+		return false;
+	}// end of check if exist already
+
 }// end of controller class

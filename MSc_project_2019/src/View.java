@@ -14,6 +14,7 @@ import javax.swing.JProgressBar;
 import javax.swing.SwingConstants;
 import javax.swing.WindowConstants;
 import javax.swing.border.LineBorder;
+import javax.swing.JOptionPane;
 
 @SuppressWarnings("serial")
 public class View extends JFrame {
@@ -100,6 +101,10 @@ public class View extends JFrame {
 		pbar = new JProgressBar();
 		panel2.add(pbar, BorderLayout.CENTER);
 	}// end of initialize gui method
+
+	void msgbox(String s) {
+		JOptionPane.showMessageDialog(null, s);
+	}
 
 	/*
 	 * ACTION LISTENERS

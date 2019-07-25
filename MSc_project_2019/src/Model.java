@@ -9,7 +9,9 @@ public class Model {
 
 	// list that saves image details as objects
 	List<ImageDetails> imageDetailsList = new ArrayList<ImageDetails>();
-
+	
+	
+	
 	// method that will calculate how many pixels the image has
 	public int calculateArea(ImageIcon theImage) {
 		// calculate the area
