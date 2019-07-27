@@ -11,19 +11,19 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.SwingConstants;
 import javax.swing.WindowConstants;
 import javax.swing.border.LineBorder;
-import javax.swing.JOptionPane;
 
 @SuppressWarnings("serial")
 public class View extends JFrame {
 
 	protected JPanel panel1 = new JPanel(new BorderLayout());
 	protected JPanel panel2 = new JPanel(new BorderLayout());
-	protected JLabel imgPreview = new JLabel();
+	protected JLabel imagePreviewGUI = new JLabel();
 	protected String imgPath;
 	protected ImageIcon image;
 
@@ -62,11 +62,11 @@ public class View extends JFrame {
 		panel1.add(introMsg, BorderLayout.NORTH);
 
 		// img preview
-		imgPreview.setText("Image Preview when selected.");
-		imgPreview.setHorizontalAlignment(SwingConstants.CENTER);
-		imgPreview.setPreferredSize(panel1.getPreferredSize());
+		imagePreviewGUI.setText("Image Preview when selected.");
+		imagePreviewGUI.setHorizontalAlignment(SwingConstants.CENTER);
+		imagePreviewGUI.setPreferredSize(panel1.getPreferredSize());
 //		imgPreview.setVisible(false);
-		panel1.add(imgPreview, BorderLayout.CENTER);
+		panel1.add(imagePreviewGUI, BorderLayout.CENTER);
 
 		// The panel
 		validate();
@@ -117,6 +117,32 @@ public class View extends JFrame {
 	protected void msgbox(String s) {
 		JOptionPane.showMessageDialog(null, s);
 	}
+
+	/*
+	 * METHODS
+	 */
+	// if every image is removed then this method will
+	// return everything to normal as the beginning
+	protected void returnEverythingToNormal() {
+		removeImageBtn.setVisible(false);
+		analyzeBtn.setEnabled(false);
+		comboBox.setVisible(false);
+		setSize(500, 200);
+		status.setText("Waiting");
+		status.setForeground(Color.ORANGE);
+		imageSizeStatus.setText(null);
+	}// end of return everything to normal method
+
+	// change the view if the image imported was correct format
+	protected void callViewToChange() {
+		setSize(700, 700);
+		centerWindowOnCurrentDisplay();
+		imagePreviewGUI.setVisible(true);
+		imagePreviewGUI.setText(null);
+		status.setForeground(Color.green);
+		status.setText("Ready");
+		analyzeBtn.setEnabled(true);
+	}// end of call view to change method
 
 	/*
 	 * ACTION LISTENERS
