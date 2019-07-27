@@ -1,7 +1,9 @@
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Image;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
@@ -28,6 +30,7 @@ public class Controller extends Main {
 	private Image image;
 	private Image scaledImage;
 	private Graphics g;
+	private int stuffInsideComboBox = 0;
 
 	protected Controller(View view, Model model) {
 		this.view = view;
@@ -51,12 +54,38 @@ public class Controller extends Main {
 			chooser.setFileFilter(filter);
 			returnVal = chooser.showOpenDialog(null);
 			if (returnVal == JFileChooser.APPROVE_OPTION) {
-				if (filter.accept(chooser.getSelectedFile()) && checkIfExistAlready() == true) {
+				if (filter.accept(chooser.getSelectedFile()) && checkImageResolution() == true
+						&& checkIfImageAlreadyExist() == true && noMoreThanThreeImagesImported() == true) {
+
 					proceedActionIfTrue();
-					
+
 				} // end of if
 			} // end of if
 		}// end of action performed
+
+		private boolean checkImageResolution() {
+			i = new ImageIcon(chooser.getSelectedFile().getAbsolutePath());
+			if (i.getIconHeight() <= 1000 && i.getIconWidth() <= 1000) {
+				return true;
+			} else {
+				view.msgbox("Image is more than 1000 x 1000 pixels.");
+				return false;
+			}
+		}
+
+		private boolean noMoreThanThreeImagesImported() {
+			stuffInsideComboBox++;
+			if (stuffInsideComboBox < 4) {
+				view.msgbox("Image " + stuffInsideComboBox + " out of 3 imported.");
+				if (stuffInsideComboBox == 3) {
+					view.browseBtn.setEnabled(false);
+					view.msgbox("Image limit reached.");
+				}
+				return true;
+			} else {
+				return false;
+			}
+		}
 	}
 
 	private class ProceedAnalyze implements ActionListener {
@@ -79,6 +108,8 @@ public class Controller extends Main {
 					model.imageDetailsList.remove(i);
 					view.imgPreview.setIcon(null);
 					view.imgPreview.revalidate();
+					stuffInsideComboBox--;
+					view.browseBtn.setEnabled(true);
 					if (model.imageDetailsList.isEmpty()) {
 						returnEverythingToNormal();
 					} // end of if
@@ -121,10 +152,14 @@ public class Controller extends Main {
 	 * METHODS
 	 */
 
+	// TODO------------------------------------
+	// HERE NEEDS SOME TIDY UP
 	// https://codereview.stackexchange.com/questions/11214/image-resizing-methods
 	@SuppressWarnings("unused")
-	private ImageIcon resizeImage(ImageIcon imageIcon, int width, int height) {
-		setImage(imageIcon.getImage());
+	private ImageIcon resizeImageForPreviewLabel(ImageIcon actualImage, int width, int height) {
+		System.out.println(width);
+		System.out.println(height);
+		setImage(actualImage.getImage());
 		setScaledImage(getImage().getScaledInstance(-1, height, java.awt.Image.SCALE_SMOOTH));
 		int width1 = getScaledImage().getWidth(null);
 		if ((false && width1 > width) || (!false && width1 < width)) {
@@ -200,10 +235,13 @@ public class Controller extends Main {
 		 * NEEDS FIXING
 		 * TODO!-----------------------------------------------------------------
 		 */
-		runTheProcessOfGettingColors();
+//		runTheProcessOfGettingColors();
 
-		addingElementsList(resizeImage(i, view.getWidth(), view.getHeight()), imageName, imageSize,
-				model.calculateArea(i));
+		view.imgPreview.setVisible(true);
+
+		ImageIcon resizedImage = resizeImageForPreviewLabel(i, view.imgPreview.getWidth(), view.imgPreview.getHeight());
+
+		addingElementsList(resizedImage, imageName, imageSize, model.calculateArea(i));
 		addItemsToComboBox();
 		view.comboBox.setVisible(true);
 		view.removeImageBtn.setVisible(true);
@@ -212,7 +250,8 @@ public class Controller extends Main {
 
 	// change the view if the image imported was correct format
 	private void callViewToChange() {
-		view.setSize(1000, 1000);
+		view.setSize(700, 700);
+		view.centerWindowOnCurrentDisplay();
 		view.imgPreview.setVisible(true);
 		view.imgPreview.setText(null);
 		view.status.setForeground(Color.green);
@@ -257,10 +296,11 @@ public class Controller extends Main {
 	}// end of set scaled image
 
 	@SuppressWarnings("unused")
-	private boolean checkIfExistAlready() {
+	private boolean checkIfImageAlreadyExist() {
 
 		for (int i = 0; i < view.comboBox.getComponentCount(); i++) {
-			if (!chooser.getSelectedFile().getName().equals(view.comboBox.getItemAt(i)) && (view.comboBox.getComponentCount() <= 3)) {
+			if (!chooser.getSelectedFile().getName().equals(view.comboBox.getItemAt(i))
+					&& (view.comboBox.getComponentCount() <= 3)) {
 				System.out.println(view.comboBox.getComponentCount());
 				return true;
 			} else {

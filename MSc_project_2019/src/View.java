@@ -1,7 +1,9 @@
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
+import java.awt.Toolkit;
 import java.awt.event.ActionListener;
 
 import javax.swing.ImageIcon;
@@ -36,6 +38,8 @@ public class View extends JFrame {
 	protected JLabel imageSizeStatus = new JLabel();
 	protected JButton removeImageBtn = new JButton("Remove Image");
 
+	Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+
 	protected View() {
 		// initGUI
 		initializeGUI();
@@ -60,7 +64,8 @@ public class View extends JFrame {
 		// img preview
 		imgPreview.setText("Image Preview when selected.");
 		imgPreview.setHorizontalAlignment(SwingConstants.CENTER);
-		imgPreview.setVisible(false);
+		imgPreview.setPreferredSize(panel1.getPreferredSize());
+//		imgPreview.setVisible(false);
 		panel1.add(imgPreview, BorderLayout.CENTER);
 
 		// The panel
@@ -100,9 +105,16 @@ public class View extends JFrame {
 		JProgressBar pbar;
 		pbar = new JProgressBar();
 		panel2.add(pbar, BorderLayout.CENTER);
+
+		centerWindowOnCurrentDisplay();
+
 	}// end of initialize gui method
 
-	void msgbox(String s) {
+	protected void centerWindowOnCurrentDisplay() {
+		setLocation(screenSize.width / 2 - getSize().width / 2, screenSize.height / 2 - getSize().height / 2);
+	}
+
+	protected void msgbox(String s) {
 		JOptionPane.showMessageDialog(null, s);
 	}
 
