@@ -13,7 +13,7 @@ public class Model {
 
 	private BufferedImage bi;
 	private Graphics g;
-	private ImageIcon i;
+	private ImageIcon imageIcon;
 	private static int stuffInsideComboBox = 0;
 	private Image image;
 	private Image scaledImage;
@@ -33,10 +33,10 @@ public class Model {
 	// method that will convert an imageicon to bufferedimage to be used
 	// for the color calculation of each pixel
 	protected void convertFromImageIconToBufferedImage() {
-		bi = new BufferedImage(i.getIconWidth(), i.getIconHeight(), BufferedImage.TYPE_INT_RGB);
+		bi = new BufferedImage(imageIcon.getIconWidth(), imageIcon.getIconHeight(), BufferedImage.TYPE_INT_RGB);
 		g = bi.createGraphics();
 		// paint the Icon to the BufferedImage.
-		i.paintIcon(null, g, 0, 0);
+		imageIcon.paintIcon(null, g, 0, 0);
 		g.dispose();
 	}// end of convert from image icon to buffered image method
 
@@ -82,12 +82,12 @@ public class Model {
 		// print the values of a list
 		printTheValuesOfAList();
 	}// end of adding elements to the list method
-	
+
 	private synchronized void runTheProcessOfGettingColors() {
-		CalculatePixelsColors cal = new CalculatePixelsColors(path, getBi(), getI().getIconWidth(),
-				getI().getIconHeight());
+		CalculatePixelsColors cal = new CalculatePixelsColors(path, getBi(), getImageIcon().getIconWidth(),
+				getImageIcon().getIconHeight());
 	}// end of run the process of getting colors method
-	
+
 	public BufferedImage getBi() {
 		return bi;
 	}
@@ -104,12 +104,12 @@ public class Model {
 		this.g = g;
 	}
 
-	public ImageIcon getI() {
-		return i;
+	public ImageIcon getImageIcon() {
+		return imageIcon;
 	}
 
-	public void setI(ImageIcon i) {
-		this.i = i;
+	public void setImageIcon(ImageIcon imageIcon) {
+		this.imageIcon = imageIcon;
 	}
 
 	public static int getStuffInsideComboBox() {

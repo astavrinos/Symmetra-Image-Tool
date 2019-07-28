@@ -45,7 +45,8 @@ public class CalculatePixelsColors {
 			for (int j = 0; j < width; j++) {
 				count++;
 				c = new Color(image.getRGB(j, i));
-//				System.out.println("Red: " + c.getRed() + "  Green: " + c.getGreen() + " Blue: " + c.getBlue());
+				// System.out.println("Red: " + c.getRed() + " Green: " + c.getGreen() + " Blue:
+				// " + c.getBlue());
 
 			} // End of inside for
 		} // End of outer for

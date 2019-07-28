@@ -1,4 +1,3 @@
-import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.text.DecimalFormat;
@@ -8,17 +7,17 @@ import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
-public class Controller extends Main {
+public class Controller {
 
-	private View view;
-	private Model model;
+	protected View view;
+	protected Model model;
 	private static DecimalFormat df2 = new DecimalFormat("#.##");
 
 	private int userSelectionOfImage;
 
 	private String imageName;
 	private String imageSize;
-	private JFileChooser chooser;
+	protected JFileChooser chooser;
 	private FileNameExtensionFilter filter;
 
 	protected Controller(View view, Model model) {
@@ -51,13 +50,16 @@ public class Controller extends Main {
 
 	}
 
+	// ---------------------------------------------------------------------------TODO
+	// HERE
+
 	private class ProceedAnalyze implements ActionListener {
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			view.getContentPane().removeAll();
-			view.getContentPane().add(view.panel2, BorderLayout.CENTER);
-			view.getContentPane().doLayout();
+
+			view.viewOfAnalyze();
 			view.update(view.getGraphics());
+
 		}// end of action performed
 	}// end of proceed to analyze
 
@@ -115,10 +117,11 @@ public class Controller extends Main {
 	 * METHODS
 	 */
 
-	protected boolean checkImageIfItsObligatedToRules() {
+	private boolean checkImageIfItsObligatedToRules() {
+
 		model.setStuffInsideComboBox(model.getStuffInsideComboBox() + 1);
-		model.setI(new ImageIcon(chooser.getSelectedFile().getAbsolutePath()));
-		if ((model.getI().getIconHeight() <= 1000 && model.getI().getIconWidth() <= 1000)) {
+		model.setImageIcon(new ImageIcon(chooser.getSelectedFile().getAbsolutePath()));
+		if ((model.getImageIcon().getIconHeight() <= 1000 && model.getImageIcon().getIconWidth() <= 1000)) {
 			for (int i = 0; i < view.comboBox.getComponentCount(); i++) {
 				if (!chooser.getSelectedFile().getName().equals(view.comboBox.getItemAt(i))
 						&& (view.comboBox.getComponentCount() <= 3)) {
@@ -145,7 +148,7 @@ public class Controller extends Main {
 	// if the import image is true then proceed to this method
 	private void proceedActionIfTrue() {
 		model.setPath(chooser.getSelectedFile().getAbsolutePath());
-		model.setI(new ImageIcon(model.getPath()));
+		model.setImageIcon(new ImageIcon(model.getPath()));
 		view.callViewToChange();
 		imageName = chooser.getSelectedFile().getName();
 		imageSize = df2.format(chooser.getSelectedFile().length() / (1 * Math.pow(10, 6)));
@@ -156,9 +159,9 @@ public class Controller extends Main {
 		 */
 //		runTheProcessOfGettingColors();
 		view.imagePreviewGUI.setVisible(true);
-		ImageIcon resizedImage = model.resizeImageForPreviewLabel(model.getI(), view.imagePreviewGUI.getWidth(),
+		ImageIcon resizedImage = model.resizeImageForPreviewLabel(model.getImageIcon(), view.imagePreviewGUI.getWidth(),
 				view.imagePreviewGUI.getHeight());
-		model.addingElementsList(resizedImage, imageName, imageSize, model.calculateArea(model.getI()));
+		model.addingElementsList(resizedImage, imageName, imageSize, model.calculateArea(model.getImageIcon()));
 		addItemsToComboBox();
 		view.comboBox.setVisible(true);
 		view.removeImageBtn.setVisible(true);

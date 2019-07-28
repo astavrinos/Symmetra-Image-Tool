@@ -11,7 +11,8 @@ public class Main {
 		// init view
 		View view = new View();
 		// init controller
-		@SuppressWarnings("unused")
 		Controller controller = new Controller(view, model);
+
+		view.setVisible(true);
 	}// end of main
 }// end of main class

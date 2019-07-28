@@ -22,7 +22,7 @@ import javax.swing.border.LineBorder;
 public class View extends JFrame {
 
 	protected JPanel panel1 = new JPanel(new BorderLayout());
-	protected JPanel panel2 = new JPanel(new BorderLayout());
+	protected JPanel panel2 = new JPanel();
 	protected JLabel imagePreviewGUI = new JLabel();
 	protected String imgPath;
 	protected ImageIcon image;
@@ -38,21 +38,30 @@ public class View extends JFrame {
 	protected JLabel imageSizeStatus = new JLabel();
 	protected JButton removeImageBtn = new JButton("Remove Image");
 
+	SecondView secView;
+
+	JProgressBar pbar = new JProgressBar(0, 100);
+	int i = 0, num = 0;
+
 	Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 
 	protected View() {
 		// initGUI
-		initializeGUI();
+		initializeFirstFrame();
 	}// end of constructor
 
-	private void initializeGUI() {
+	private void initializeFirstFrame() {
 		// Window title
 		setTitle("Image Analyzer Tool");
 		// Exit on close
 		setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		// Set the size of the window
 		setSize(500, 200);
-		setVisible(true);
+
+		// The panel
+		validate();
+		panel1.setBackground(Color.WHITE);
+		getContentPane().add(panel1);
 
 		// intro msg
 		introMsg.setFont(new Font("Segoe UI", Font.PLAIN, 16));
@@ -67,11 +76,6 @@ public class View extends JFrame {
 		imagePreviewGUI.setPreferredSize(panel1.getPreferredSize());
 //		imgPreview.setVisible(false);
 		panel1.add(imagePreviewGUI, BorderLayout.CENTER);
-
-		// The panel
-		validate();
-		panel1.setBackground(Color.WHITE);
-		getContentPane().add(panel1);
 
 		// Bottom panel
 		panel1.add(bottomBtns, BorderLayout.SOUTH);
@@ -100,23 +104,9 @@ public class View extends JFrame {
 		analyzeBtn.setEnabled(false);
 		bottomBtns.add(analyzeBtn);
 
-		// next window stuff after pressed analyze button
-
-		JProgressBar pbar;
-		pbar = new JProgressBar();
-		panel2.add(pbar, BorderLayout.CENTER);
-
 		centerWindowOnCurrentDisplay();
 
 	}// end of initialize gui method
-
-	protected void centerWindowOnCurrentDisplay() {
-		setLocation(screenSize.width / 2 - getSize().width / 2, screenSize.height / 2 - getSize().height / 2);
-	}
-
-	protected void msgbox(String s) {
-		JOptionPane.showMessageDialog(null, s);
-	}
 
 	/*
 	 * METHODS
@@ -143,6 +133,20 @@ public class View extends JFrame {
 		status.setText("Ready");
 		analyzeBtn.setEnabled(true);
 	}// end of call view to change method
+
+	protected void viewOfAnalyze() {
+		// next window stuff after pressed analyze button
+		panel1.setVisible(false);
+		secView = new SecondView();
+	}
+
+	protected void centerWindowOnCurrentDisplay() {
+		setLocation(screenSize.width / 2 - getSize().width / 2, screenSize.height / 2 - getSize().height / 2);
+	}
+
+	protected void msgbox(String s) {
+		JOptionPane.showMessageDialog(null, s);
+	}
 
 	/*
 	 * ACTION LISTENERS
