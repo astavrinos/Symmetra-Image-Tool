@@ -43,15 +43,13 @@ public class Controller {
 			userSelectionOfImage = chooser.showOpenDialog(null);
 			if (userSelectionOfImage == JFileChooser.APPROVE_OPTION) {
 				if (filter.accept(chooser.getSelectedFile()) && checkImageIfItsObligatedToRules() == true) {
+					System.out.println(view.comboBox.getItemCount());
 					proceedActionIfTrue();
 				} // end of if
 			} // end of if
 		}// end of action performed
 
 	}
-
-	// ---------------------------------------------------------------------------TODO
-	// HERE
 
 	private class ProceedAnalyze implements ActionListener {
 		@Override
@@ -118,49 +116,59 @@ public class Controller {
 	 */
 
 	private boolean checkImageIfItsObligatedToRules() {
-
+System.out.println(view.comboBox.getItemCount());
 		model.setStuffInsideComboBox(model.getStuffInsideComboBox() + 1);
 		model.setImageIcon(new ImageIcon(chooser.getSelectedFile().getAbsolutePath()));
 		if ((model.getImageIcon().getIconHeight() <= 1000 && model.getImageIcon().getIconWidth() <= 1000)) {
-			for (int i = 0; i < view.comboBox.getComponentCount(); i++) {
-				if (!chooser.getSelectedFile().getName().equals(view.comboBox.getItemAt(i))
-						&& (view.comboBox.getComponentCount() <= 3)) {
-					if (model.getStuffInsideComboBox() < 4) {
-						view.msgbox("Image " + model.getStuffInsideComboBox() + " out of 3 imported.");
-						if (model.getStuffInsideComboBox() == 3) {
-							view.browseBtn.setEnabled(false);
-							view.msgbox("Image limit reached.");
-						} // end of if
-						return true;
-					} // end of if
-				} else {
-					view.msgbox("You already imported this image.");
-					return false;
-				} // end of if-else
-			} // end of for
+			if (checkIfImageAlreadyExist() == true) {
+				if (model.getStuffInsideComboBox() < 3) {
+					view.msgbox("Image " + model.getStuffInsideComboBox() + " out of 3 imported.");
+					if (model.getStuffInsideComboBox() == 3) {
+						view.browseBtn.setEnabled(false);
+						view.msgbox("Image limit reached.");
+					}
+					return true;
+				}
+			}
 		} else {
 			view.msgbox("Image is more than 1000 x 1000 pixels.");
+			model.setStuffInsideComboBox(model.getStuffInsideComboBox() - 1);
 			return false;
 		} // end of if-else
 		return false;
+
+//		return false;
 	}// end of checkImageIfItsObligatedToRules()
+
+	private boolean checkIfImageAlreadyExist() {
+		for (int i = 0; i < model.getStuffInsideComboBox(); i++) {
+			if (chooser.getSelectedFile().getName().equals(view.comboBox.getItemAt(i))) {
+				view.msgbox("You already imported this image.");
+				model.setStuffInsideComboBox(model.getStuffInsideComboBox() - 1);
+				return false;
+			}
+		} // end of for
+		return true;
+	}
 
 	// if the import image is true then proceed to this method
 	private void proceedActionIfTrue() {
-		model.setPath(chooser.getSelectedFile().getAbsolutePath());
-		model.setImageIcon(new ImageIcon(model.getPath()));
-		view.callViewToChange();
+		model.setImagePath(chooser.getSelectedFile().getAbsolutePath());
+		model.setImageIcon(new ImageIcon(model.getImagePath()));
 		imageName = chooser.getSelectedFile().getName();
 		imageSize = df2.format(chooser.getSelectedFile().length() / (1 * Math.pow(10, 6)));
+		model.setImageHeight(model.getImageIcon().getIconHeight());
+		model.setImageWidth(model.getImageIcon().getIconWidth());
+
+		view.callViewToChange();
 		model.convertFromImageIconToBufferedImage();
-		/*
-		 * NEEDS FIXING
-		 * TODO!-----------------------------------------------------------------
-		 */
-//		runTheProcessOfGettingColors();
 		view.imagePreviewGUI.setVisible(true);
-		ImageIcon resizedImage = model.resizeImageForPreviewLabel(model.getImageIcon(), view.imagePreviewGUI.getWidth(),
-				view.imagePreviewGUI.getHeight());
+
+		ImageIcon resizedImage = model.resizeImageForPreviewImageGUI(model.getImageIcon(), 644, 541);
+
+		// the main process of getting the colors
+		model.runTheProcessOfGettingColors();
+
 		model.addingElementsList(resizedImage, imageName, imageSize, model.calculateArea(model.getImageIcon()));
 		addItemsToComboBox();
 		view.comboBox.setVisible(true);
