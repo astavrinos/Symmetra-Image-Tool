@@ -4,7 +4,7 @@ import javax.swing.SwingUtilities;
 
 public class SecondView extends View {
 
-	//https://stackoverflow.com/questions/10437590/my-jprogressbar-is-not-updating-until-it-is-100
+
 	
 	SecondView() {		
 		final JLabel analyzingLabel = new JLabel("Analyzing...");

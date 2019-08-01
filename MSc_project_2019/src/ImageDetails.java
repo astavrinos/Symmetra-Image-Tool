@@ -5,19 +5,26 @@ public class ImageDetails {
 	private ImageIcon actualImage;
 	private String imageName;
 	private String imageSize;
-	private int pixelsArea;
+	private String imagePath;
+	private int imageWidth;
+	private int imageHeight;
 
-	public ImageDetails(ImageIcon actualImage, String imageName, String imageSize, int pixelsArea) {
+	public ImageDetails(ImageIcon actualImage, String imagePath, String imageName, String imageSize, int imageWidth,
+			int imageHeight) {
 		this.actualImage = actualImage;
+		this.imagePath = imagePath;
 		this.imageName = imageName;
 		this.imageSize = imageSize;
-		this.pixelsArea = pixelsArea;
+		this.imageWidth = imageWidth;
+		this.imageHeight = imageHeight;
+
 	}// end of constructor
 
 	// check the values
 	public String toString() {
-		String foo = "Image: " + getActualImage() + ". Image Name: " + getImageName() + ". Image Size: "
-				+ getImageSize() + ". Area: " + getPixelsArea(); // example
+		String foo = "Image: " + getActualImage() + ". Image Path: " + getImagePath() + ". Image Name: "
+				+ getImageName() + ". Image Size: " + getImageSize() + ". Image Width: " + getImageWidth()
+				+ ". Image Height: " + getImageHeight();
 		return foo;
 	}// end of to string method
 
@@ -31,6 +38,14 @@ public class ImageDetails {
 	public void setActualImage(ImageIcon actualImage) {
 		this.actualImage = actualImage;
 	}// end of set actual image
+
+	public String getImagePath() {
+		return imagePath;
+	}
+
+	public void setImagePath(String imagePath) {
+		this.imagePath = imagePath;
+	}
 
 	public String getImageName() {
 		return imageName;
@@ -48,12 +63,20 @@ public class ImageDetails {
 		this.imageSize = imageSize;
 	}// end of set image size
 
-	public int getPixelsArea() {
-		return pixelsArea;
-	}// end of get pixels area
+	public int getImageWidth() {
+		return imageWidth;
+	}
 
-	public void setPixelsArea(int pixelsArea) {
-		this.pixelsArea = pixelsArea;
-	}// end of set pixels area
+	public void setImageWidth(int imageWidth) {
+		this.imageWidth = imageWidth;
+	}
+
+	public int getImageHeight() {
+		return imageHeight;
+	}
+
+	public void setImageHeight(int imageHeight) {
+		this.imageHeight = imageHeight;
+	}
 
 }// end of image details class

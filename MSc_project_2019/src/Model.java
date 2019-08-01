@@ -1,6 +1,7 @@
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -11,46 +12,28 @@ import javax.swing.ImageIcon;
 
 public class Model {
 
+	private String imageSize;
+	private String imageName;
 	private BufferedImage bufferedImage;
 	private Graphics graphics;
-	private static ImageIcon imageIcon;
-	private static int stuffInsideComboBox = 0;
+	private ImageIcon imageIcon;
+	private int itemsInsideComboBoxCurrently = 0;
 	private Image image;
 	private Image scaledImage;
-	private static String imagePath;
-	private static int imageHeight;
-	private static int imageWidth;
+	private String imagePath;
+	private int imageHeight;
+	private int imageWidth;
+
 	// list that saves image details as objects
-	List<ImageDetails> imageDetailsList = new ArrayList<ImageDetails>();
+	private List<ImageDetails> imageDetailsList = new ArrayList<ImageDetails>();
+	private List<CalculatePixelsColors> calcImageColors = new ArrayList<CalculatePixelsColors>();
 
-	// method that will calculate how many pixels the image has
-	protected int calculateArea(ImageIcon theImage) {
-		// calculate the area
-		int imageHeight = theImage.getIconHeight();
-		int imageWidth = theImage.getIconWidth();
-		int imageArea = imageHeight * imageWidth;
-		return imageArea;
-	}// end of calculate the area of an image method
-
-	// method that will convert an imageicon to bufferedimage to be used
-	// for the color calculation of each pixel
-	protected void convertFromImageIconToBufferedImage() {
-		bufferedImage = new BufferedImage(imageIcon.getIconWidth(), imageIcon.getIconHeight(), BufferedImage.TYPE_INT_RGB);
-		graphics = bufferedImage.createGraphics();
-		// paint the Icon to the BufferedImage.
-		imageIcon.paintIcon(null, graphics, 0, 0);
-		graphics.dispose();
-	}// end of convert from image icon to buffered image method
-
-	// TODO------------------------------------
-	// HERE NEEDS SOME TIDY UP
-	// https://codereview.stackexchange.com/questions/11214/image-resizing-methods
 	@SuppressWarnings("unused")
 	protected ImageIcon resizeImageForPreviewImageGUI(ImageIcon actualImage, int width, int height) {
 		image = actualImage.getImage();
 		scaledImage = image.getScaledInstance(-1, height, java.awt.Image.SCALE_SMOOTH);
-		int width1 = scaledImage.getWidth(null);
-		if ((false && width1 > width) || (!false && width1 < width)) {
+		int scaledImageWidth = scaledImage.getWidth(null);
+		if ((false && scaledImageWidth > width) || (!false && scaledImageWidth < width)) {
 			scaledImage = image.getScaledInstance(width, -1, java.awt.Image.SCALE_SMOOTH);
 		} // end of if
 		return new ImageIcon(scaledImage);
@@ -58,12 +41,12 @@ public class Model {
 
 	// print the values of a list
 	protected void printTheValuesOfAList() {
-		int t = 0;
-		Iterator<ImageDetails> it = imageDetailsList.iterator();
-		if (it.hasNext()) {
-			while (it.hasNext()) {
-				System.out.println(t + ")" + it.next());
-				t++;
+		int i = 0;
+		Iterator<ImageDetails> iterator = imageDetailsList.iterator();
+		if (iterator.hasNext()) {
+			while (iterator.hasNext()) {
+				System.out.println(i + ")" + iterator.next());
+				i++;
 			} // end of while
 		} else {
 			System.out.println("List is empty");
@@ -71,8 +54,9 @@ public class Model {
 	}// end of print the values of a list method
 
 	// add the elements to the array list of image details
-	protected void addingElementsList(ImageIcon imageIcon, String imageName, String imageSize, int imageArea) {
-		ImageDetails imgDetails = new ImageDetails(imageIcon, imageName, imageSize, imageArea);
+	protected void addingElementsList(ImageIcon imageIcon, String imagePath, String imageName, String imageSize,
+			int imageWidth, int imageHeight) {
+		ImageDetails imgDetails = new ImageDetails(imageIcon, imagePath, imageName, imageSize, imageWidth, imageHeight);
 
 		imageDetailsList.add(imgDetails);
 
@@ -84,7 +68,11 @@ public class Model {
 	}// end of adding elements to the list method
 
 	protected void runTheProcessOfGettingColors() {
-		CalculatePixelsColors cal = new CalculatePixelsColors();
+		// todo: loop over all images, performing analysis using a calculatepixelscolor
+		// class for each
+		// todo: define array of image pixel colors
+
+		calcImageColors.add(new CalculatePixelsColors(new File(getImagePath()), imageIcon));
 	}// end of run the process of getting colors method
 
 	public BufferedImage getBufferedImage() {
@@ -111,12 +99,12 @@ public class Model {
 		this.imageIcon = imageIcon;
 	}
 
-	public static int getStuffInsideComboBox() {
-		return stuffInsideComboBox;
+	public int getItemsInsideComboBoxCurrently() {
+		return itemsInsideComboBoxCurrently;
 	}
 
-	public static void setStuffInsideComboBox(int stuffInsideComboBox) {
-		Model.stuffInsideComboBox = stuffInsideComboBox;
+	public void setItemsInsideComboBoxCurrently(int itemsInsideComboBox) {
+		this.itemsInsideComboBoxCurrently = itemsInsideComboBox;
 	}
 
 	public Image getImage() {
@@ -131,29 +119,60 @@ public class Model {
 		return scaledImage;
 	}
 
-
 	public String getImagePath() {
 		return imagePath;
+	}
+
+	public String getImageName() {
+		return imageName;
+	}
+
+	public void setImageName(String imageName) {
+		this.imageName = imageName;
 	}
 
 	public void setImagePath(String imagePath) {
 		this.imagePath = imagePath;
 	}
 
-	public static int getImageHeight() {
+	public int getImageHeight() {
 		return imageHeight;
 	}
 
-	public static void setImageHeight(int imageHeight) {
-		Model.imageHeight = imageHeight;
+	public void setImageHeight(int imageHeight) {
+		this.imageHeight = imageHeight;
 	}
 
-	public static int getImageWidth() {
+	public int getImageWidth() {
 		return imageWidth;
 	}
 
-	public static void setImageWidth(int imageWidth) {
-		Model.imageWidth = imageWidth;
+	public void setImageWidth(int imageWidth) {
+		this.imageWidth = imageWidth;
+	}
+
+	public String getImageSize() {
+		return imageSize;
+	}
+
+	public void setImageSize(String imageSize) {
+		this.imageSize = imageSize;
+	}
+
+	public List<ImageDetails> getImageDetailsList() {
+		return imageDetailsList;
+	}
+
+	public void setImageDetailsList(List<ImageDetails> imageDetailsList) {
+		this.imageDetailsList = imageDetailsList;
+	}
+
+	public List<CalculatePixelsColors> getCalcImageColors() {
+		return calcImageColors;
+	}
+
+	public void setCalcImageColors(List<CalculatePixelsColors> calcImageColors) {
+		this.calcImageColors = calcImageColors;
 	}
 
 }// end of model class

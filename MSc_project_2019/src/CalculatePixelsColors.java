@@ -1,101 +1,120 @@
 import java.awt.Color;
-import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
 
 import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
 
 public class CalculatePixelsColors extends Model {
 
-	private int width;
-	private int height;
+	private final int typesOfColors = 3;
 	private File input;
-	private Color c;
-	private int thePixels = 0;
-	private int finalValueRed = 0;
-	private int finalValueGreen = 0;
-	private int finalValueBlue = 0;
+	private ImageIcon imageIcon;
+	private Color color;
+	private int pixelsNumber;
+	private int finalValueRed;
+	private int finalValueGreen;
+	private int finalValueBlue;
+	private int allThreeColorsMeanCalculation;
+	private int medianOfTheMeanColors;
 
-	HashMap<Integer, SavePixelsColors> firstImageColorStorage = new HashMap<Integer, SavePixelsColors>();
-	HashMap<Integer, SavePixelsColors> secondImageColorStorage = new HashMap<Integer, SavePixelsColors>();
-	HashMap<Integer, SavePixelsColors> thirdImageColorStorage = new HashMap<Integer, SavePixelsColors>();
+	private ArrayList<Integer> RGBcombinedValues = new ArrayList<Integer>();
+	private HashMap<Integer, SavePixelsColors> imageColorStorage = new HashMap<Integer, SavePixelsColors>();
 
-	protected CalculatePixelsColors() {
+	protected CalculatePixelsColors(File input, ImageIcon imageIcon) {
+		this.input = input;
+		this.imageIcon = imageIcon;
+
 		startCalculation();
 	}// end of constructor
 
+	/*
+	 * METHODS
+	 */
 	private void startCalculation() {
-		input = new File(getImagePath());
 
 		try {
 			setBufferedImage(ImageIO.read(input));
+			for (int i = 0; i < imageIcon.getIconHeight(); i++) {
+				for (int j = 0; j < imageIcon.getIconWidth(); j++) {
+
+					color = new Color(getBufferedImage().getRGB(j, i));
+					int r = color.getRed();
+					int g = color.getGreen();
+					int b = color.getBlue();
+
+					imageColorStorage.put(pixelsNumber, new SavePixelsColors(r, g, b));
+					pixelsNumber++;
+
+				} // End of inside for
+			} // End of outer for
+
+			// print();
+
+			calculateTheMean();
+			calculateTheMedian();
+			calculateTheStdDeviation();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-
-		
-		// i can create a checker where it checks if the hashmap
-		// is empty or not. If its empty then add the colors inside that one
-		if (firstImageColorStorage.isEmpty()) {
-
-		}
-
-		for (int i = 0; i < getImageHeight(); i++) {
-			for (int j = 0; j < getImageWidth(); j++) {
-
-				c = new Color(getBufferedImage().getRGB(j, i));
-				int r = c.getRed();
-				int g = c.getGreen();
-				int b = c.getBlue();
-
-				firstImageColorStorage.put(thePixels, new SavePixelsColors(r, g, b));
-
-				thePixels++;
-			} // End of inside for
-		} // End of outer for
-
-//		print();
-		calculateTheMean();
 
 	}// end of start Calculation
 
 	private void calculateTheMean() {
 
-		for (int i = 0; i < firstImageColorStorage.size(); i++) {
-			int redValue = firstImageColorStorage.get(i).getRed();
-			int greenValue = firstImageColorStorage.get(i).getGreen();
-			int blueValue = firstImageColorStorage.get(i).getBlue();
+		for (int i = 0; i < imageColorStorage.size(); i++) {
+			int redValue = imageColorStorage.get(i).getRed();
+			int greenValue = imageColorStorage.get(i).getGreen();
+			int blueValue = imageColorStorage.get(i).getBlue();
 
-			//TODO
-			//maybe if i store the rgb in an arraylist and then divide each
-			//rgb / 3? and then save the mean of each pixel
-			
-			System.out.println(redValue + "\n" + greenValue + "\n" + blueValue);
-			
 			finalValueRed = finalValueRed + redValue;
 			finalValueGreen = finalValueGreen + greenValue;
 			finalValueBlue = finalValueBlue + blueValue;
 		}
 
-//		System.out.println("Red Mean is :" + finalValueRed / firstImageColorStorage.size());
-//		System.out.println("Green Mean is :" + finalValueGreen / firstImageColorStorage.size());
-//		System.out.println("Blue Mean is :" + finalValueBlue / firstImageColorStorage.size());
+		RGBcombinedValues.add(finalValueRed);
+		RGBcombinedValues.add(finalValueGreen);
+		RGBcombinedValues.add(finalValueBlue);
+
+		allThreeColorsMeanCalculation = (finalValueRed + finalValueGreen + finalValueBlue) / typesOfColors;
+
+		System.out.println("This is the mean of the three colors: " + allThreeColorsMeanCalculation);
+
 	}
 
-	private void print() {
+	private void calculateTheMedian() {
+		Collections.sort(RGBcombinedValues);
+		medianOfTheMeanColors = RGBcombinedValues.get(RGBcombinedValues.size() / typesOfColors);
 
-		Set set = firstImageColorStorage.entrySet();
-		Iterator iterator = set.iterator();
-		while (iterator.hasNext()) {
-			Map.Entry mentry = (Map.Entry) iterator.next();
-//			System.out.print("key is: " + mentry.getKey() + " & Value is: ");
-			System.out.println(mentry.getValue());
-		}
+		System.out.println("This is the median: " + medianOfTheMeanColors);
+	}
 
+	private void calculateTheStdDeviation() {
+
+		double powResultOne = Math.pow(RGBcombinedValues.get(0) - typesOfColors, 2);
+		double powResultTwo = Math.pow(RGBcombinedValues.get(1) - typesOfColors, 2);
+		double powResultThird = Math.pow(RGBcombinedValues.get(2) - typesOfColors, 2);
+
+		double powMeanOfAllValues = (powResultOne + powResultTwo + powResultThird) / typesOfColors;
+
+		int squareRootOfAllValues = (int) Math.sqrt(powMeanOfAllValues);
+
+		System.out.println("This is the Standard Deviation of all Colors: " + squareRootOfAllValues);
+
+	}
+
+	/*
+	 * GETTERS AND SETTERS
+	 */
+	public HashMap<Integer, SavePixelsColors> getImageColorStorage() {
+		return imageColorStorage;
+	}
+
+	public void setImageColorStorage(HashMap<Integer, SavePixelsColors> imageColorStorage) {
+		this.imageColorStorage = imageColorStorage;
 	}
 
 }// end of calculate pixels colors class
