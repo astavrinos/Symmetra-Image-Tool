@@ -1,8 +1,8 @@
 import java.awt.Color;
 import java.io.File;
 import java.io.IOException;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 
 import javax.imageio.ImageIO;
@@ -15,14 +15,19 @@ public class CalculatePixelsColors extends Model {
 	private ImageIcon imageIcon;
 	private Color color;
 	private int pixelsNumber;
-	private int finalValueRed;
-	private int finalValueGreen;
-	private int finalValueBlue;
-	private int allThreeColorsMeanCalculation;
-	private int medianOfTheMeanColors;
+	private float allThreeColorsMeanCalculation;
+	private long medianRed;
+	private long medianGreen;
+	private long medianBlue;
+	private float test;
+	private float finalValuesRGB;
+
+	DecimalFormat numberFormat = new DecimalFormat("#.00");
 
 	private ArrayList<Integer> RGBcombinedValues = new ArrayList<Integer>();
+	private ArrayList<Float> powValuesOfRGB = new ArrayList<Float>();
 	private HashMap<Integer, SavePixelsColors> imageColorStorage = new HashMap<Integer, SavePixelsColors>();
+	private HashMap<Integer, SavePixelsColors> powValuesOfColors = new HashMap<Integer, SavePixelsColors>();
 
 	protected CalculatePixelsColors(File input, ImageIcon imageIcon) {
 		this.input = input;
@@ -63,6 +68,7 @@ public class CalculatePixelsColors extends Model {
 
 	}// end of start Calculation
 
+	// This method is correct
 	private void calculateTheMean() {
 
 		for (int i = 0; i < imageColorStorage.size(); i++) {
@@ -70,38 +76,46 @@ public class CalculatePixelsColors extends Model {
 			int greenValue = imageColorStorage.get(i).getGreen();
 			int blueValue = imageColorStorage.get(i).getBlue();
 
-			finalValueRed = finalValueRed + redValue;
-			finalValueGreen = finalValueGreen + greenValue;
-			finalValueBlue = finalValueBlue + blueValue;
+			finalValuesRGB = finalValuesRGB + redValue + greenValue + blueValue;
 		}
 
-		RGBcombinedValues.add(finalValueRed);
-		RGBcombinedValues.add(finalValueGreen);
-		RGBcombinedValues.add(finalValueBlue);
-
-		allThreeColorsMeanCalculation = (finalValueRed + finalValueGreen + finalValueBlue) / typesOfColors;
+		allThreeColorsMeanCalculation = finalValuesRGB / (imageColorStorage.size() * typesOfColors);
 
 		System.out.println("This is the mean of the three colors: " + allThreeColorsMeanCalculation);
-
 	}
 
+	// This method is correct
 	private void calculateTheMedian() {
-		Collections.sort(RGBcombinedValues);
-		medianOfTheMeanColors = RGBcombinedValues.get(RGBcombinedValues.size() / typesOfColors);
 
-		System.out.println("This is the median: " + medianOfTheMeanColors);
+		medianRed = imageColorStorage.get(imageColorStorage.size() / 2).getRed();
+		medianGreen = imageColorStorage.get(imageColorStorage.size() / 2).getGreen();
+		medianBlue = imageColorStorage.get(imageColorStorage.size() / 2).getBlue();
+
+		System.out.println("This is the median: " + (imageColorStorage.size() / 2) + ". " + medianRed + ","
+				+ medianGreen + "," + medianBlue);
 	}
 
 	private void calculateTheStdDeviation() {
 
-		double powResultOne = Math.pow(RGBcombinedValues.get(0) - typesOfColors, 2);
-		double powResultTwo = Math.pow(RGBcombinedValues.get(1) - typesOfColors, 2);
-		double powResultThird = Math.pow(RGBcombinedValues.get(2) - typesOfColors, 2);
+		for (int i = 0; i < imageColorStorage.size(); i++) {
+			float powResultRed = (float) Math.pow(imageColorStorage.get(i).getRed() - allThreeColorsMeanCalculation, 2);
+			float powResultGreen = (float) Math.pow(imageColorStorage.get(i).getGreen() - allThreeColorsMeanCalculation,
+					2);
+			float powResultBlue = (float) Math.pow(imageColorStorage.get(i).getBlue() - allThreeColorsMeanCalculation,
+					2);
 
-		double powMeanOfAllValues = (powResultOne + powResultTwo + powResultThird) / typesOfColors;
+			powValuesOfRGB.add(powResultRed);
+			powValuesOfRGB.add(powResultGreen);
+			powValuesOfRGB.add(powResultBlue);
+		}
 
-		int squareRootOfAllValues = (int) Math.sqrt(powMeanOfAllValues);
+		for (int i = 0; i < powValuesOfRGB.size(); i++) {
+			test = (test + powValuesOfRGB.get(i));
+		}
 
+		Float variance = (1F / powValuesOfRGB.size()) * test;
+		System.out.println("This is the variance " + variance);
+		float squareRootOfAllValues = (float) Math.sqrt(variance);
 		System.out.println("This is the Standard Deviation of all Colors: " + squareRootOfAllValues);
 
 	}
