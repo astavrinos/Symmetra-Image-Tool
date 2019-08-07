@@ -4,7 +4,12 @@ import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
@@ -17,22 +22,26 @@ public class CalculatePixelsColors extends Model {
 	private Color color;
 	private int pixelsNumber;
 	private float allThreeColorsMeanCalculation;
-	private long medianRed;
-	private long medianGreen;
-	private long medianBlue;
 	private float test;
 	private float allThreeValuesSumUp;
 	private Double skew = 0.0;
 	private float stdDeviation;
-	private Double test2 = 0.0;
+	private Float test2 = 0.0F;
+	private Double skewEquationAbove = 0.0;
+	private Double skewEquationBelow = 0.0;
 	private Double test3 = 0.0;
 	private Double test4 = 0.0;
+	private double sumAllGrayValues = 0.0;
+	private double meanGrayValue;
 
 	DecimalFormat numberFormat = new DecimalFormat("#.00");
 
 	private ArrayList<Integer> allValuesInAPot = new ArrayList<Integer>();
 	private ArrayList<Float> powValuesOfRGB = new ArrayList<Float>();
 	private HashMap<Integer, SavePixelsColors> imageColorStorage = new HashMap<Integer, SavePixelsColors>();
+	private HashMap<Integer, Integer> unsortedGrayValuesOfRGB = new HashMap<Integer, Integer>();
+	private Map<Integer, Integer> sortedGrayValues;
+	private Map<Integer, Float> powValues = new HashMap<Integer, Float>();
 
 	protected CalculatePixelsColors(File input, ImageIcon imageIcon) {
 		this.input = input;
@@ -58,21 +67,15 @@ public class CalculatePixelsColors extends Model {
 
 					imageColorStorage.put(pixelsNumber, new SavePixelsColors(r, g, b));
 
-					allValuesInAPot.add(r);
-					allValuesInAPot.add(g);
-					allValuesInAPot.add(b);
-					
 					pixelsNumber++;
 
 				} // End of inside for
 			} // End of outer for
 
-			// print();
-
 			calculateTheMean();
 			calculateTheMedian();
-//			calculateTheStdDeviation();
-//			calculateTheSkewness();
+			calculateTheStdDeviation();
+			calculateTheSkewness();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -80,65 +83,94 @@ public class CalculatePixelsColors extends Model {
 	}// end of start Calculation
 
 	private void calculateTheMean() {
-		Float allValues = 0F;
-		for (int i = 0; i < allValuesInAPot.size(); i++) {
-//			int redValue = imageColorStorage.get(i).getRed();
-//			int greenValue = imageColorStorage.get(i).getGreen();
-//			int blueValue = imageColorStorage.get(i).getBlue();
 
-			allValues = allValues + allValuesInAPot.get(i);
-			
-//			allThreeValuesSumUp = allThreeValuesSumUp + redValue + greenValue + blueValue;
+		for (int i = 0; i < pixelsNumber; i++) {
+			int redValue = imageColorStorage.get(i).getRed();
+			int greenValue = imageColorStorage.get(i).getGreen();
+			int blueValue = imageColorStorage.get(i).getBlue();
+
+			// (r + g + b) / 3 This is to create for each pixel the gray value
+			int grayValueCalculation = (redValue + greenValue + blueValue) / typesOfColors;
+
+			unsortedGrayValuesOfRGB.put(i, grayValueCalculation);
+			sumAllGrayValues = sumAllGrayValues + grayValueCalculation;
 		}
 
-		allThreeColorsMeanCalculation = allValues / (allValuesInAPot.size() * 3) * 3;
-		
-//		allThreeColorsMeanCalculation = allThreeValuesSumUp / (imageColorStorage.size() * typesOfColors);
+		meanGrayValue = sumAllGrayValues / unsortedGrayValuesOfRGB.size();
 
-		
-		
-		System.out.println("This is the mean of the three colors: " + allThreeColorsMeanCalculation);
+		System.out.println("This is the mean of the three colors: " + meanGrayValue);
 	}
 
 	private void calculateTheMedian() {
 
-//		medianRed = imageColorStorage.get(imageColorStorage.size() / 2).getRed();
-//		medianGreen = imageColorStorage.get(imageColorStorage.size() / 2).getGreen();
-//		medianBlue = imageColorStorage.get(imageColorStorage.size() / 2).getBlue();
-//
-//		System.out.println("This is the median: " + (imageColorStorage.size() / 2) + ". " + medianRed + ","
-//				+ medianGreen + "," + medianBlue);
-		
-		Collections.sort(allValuesInAPot);
-		
-		System.out.println(allValuesInAPot.size());
-		
-		medianRed = allValuesInAPot.get(allValuesInAPot.size()/2);
-		
-		System.out.println("This is the median: " + medianRed);
+		sortedGrayValues = sortTheGrayValueHashMap(unsortedGrayValuesOfRGB);
+
+		int median = sortedGrayValues.get(sortedGrayValues.size() / 2);
+
+		System.out.println("This is the median: " + median);
+	}
+
+	private HashMap<Integer, Integer> sortTheGrayValueHashMap(HashMap<Integer, Integer> unsortedGrayValues) {
+		// Create a list from elements of HashMap
+		LinkedList<Entry<Integer, Integer>> list = new LinkedList<Map.Entry<Integer, Integer>>(
+				unsortedGrayValues.entrySet());
+
+		// Sort the list
+		Collections.sort(list, new Comparator<Map.Entry<Integer, Integer>>() {
+			public int compare(Map.Entry<Integer, Integer> object1, Map.Entry<Integer, Integer> object2) {
+				return (object1.getValue()).compareTo(object2.getValue());
+			}
+		});
+
+		// put data from sorted list to hashmap
+		HashMap<Integer, Integer> sorted = new LinkedHashMap<Integer, Integer>();
+		for (Map.Entry<Integer, Integer> aa : list) {
+			sorted.put(aa.getKey(), aa.getValue());
+		}
+		return sorted;
 	}
 
 	private void calculateTheStdDeviation() {
 
-		for (int i = 0; i < imageColorStorage.size(); i++) {
-			float powResultRed = (float) Math.pow(imageColorStorage.get(i).getRed() - allThreeColorsMeanCalculation, 2);
-			float powResultGreen = (float) Math.pow(imageColorStorage.get(i).getGreen() - allThreeColorsMeanCalculation,
-					2);
-			float powResultBlue = (float) Math.pow(imageColorStorage.get(i).getBlue() - allThreeColorsMeanCalculation,
-					2);
+		/*
+		 * First way
+		 */
+		
+//		for (int i = 0; i < imageColorStorage.size(); i++) {
+//			float powResultRed = (float) Math.pow(imageColorStorage.get(i).getRed() - allThreeColorsMeanCalculation, 2);
+//			float powResultGreen = (float) Math.pow(imageColorStorage.get(i).getGreen() - allThreeColorsMeanCalculation,
+//					2);
+//			float powResultBlue = (float) Math.pow(imageColorStorage.get(i).getBlue() - allThreeColorsMeanCalculation,
+//					2);
+//
+//			powValuesOfRGB.add(powResultRed);
+//			powValuesOfRGB.add(powResultGreen);
+//			powValuesOfRGB.add(powResultBlue);
+//		}
+//
+//		for (int i = 0; i < powValuesOfRGB.size(); i++) {
+//			test = (test + powValuesOfRGB.get(i));
+//		}
+//
+//		Float variance = (1F / powValuesOfRGB.size()) * test;
+//		System.out.println("This is the variance " + variance);
+//		stdDeviation = (float) Math.sqrt(variance);
 
-			powValuesOfRGB.add(powResultRed);
-			powValuesOfRGB.add(powResultGreen);
-			powValuesOfRGB.add(powResultBlue);
+		/*
+		 * Second way is more accurate!
+		 */
+		
+		for (int i = 0; i < sortedGrayValues.size(); i++) {
+			float powResult = (float) Math.pow(sortedGrayValues.get(i) - meanGrayValue, 2);
+			powValues.put(i, powResult);
+
+			test = test + powResult;
 		}
 
-		for (int i = 0; i < powValuesOfRGB.size(); i++) {
-			test = (test + powValuesOfRGB.get(i));
-		}
-
-		Float variance = (1F / powValuesOfRGB.size()) * test;
+		Float variance = ((1F / powValues.size()) * test);
 		System.out.println("This is the variance " + variance);
 		stdDeviation = (float) Math.sqrt(variance);
+
 		System.out.println("This is the Standard Deviation of all Colors: " + stdDeviation);
 
 	}
@@ -176,22 +208,32 @@ public class CalculatePixelsColors extends Model {
 		 * (Total sample number - 1)Standard Deviation of all samples
 		 */
 
-		for (int i = 0; i < imageColorStorage.size(); i++) {
-			test2 = test2 + (Math.pow(imageColorStorage.get(i).getRed() - allThreeColorsMeanCalculation, 3))
-					/ (imageColorStorage.size() - 1) * Math.pow(stdDeviation, 3);
-			test3 = test3 + (Math.pow(imageColorStorage.get(i).getGreen() - allThreeColorsMeanCalculation, 3))
-					/ (imageColorStorage.size() - 1) * Math.pow(stdDeviation, 3);
-			test4 = test4 + (Math.pow(imageColorStorage.get(i).getBlue() - allThreeColorsMeanCalculation, 3))
-					/ (imageColorStorage.size() - 1) * Math.pow(stdDeviation, 3);
+//		for (int i = 0; i < imageColorStorage.size(); i++) {
+//			test2 = test2 + (Math.pow(imageColorStorage.get(i).getRed() - allThreeColorsMeanCalculation, 3))
+//					/ (imageColorStorage.size() - 1) * Math.pow(stdDeviation, 3);
+//			test3 = test3 + (Math.pow(imageColorStorage.get(i).getGreen() - allThreeColorsMeanCalculation, 3))
+//					/ (imageColorStorage.size() - 1) * Math.pow(stdDeviation, 3);
+//			test4 = test4 + (Math.pow(imageColorStorage.get(i).getBlue() - allThreeColorsMeanCalculation, 3))
+//					/ (imageColorStorage.size() - 1) * Math.pow(stdDeviation, 3);
+//		}
+//
+//		System.out.println("This is test2: " + test2);
+//		System.out.println("This is test3: " + test3);
+//		System.out.println("This is test4: " + test4);
+//
+//		Double test1 = (test2 + test3 + test4) / allThreeValuesSumUp;
+
+		/*
+		 * This one i think it works!
+		 */
+		for (int i = 0; i < sortedGrayValues.size(); i++) {
+			skewEquationAbove = skewEquationAbove + (Math.pow(sortedGrayValues.get(i) - meanGrayValue, 3D));
+			skewEquationBelow = (sortedGrayValues.size() - 1) * Math.pow(stdDeviation, 3D);
 		}
-
-		System.out.println("This is test2: " + test2);
-		System.out.println("This is test3: " + test3);
-		System.out.println("This is test4: " + test4);
-
-		Double test1 = (test2 + test3 + test4) / allThreeValuesSumUp;
-
-		System.out.println("Please work! " + test1);
+		
+		Double test2 = skewEquationAbove / skewEquationBelow;
+		
+		System.out.println("This is the skewness " + test2);
 	}
 
 	/*
