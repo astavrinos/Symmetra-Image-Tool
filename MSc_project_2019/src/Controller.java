@@ -2,6 +2,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.Iterator;
 
@@ -30,6 +32,8 @@ public class Controller extends Thread {
 		this.view.addComboBoxSelect(new ComboBoxSelect());
 		this.view.addRemoveImageButtonListener(new RemoveImageButton());
 		this.view.addSelectResultsComboBoxListener(new SelectResultsComboBox());
+		this.view.addSaveDataButtonListener(new SaveDataInAcsv());
+		this.view.addGoBackToStartListener(new GoBackToStartButton());
 	}
 
 	/*
@@ -49,6 +53,87 @@ public class Controller extends Thread {
 					proceedActionIfTrue();
 				} // end of if
 			} // end of if
+		}// end of action performed
+
+	}
+
+//	https://stackabuse.com/reading-and-writing-csvs-in-java/
+	private class SaveDataInAcsv implements ActionListener {
+		@Override
+		public void actionPerformed(ActionEvent e) {
+
+			/*
+			 * HERE NEEDS A METHOD TO SAVE THE DATA IN A CSV
+			 */
+			try {
+				FileWriter csvWriter = new FileWriter("new.csv");
+				csvWriter.append("image_path");
+				csvWriter.append(",");
+				csvWriter.append("image_name");
+				csvWriter.append(",");
+				csvWriter.append("image_size");
+				csvWriter.append(",");
+				csvWriter.append("image_width");
+				csvWriter.append(",");
+				csvWriter.append("image_height");
+				csvWriter.append(",");
+				csvWriter.append("gray_values_mean");
+				csvWriter.append(",");
+				csvWriter.append("median");
+				csvWriter.append(",");
+				csvWriter.append("variance");
+				csvWriter.append(",");
+				csvWriter.append("standard_deviation");
+				csvWriter.append(",");
+				csvWriter.append("skewness");
+				csvWriter.append("\n");
+
+				for (int i = 0; i < model.getImageDetailsList().size(); i++) {
+					csvWriter.append("" + model.getImageDetailsList().get(i).getImagePath());
+					csvWriter.append(",");
+					csvWriter.append("" + model.getImageDetailsList().get(i).getImageName());
+					csvWriter.append(",");
+					csvWriter.append("" + model.getImageDetailsList().get(i).getImageSize());
+					csvWriter.append(",");
+					csvWriter.append("" + model.getImageDetailsList().get(i).getImageWidth());
+					csvWriter.append(",");
+					csvWriter.append("" + model.getImageDetailsList().get(i).getImageHeight());
+					csvWriter.append(",");
+					csvWriter.append("" + model.getCalcImageColors().get(i).getMeanGrayValueResult());
+					csvWriter.append(",");
+					csvWriter.append("" + model.getCalcImageColors().get(i).getMedianResult());
+					csvWriter.append(",");
+					csvWriter.append("" + model.getCalcImageColors().get(i).getVarianceResult());
+					csvWriter.append(",");
+					csvWriter.append("" + model.getCalcImageColors().get(i).getStdDeviationResult());
+					csvWriter.append(",");
+					csvWriter.append("" + model.getCalcImageColors().get(i).getSkewnessResult());
+					csvWriter.append("\n");
+				}
+
+				csvWriter.flush();
+				csvWriter.close();
+			} catch (IOException a) {
+				a.printStackTrace();
+			}
+
+		}// end of action performed
+
+	}
+
+	private class GoBackToStartButton implements ActionListener {
+		@Override
+		public void actionPerformed(ActionEvent e) {
+
+			/*
+			 * HERE NEEDS A METHOD TO START OVER AGAIN
+			 */
+			view.panel3.removeAll();
+			view.panel3.setVisible(false);
+
+			view.initializeFirstFrame();
+			view.returnEverythingToNormal();
+
 		}// end of action performed
 
 	}
@@ -79,13 +164,13 @@ public class Controller extends Thread {
 						} catch (InterruptedException e) {
 						}
 					}
-					
-					for(int i =0; i < model.getCalcImageColors().size(); i++) {
+
+					for (int i = 0; i < model.getCalcImageColors().size(); i++) {
 						view.resultSelection.addItem(model.getImageDetailsList().get(i).getImageName());
-						
+
 						System.out.println(model.getCalcImageColors().get(i).getInput().getName());
 					}
-					
+
 					// HERE IT NEEDS TO GO TO THE OTHER WINDOW TO SHOW RESULTS
 					presentResults();
 
@@ -99,39 +184,28 @@ public class Controller extends Thread {
 			view.setVisible(true);
 			t.start();
 
-//			startAnalyzingTheImages();
 		}// end of action performed
 	}// end of proceed to analyze
 
 	private class SelectResultsComboBox implements ItemListener {
 		public void itemStateChanged(ItemEvent e1) {
-			
-			for(int i = 0; i < model.getCalcImageColors().size(); i++) {
-				if(e1.getStateChange() == ItemEvent.SELECTED) {
-					if(e1.getItem().equals(model.getCalcImageColors().get(i).getInput().getName())) {
-						view.results.setText(
-						"The skewness is: " + model.getCalcImageColors().get(i).getSkewnessResult());
+
+			for (int i = 0; i < model.getCalcImageColors().size(); i++) {
+				if (e1.getStateChange() == ItemEvent.SELECTED) {
+					if (e1.getItem().equals(model.getCalcImageColors().get(i).getInput().getName())) {
+
+						view.results.setText("The mean of gray values is: "
+								+ model.getCalcImageColors().get(i).getMeanGrayValueResult() + "\nThe median is: "
+								+ model.getCalcImageColors().get(i).getMedianResult() + "\nThe variance is: "
+								+ model.getCalcImageColors().get(i).getVarianceResult()
+								+ "\nThe standard deviation is: "
+								+ model.getCalcImageColors().get(i).getStdDeviationResult() + "\nThe skewness is: "
+								+ model.getCalcImageColors().get(i).getSkewnessResult());
 					}
-					
+
 				}
 			}
-			
-           
-			
-//			Object selected = null;
-//			selected = view.resultSelection.getSelectedItem();
-//			for (int i = 0; i < view.resultSelection.getItemCount(); i++) {
-//				if (selected.toString().equals(view.resultSelection.getItemAt(i))) {
-//					Iterator<CalculatePixelsColors> iter = model.getCalcImageColors().iterator();
-//					while (iter.hasNext()) {
-//						CalculatePixelsColors yp = iter.next();
-//						if (yp.getInput().getName().equals(selected)) {
-//							view.results.setText(
-//									"The skewness is: " + model.getCalcImageColors().get(i).getSkewnessResult());
-//						} // end of if
-//					} // end of while
-//				} // end of if
-//			} // end of for
+
 		}
 	}
 
@@ -140,19 +214,10 @@ public class Controller extends Thread {
 		view.panel2.setVisible(false);
 		view.setVisible(true);
 		view.panel3.setVisible(true);
-
-		
-
-		
-//		Iterator<CalculatePixelsColors> iter = model.getCalcImageColors().iterator();
-//		while (iter.hasNext()) {
-//			CalculatePixelsColors calcPixelColors = iter.next();
-//			view.resultSelection.addItem(calcPixelColors.getInput().getName());
-//			view.resultSelection.setSelectedItem(calcPixelColors.getInput().getName());
-//		} // end of while
-
 		view.panel3.add(view.results);
 		view.panel3.add(view.resultSelection);
+		view.panel3.add(view.saveDataInAcsv);
+		view.panel3.add(view.goBackToStart);
 		view.getContentPane().add(view.panel3);
 		view.pack();
 
@@ -258,8 +323,8 @@ public class Controller extends Thread {
 
 		ImageIcon resizedImage = model.resizeImageForPreviewImageGUI(model.getImageIcon(), 644, 541);
 
-		model.addingElementsList(model.getImageIcon(), resizedImage, model.getImagePath(), model.getImageName(), model.getImageSize(),
-				model.getImageWidth(), model.getImageHeight());
+		model.addingElementsList(model.getImageIcon(), resizedImage, model.getImagePath(), model.getImageName(),
+				model.getImageSize(), model.getImageWidth(), model.getImageHeight());
 		addItemsToComboBox();
 		view.comboBox.setVisible(true);
 		view.removeImageBtn.setVisible(true);

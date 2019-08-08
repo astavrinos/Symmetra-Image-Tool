@@ -26,9 +26,10 @@ public class CalculatePixelsColors extends Model {
 	private double skewEquationPartAbove = 0.0;
 	private double skewEquationPartBelow = 0.0;
 	private double sumAllGrayValues = 0.0;
+	
 	private double meanGrayValueResult;
 	private double medianResult;
-	private double variance;
+	private double varianceResult;
 	private double stdDeviationResult;
 	private double skewnessResult;
 
@@ -94,6 +95,10 @@ public class CalculatePixelsColors extends Model {
 
 		meanGrayValueResult = sumAllGrayValues / pixelsNumber;
 
+		String temp = numberFormat.format(meanGrayValueResult);
+		meanGrayValueResult = Double.parseDouble(temp);
+		
+		
 		System.out.println("This is the mean: " + meanGrayValueResult);
 	}
 
@@ -101,6 +106,10 @@ public class CalculatePixelsColors extends Model {
 
 		sortedGrayValues = sortTheGrayValueHashMap(unsortedGrayValuesOfRGB);
 		medianResult = sortedGrayValues.get(sortedGrayValues.size() / 2);
+		
+		String temp = numberFormat.format(medianResult);
+		medianResult = Double.parseDouble(temp);
+		
 		System.out.println("This is the median: " + medianResult);
 	}
 
@@ -133,9 +142,18 @@ public class CalculatePixelsColors extends Model {
 			sumOfPowResultsOfStdDev = sumOfPowResultsOfStdDev + powResultOfStdDev;
 		}
 
-		variance = ((1.0 / powValuesOfStdDev.size()) * sumOfPowResultsOfStdDev);
-		System.out.println("This is the variance: " + variance);
-		stdDeviationResult = Math.sqrt(variance);
+		varianceResult = ((1.0 / powValuesOfStdDev.size()) * sumOfPowResultsOfStdDev);
+		
+		String temp = numberFormat.format(varianceResult);
+		varianceResult = Double.parseDouble(temp);
+		
+		
+		System.out.println("This is the variance: " + varianceResult);
+		stdDeviationResult = Math.sqrt(varianceResult);
+		
+		String temp1 = numberFormat.format(stdDeviationResult);
+		stdDeviationResult = Double.parseDouble(temp1);
+		
 		System.out.println("This is the Standard Deviation: " + stdDeviationResult);
 	}
 
@@ -148,6 +166,10 @@ public class CalculatePixelsColors extends Model {
 		}
 
 		skewnessResult = skewEquationPartAbove / skewEquationPartBelow;
+		
+		String temp = numberFormat.format(skewnessResult);
+		skewnessResult = Double.parseDouble(temp);
+		
 		System.out.println("This is the skewness: " + skewnessResult);
 	}
 	
@@ -184,6 +206,22 @@ public class CalculatePixelsColors extends Model {
 
 	public void setMedianResult(double medianResult) {
 		this.medianResult = medianResult;
+	}
+
+	public double getVarianceResult() {
+		return varianceResult;
+	}
+
+	public void setVarianceResult(double varianceResult) {
+		this.varianceResult = varianceResult;
+	}
+
+	public double getStdDeviationResult() {
+		return stdDeviationResult;
+	}
+
+	public void setStdDeviationResult(double stdDeviationResult) {
+		this.stdDeviationResult = stdDeviationResult;
 	}
 
 	public double getSkewnessResult() {

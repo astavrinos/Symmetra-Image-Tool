@@ -7,6 +7,7 @@ import java.awt.Toolkit;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemListener;
 
+import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -42,6 +43,8 @@ public class View extends JFrame {
 	protected JButton removeImageBtn = new JButton("Remove Image");
 	protected JTextArea results = new JTextArea();
 	protected JComboBox resultSelection = new JComboBox();
+	protected JButton saveDataInAcsv = new JButton("Export data");
+	protected JButton goBackToStart = new JButton("Home");
 
 	SecondView secView;
 
@@ -56,7 +59,7 @@ public class View extends JFrame {
 		initializeFirstFrame();
 	}// end of constructor
 
-	private void initializeFirstFrame() {
+	protected void initializeFirstFrame() {
 		// Window title
 		setTitle("Image Analyzer Tool");
 		// Exit on close
@@ -110,6 +113,11 @@ public class View extends JFrame {
 		analyzeBtn.setEnabled(false);
 		bottomBtns.add(analyzeBtn);
 
+		
+		results.setBorder(BorderFactory.createCompoundBorder(
+		        results.getBorder(), 
+		        BorderFactory.createEmptyBorder(10, 10, 10, 10)));
+		
 		centerWindowOnCurrentDisplay();
 
 	}// end of initialize gui method
@@ -178,5 +186,13 @@ public class View extends JFrame {
 
 	protected void addSelectResultsComboBoxListener(ItemListener SelectResultsComboBox) {
 		resultSelection.addItemListener(SelectResultsComboBox);
+	}
+	
+	protected void addSaveDataButtonListener(ActionListener SaveDataButton) {
+		saveDataInAcsv.addActionListener(SaveDataButton);
+	}
+	
+	protected void addGoBackToStartListener(ActionListener GoBackToStartButton) {
+		goBackToStart.addActionListener(GoBackToStartButton);
 	}
 }// end of view class

@@ -24,9 +24,9 @@ public class ImageDetails {
 
 	// check the values
 	public String toString() {
-		String foo = "Image: " + getOriginalImage() + ". Image Path: " + getImagePath() + ". Image Name: "
-				+ getImageName() + ". Image Size: " + getImageSize() + ". Image Width: " + getImageWidth()
-				+ ". Image Height: " + getImageHeight();
+		String foo = "Image: " + originalImage + ". Resized Image: " + resizedImage + ". Image Path: " + imagePath + ". Image Name: "
+				+ imageName + ". Image Size: " + imageSize + ". Image Width: " + imageWidth
+				+ ". Image Height: " + imageHeight;
 		return foo;
 	}// end of to string method
 
