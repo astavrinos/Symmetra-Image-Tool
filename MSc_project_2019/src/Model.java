@@ -54,9 +54,9 @@ public class Model {
 	}// end of print the values of a list method
 
 	// add the elements to the array list of image details
-	protected void addingElementsList(ImageIcon imageIcon, String imagePath, String imageName, String imageSize,
+	protected void addingElementsList(ImageIcon originalImage, ImageIcon resizedImage, String imagePath, String imageName, String imageSize,
 			int imageWidth, int imageHeight) {
-		ImageDetails imgDetails = new ImageDetails(imageIcon, imagePath, imageName, imageSize, imageWidth, imageHeight);
+		ImageDetails imgDetails = new ImageDetails(originalImage, resizedImage, imagePath, imageName, imageSize, imageWidth, imageHeight);
 
 		imageDetailsList.add(imgDetails);
 
@@ -68,11 +68,8 @@ public class Model {
 	}// end of adding elements to the list method
 
 	protected void runTheProcessOfGettingColors(String imagePath, ImageIcon imageIcon) {
-		// todo: loop over all images, performing analysis using a calculatepixelscolor
-		// class for each
-		// todo: define array of image pixel colors
-
-		calcImageColors.add(new CalculatePixelsColors(new File(this.imagePath), this.imageIcon));
+		
+		calcImageColors.add(new CalculatePixelsColors(new File(imagePath), imageIcon));
 	}// end of run the process of getting colors method
 
 	public BufferedImage getBufferedImage() {

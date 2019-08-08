@@ -1,5 +1,7 @@
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.text.DecimalFormat;
 import java.util.Iterator;
 
@@ -17,6 +19,7 @@ public class Controller extends Thread {
 	protected JFileChooser chooser;
 	private FileNameExtensionFilter filter;
 	private ImageIcon imageIcon;
+	private int valueOfProgressBar = 0;
 
 	protected Controller(View view, Model model) {
 		this.view = view;
@@ -26,12 +29,7 @@ public class Controller extends Thread {
 		this.view.addProceedAnalyzeListener(new ProceedAnalyze());
 		this.view.addComboBoxSelect(new ComboBoxSelect());
 		this.view.addRemoveImageButtonListener(new RemoveImageButton());
-	}
-
-	protected void startAnalyzingTheImages() {
-		
-
-
+		this.view.addSelectResultsComboBoxListener(new SelectResultsComboBox());
 	}
 
 	/*
@@ -60,48 +58,105 @@ public class Controller extends Thread {
 		public void actionPerformed(ActionEvent e) {
 			view.viewOfAnalyze();
 			view.update(view.getGraphics());
-			
+
 			view.progressBar.setStringPainted(true);
 
 			Thread t = new Thread() {
 				public void run() {
-					
-//					for (int i = 0; i < model.getImageDetailsList().size(); i++) {
-//						model.runTheProcessOfGettingColors(model.getImageDetailsList().get(i).getImagePath(),
-//								model.getImageDetailsList().get(i).getActualImage());
-//					}
-					
+
 					for (int i = 0; i < model.getImageDetailsList().size(); i++) {
-						final int percentage = i;
 						SwingUtilities.invokeLater(new Runnable() {
 							public void run() {
-								
-								model.runTheProcessOfGettingColors(model.getImageDetailsList().get(percentage).getImagePath(),
-										model.getImageDetailsList().get(percentage).getActualImage());
-								
-								view.progressBar.setValue(percentage * model.getImageDetailsList().size());
+								valueOfProgressBar = valueOfProgressBar + (100 / (model.getImageDetailsList().size()));
+								view.progressBar.setValue(valueOfProgressBar);
 							}
 						});
 
 						try {
-							
+							model.runTheProcessOfGettingColors(model.getImageDetailsList().get(i).getImagePath(),
+									model.getImageDetailsList().get(i).getOriginalImage());
 							Thread.sleep(100);
 						} catch (InterruptedException e) {
 						}
 					}
+					
+					for(int i =0; i < model.getCalcImageColors().size(); i++) {
+						view.resultSelection.addItem(model.getImageDetailsList().get(i).getImageName());
+						
+						System.out.println(model.getCalcImageColors().get(i).getInput().getName());
+					}
+					
+					// HERE IT NEEDS TO GO TO THE OTHER WINDOW TO SHOW RESULTS
+					presentResults();
+
 				}
 			};
+			view.setVisible(false);
 			view.panel2.add(view.analyzingLabel);
 			view.panel2.add(view.progressBar);
 			view.getContentPane().add(view.panel2);
 			view.pack();
 			view.setVisible(true);
 			t.start();
-			
-			
+
 //			startAnalyzingTheImages();
 		}// end of action performed
 	}// end of proceed to analyze
+
+	private class SelectResultsComboBox implements ItemListener {
+		public void itemStateChanged(ItemEvent e1) {
+			
+			for(int i = 0; i < model.getCalcImageColors().size(); i++) {
+				if(e1.getStateChange() == ItemEvent.SELECTED) {
+					if(e1.getItem().equals(model.getCalcImageColors().get(i).getInput().getName())) {
+						view.results.setText(
+						"The skewness is: " + model.getCalcImageColors().get(i).getSkewnessResult());
+					}
+					
+				}
+			}
+			
+           
+			
+//			Object selected = null;
+//			selected = view.resultSelection.getSelectedItem();
+//			for (int i = 0; i < view.resultSelection.getItemCount(); i++) {
+//				if (selected.toString().equals(view.resultSelection.getItemAt(i))) {
+//					Iterator<CalculatePixelsColors> iter = model.getCalcImageColors().iterator();
+//					while (iter.hasNext()) {
+//						CalculatePixelsColors yp = iter.next();
+//						if (yp.getInput().getName().equals(selected)) {
+//							view.results.setText(
+//									"The skewness is: " + model.getCalcImageColors().get(i).getSkewnessResult());
+//						} // end of if
+//					} // end of while
+//				} // end of if
+//			} // end of for
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	private void presentResults() {
+		view.panel2.setVisible(false);
+		view.setVisible(true);
+		view.panel3.setVisible(true);
+
+		
+
+		
+//		Iterator<CalculatePixelsColors> iter = model.getCalcImageColors().iterator();
+//		while (iter.hasNext()) {
+//			CalculatePixelsColors calcPixelColors = iter.next();
+//			view.resultSelection.addItem(calcPixelColors.getInput().getName());
+//			view.resultSelection.setSelectedItem(calcPixelColors.getInput().getName());
+//		} // end of while
+
+		view.panel3.add(view.results);
+		view.panel3.add(view.resultSelection);
+		view.getContentPane().add(view.panel3);
+		view.pack();
+
+	}
 
 	private class RemoveImageButton implements ActionListener {
 		@Override
@@ -143,7 +198,7 @@ public class Controller extends Thread {
 					while (iter.hasNext()) {
 						ImageDetails yp = iter.next();
 						if (yp.getImageName().equals(selected)) {
-							view.imagePreviewGUI.setIcon(yp.getActualImage());
+							view.imagePreviewGUI.setIcon(yp.getOriginalImage());
 							view.imageSizeStatus.setText("Image size: " + yp.getImageSize());
 						} // end of if
 					} // end of while
@@ -203,7 +258,7 @@ public class Controller extends Thread {
 
 		ImageIcon resizedImage = model.resizeImageForPreviewImageGUI(model.getImageIcon(), 644, 541);
 
-		model.addingElementsList(resizedImage, model.getImagePath(), model.getImageName(), model.getImageSize(),
+		model.addingElementsList(model.getImageIcon(), resizedImage, model.getImagePath(), model.getImageName(), model.getImageSize(),
 				model.getImageWidth(), model.getImageHeight());
 		addItemsToComboBox();
 		view.comboBox.setVisible(true);
@@ -219,7 +274,7 @@ public class Controller extends Thread {
 			ImageDetails imageDetails = iter.next();
 			view.comboBox.addItem(imageDetails.getImageName());
 			view.comboBox.setSelectedItem(imageDetails.getImageName());
-			view.imagePreviewGUI.setIcon(imageDetails.getActualImage());
+			view.imagePreviewGUI.setIcon(imageDetails.getOriginalImage());
 		} // end of while
 	}// end of add items to combo box method
 

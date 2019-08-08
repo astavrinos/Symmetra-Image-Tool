@@ -2,16 +2,18 @@ import javax.swing.ImageIcon;
 
 public class ImageDetails {
 
-	private ImageIcon actualImage;
+	private ImageIcon originalImage;
+	private ImageIcon resizedImage;
 	private String imageName;
 	private String imageSize;
 	private String imagePath;
 	private int imageWidth;
 	private int imageHeight;
 
-	public ImageDetails(ImageIcon actualImage, String imagePath, String imageName, String imageSize, int imageWidth,
+	protected ImageDetails(ImageIcon originalImage, ImageIcon resizedImage, String imagePath, String imageName, String imageSize, int imageWidth,
 			int imageHeight) {
-		this.actualImage = actualImage;
+		this.originalImage = originalImage;
+		this.resizedImage = resizedImage;
 		this.imagePath = imagePath;
 		this.imageName = imageName;
 		this.imageSize = imageSize;
@@ -22,7 +24,7 @@ public class ImageDetails {
 
 	// check the values
 	public String toString() {
-		String foo = "Image: " + getActualImage() + ". Image Path: " + getImagePath() + ". Image Name: "
+		String foo = "Image: " + getOriginalImage() + ". Image Path: " + getImagePath() + ". Image Name: "
 				+ getImageName() + ". Image Size: " + getImageSize() + ". Image Width: " + getImageWidth()
 				+ ". Image Height: " + getImageHeight();
 		return foo;
@@ -31,13 +33,21 @@ public class ImageDetails {
 	/*
 	 * GETTERS AND SETTERS
 	 */
-	public ImageIcon getActualImage() {
-		return actualImage;
-	}// end of get actual image
+	public ImageIcon getOriginalImage() {
+		return originalImage;
+	}
 
-	public void setActualImage(ImageIcon actualImage) {
-		this.actualImage = actualImage;
-	}// end of set actual image
+	public void setOriginalImage(ImageIcon originalImage) {
+		this.originalImage = originalImage;
+	}
+
+	public ImageIcon getResizedImage() {
+		return resizedImage;
+	}
+
+	public void setResizedImage(ImageIcon resizedImage) {
+		this.resizedImage = resizedImage;
+	}
 
 	public String getImagePath() {
 		return imagePath;

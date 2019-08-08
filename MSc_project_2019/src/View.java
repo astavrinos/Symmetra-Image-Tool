@@ -4,8 +4,8 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.Toolkit;
-import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemListener;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -15,6 +15,7 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
+import javax.swing.JTextArea;
 import javax.swing.SwingConstants;
 import javax.swing.WindowConstants;
 import javax.swing.border.LineBorder;
@@ -24,6 +25,7 @@ public class View extends JFrame {
 
 	protected JPanel panel1 = new JPanel(new BorderLayout());
 	protected JPanel panel2 = new JPanel();
+	protected JPanel panel3	= new JPanel();
 	protected JLabel imagePreviewGUI = new JLabel();
 	protected String imgPath;
 	protected ImageIcon image;
@@ -38,6 +40,8 @@ public class View extends JFrame {
 	protected JComboBox comboBox = new JComboBox();
 	protected JLabel imageSizeStatus = new JLabel();
 	protected JButton removeImageBtn = new JButton("Remove Image");
+	protected JTextArea results = new JTextArea();
+	protected JComboBox resultSelection = new JComboBox();
 
 	SecondView secView;
 
@@ -172,5 +176,7 @@ public class View extends JFrame {
 		removeImageBtn.addActionListener(RemoveImageButton);
 	}// end of add remove image button listener
 
-	
+	protected void addSelectResultsComboBoxListener(ItemListener SelectResultsComboBox) {
+		resultSelection.addItemListener(SelectResultsComboBox);
+	}
 }// end of view class

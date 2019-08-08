@@ -150,9 +150,48 @@ public class CalculatePixelsColors extends Model {
 		skewnessResult = skewEquationPartAbove / skewEquationPartBelow;
 		System.out.println("This is the skewness: " + skewnessResult);
 	}
-
+	
 	/*
 	 * GETTERS AND SETTERS
 	 */
+	public int getPixelsNumber() {
+		return pixelsNumber;
+	}
+
+	public void setPixelsNumber(int pixelsNumber) {
+		this.pixelsNumber = pixelsNumber;
+	}
+
+	public double getMeanGrayValueResult() {
+		return meanGrayValueResult;
+	}
+
+	public void setMeanGrayValueResult(double meanGrayValueResult) {
+		this.meanGrayValueResult = meanGrayValueResult;
+	}
+
+	public File getInput() {
+		return input;
+	}
+
+	public void setInput(File input) {
+		this.input = input;
+	}
+
+	public double getMedianResult() {
+		return medianResult;
+	}
+
+	public void setMedianResult(double medianResult) {
+		this.medianResult = medianResult;
+	}
+
+	public double getSkewnessResult() {
+		return skewnessResult;
+	}
+
+	public void setSkewnessResult(double skewnessResult) {
+		this.skewnessResult = skewnessResult;
+	}
 
 }// end of calculate pixels colors class
