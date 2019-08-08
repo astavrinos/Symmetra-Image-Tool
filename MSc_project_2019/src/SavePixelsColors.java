@@ -1,28 +1,46 @@
-
 public class SavePixelsColors {
 
-	// i need the image name/ image path, the current pixel, r,g,b
-	
+	private int x;
+	private int y;
 	private int red;
 	private int green;
 	private int blue;
-	
-	SavePixelsColors(int red, int green, int blue) {
+
+	SavePixelsColors(int x, int y, int red, int green, int blue) {
+		this.x = x;
+		this.y = y;
 		this.red = red;
 		this.green = green;
 		this.blue = blue;
 	}
 
-	// check the values
+	/*
+	 * METHODS
+	 */
 	public String toString() {
-		String foo = " Red: " + red + ". Green: " + green + ". Blue: " + blue;
-		return foo;
+		String print = "[" + x + "," + y + "]" + " - Red: " + red + ". Green: " + green + ". Blue: " + blue;
+		return print;
 	}// end of to string method
 
-	
 	/*
 	 * GETTERS AND SETTERS
 	 */
+	public int getX() {
+		return x;
+	}
+
+	public void setX(int x) {
+		this.x = x;
+	}
+
+	public int getY() {
+		return y;
+	}
+
+	public void setY(int y) {
+		this.y = y;
+	}
+
 	public int getRed() {
 		return red;
 	}
@@ -46,5 +64,5 @@ public class SavePixelsColors {
 	public void setBlue(int blue) {
 		this.blue = blue;
 	}
-	
+
 }

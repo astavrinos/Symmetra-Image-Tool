@@ -67,12 +67,12 @@ public class Model {
 		printTheValuesOfAList();
 	}// end of adding elements to the list method
 
-	protected void runTheProcessOfGettingColors() {
+	protected void runTheProcessOfGettingColors(String imagePath, ImageIcon imageIcon) {
 		// todo: loop over all images, performing analysis using a calculatepixelscolor
 		// class for each
 		// todo: define array of image pixel colors
 
-		calcImageColors.add(new CalculatePixelsColors(new File(getImagePath()), imageIcon));
+		calcImageColors.add(new CalculatePixelsColors(new File(this.imagePath), this.imageIcon));
 	}// end of run the process of getting colors method
 
 	public BufferedImage getBufferedImage() {

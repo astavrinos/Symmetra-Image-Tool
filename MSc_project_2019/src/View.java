@@ -4,6 +4,7 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.ImageIcon;
@@ -40,7 +41,8 @@ public class View extends JFrame {
 
 	SecondView secView;
 
-	JProgressBar pbar = new JProgressBar(0, 100);
+	final JProgressBar progressBar = new JProgressBar(0, 100);
+	final JLabel analyzingLabel = new JLabel("Analyzing...");
 	int i = 0, num = 0;
 
 	Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
@@ -170,4 +172,5 @@ public class View extends JFrame {
 		removeImageBtn.addActionListener(RemoveImageButton);
 	}// end of add remove image button listener
 
+	
 }// end of view class

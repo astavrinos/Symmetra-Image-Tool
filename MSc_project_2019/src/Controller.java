@@ -5,9 +5,10 @@ import java.util.Iterator;
 
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
+import javax.swing.SwingUtilities;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
-public class Controller {
+public class Controller extends Thread {
 
 	protected View view;
 	protected Model model;
@@ -25,6 +26,12 @@ public class Controller {
 		this.view.addProceedAnalyzeListener(new ProceedAnalyze());
 		this.view.addComboBoxSelect(new ComboBoxSelect());
 		this.view.addRemoveImageButtonListener(new RemoveImageButton());
+	}
+
+	protected void startAnalyzingTheImages() {
+		
+
+
 	}
 
 	/*
@@ -53,6 +60,46 @@ public class Controller {
 		public void actionPerformed(ActionEvent e) {
 			view.viewOfAnalyze();
 			view.update(view.getGraphics());
+			
+			view.progressBar.setStringPainted(true);
+
+			Thread t = new Thread() {
+				public void run() {
+					
+//					for (int i = 0; i < model.getImageDetailsList().size(); i++) {
+//						model.runTheProcessOfGettingColors(model.getImageDetailsList().get(i).getImagePath(),
+//								model.getImageDetailsList().get(i).getActualImage());
+//					}
+					
+					for (int i = 0; i < model.getImageDetailsList().size(); i++) {
+						final int percentage = i;
+						SwingUtilities.invokeLater(new Runnable() {
+							public void run() {
+								
+								model.runTheProcessOfGettingColors(model.getImageDetailsList().get(percentage).getImagePath(),
+										model.getImageDetailsList().get(percentage).getActualImage());
+								
+								view.progressBar.setValue(percentage * model.getImageDetailsList().size());
+							}
+						});
+
+						try {
+							
+							Thread.sleep(100);
+						} catch (InterruptedException e) {
+						}
+					}
+				}
+			};
+			view.panel2.add(view.analyzingLabel);
+			view.panel2.add(view.progressBar);
+			view.getContentPane().add(view.panel2);
+			view.pack();
+			view.setVisible(true);
+			t.start();
+			
+			
+//			startAnalyzingTheImages();
 		}// end of action performed
 	}// end of proceed to analyze
 
@@ -60,7 +107,6 @@ public class Controller {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			Object selected = view.comboBox.getSelectedItem();
-			Iterator<ImageDetails> iterator = model.getImageDetailsList().iterator();
 			for (int i = 0; i < model.getImageDetailsList().size(); i++) {
 				if (model.getImageDetailsList().get(i).getImageName().equals(selected)) {
 					model.getImageDetailsList().remove(i);
@@ -156,9 +202,6 @@ public class Controller {
 		view.imagePreviewGUI.setVisible(true);
 
 		ImageIcon resizedImage = model.resizeImageForPreviewImageGUI(model.getImageIcon(), 644, 541);
-
-		// the main process of getting the colors
-		model.runTheProcessOfGettingColors();
 
 		model.addingElementsList(resizedImage, model.getImagePath(), model.getImageName(), model.getImageSize(),
 				model.getImageWidth(), model.getImageHeight());
