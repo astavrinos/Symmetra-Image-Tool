@@ -3,7 +3,6 @@ import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import javax.swing.ImageIcon;
@@ -25,8 +24,8 @@ public class Model {
 	private int imageWidth;
 
 	// list that saves image details as objects
-	private List<ImageDetails> imageDetailsList = new ArrayList<ImageDetails>();
-	private List<CalculatePixelsColors> calcImageColors = new ArrayList<CalculatePixelsColors>();
+	private List<StoreImageDetails> imageDetailsList = new ArrayList<StoreImageDetails>();
+	private List<Calculations> calcImageColors = new ArrayList<Calculations>();
 
 	@SuppressWarnings("unused")
 	protected ImageIcon resizeImageForPreviewImageGUI(ImageIcon actualImage, int width, int height) {
@@ -39,37 +38,17 @@ public class Model {
 		return new ImageIcon(scaledImage);
 	}// end of resize image method
 
-	// print the values of a list
-	protected void printTheValuesOfAList() {
-		int i = 0;
-		Iterator<ImageDetails> iterator = imageDetailsList.iterator();
-		if (iterator.hasNext()) {
-			while (iterator.hasNext()) {
-				System.out.println(i + ")" + iterator.next());
-				i++;
-			} // end of while
-		} else {
-			System.out.println("List is empty");
-		} // end of if else
-	}// end of print the values of a list method
-
 	// add the elements to the array list of image details
-	protected void addingElementsList(ImageIcon originalImage, ImageIcon resizedImage, String imagePath, String imageName, String imageSize,
-			int imageWidth, int imageHeight) {
-		ImageDetails imgDetails = new ImageDetails(originalImage, resizedImage, imagePath, imageName, imageSize, imageWidth, imageHeight);
+	protected void addingElementsList(ImageIcon originalImage, ImageIcon resizedImage, String imagePath,
+			String imageName, String imageSize, int imageWidth, int imageHeight) {
+		StoreImageDetails imgDetails = new StoreImageDetails(originalImage, resizedImage, imagePath, imageName, imageSize,
+				imageWidth, imageHeight);
 
 		imageDetailsList.add(imgDetails);
-
-		System.out.println();
-		System.out.println();
-
-		// print the values of a list
-		printTheValuesOfAList();
 	}// end of adding elements to the list method
 
 	protected void runTheProcessOfGettingColors(String imagePath, ImageIcon imageIcon) {
-		
-		calcImageColors.add(new CalculatePixelsColors(new File(imagePath), imageIcon));
+		calcImageColors.add(new Calculations(new File(imagePath), imageIcon));
 	}// end of run the process of getting colors method
 
 	public BufferedImage getBufferedImage() {
@@ -156,19 +135,19 @@ public class Model {
 		this.imageSize = imageSize;
 	}
 
-	public List<ImageDetails> getImageDetailsList() {
+	public List<StoreImageDetails> getImageDetailsList() {
 		return imageDetailsList;
 	}
 
-	public void setImageDetailsList(List<ImageDetails> imageDetailsList) {
+	public void setImageDetailsList(List<StoreImageDetails> imageDetailsList) {
 		this.imageDetailsList = imageDetailsList;
 	}
 
-	public List<CalculatePixelsColors> getCalcImageColors() {
+	public List<Calculations> getCalcImageColors() {
 		return calcImageColors;
 	}
 
-	public void setCalcImageColors(List<CalculatePixelsColors> calcImageColors) {
+	public void setCalcImageColors(List<Calculations> calcImageColors) {
 		this.calcImageColors = calcImageColors;
 	}
 

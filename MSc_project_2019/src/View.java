@@ -1,3 +1,4 @@
+
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -26,7 +27,7 @@ public class View extends JFrame {
 
 	protected JPanel panel1 = new JPanel(new BorderLayout());
 	protected JPanel panel2 = new JPanel();
-	protected JPanel panel3	= new JPanel();
+	protected JPanel panel3 = new JPanel();
 	protected JLabel imagePreviewGUI = new JLabel();
 	protected String imgPath;
 	protected ImageIcon image;
@@ -37,16 +38,14 @@ public class View extends JFrame {
 	protected JButton browseBtn = new JButton("Browse");
 	protected JLabel status = new JLabel("Waiting");
 	protected JButton analyzeBtn = new JButton("Analyze");
-	@SuppressWarnings("rawtypes")
-	protected JComboBox comboBox = new JComboBox();
+
+	protected JComboBox<String> comboBox = new JComboBox<String>();
 	protected JLabel imageSizeStatus = new JLabel();
 	protected JButton removeImageBtn = new JButton("Remove Image");
 	protected JTextArea results = new JTextArea();
-	protected JComboBox resultSelection = new JComboBox();
+	protected JComboBox<String> resultSelection = new JComboBox<String>();
 	protected JButton saveDataInAcsv = new JButton("Export data");
 	protected JButton goBackToStart = new JButton("Home");
-
-	SecondView secView;
 
 	final JProgressBar progressBar = new JProgressBar(0, 100);
 	final JLabel analyzingLabel = new JLabel("Analyzing...");
@@ -113,11 +112,9 @@ public class View extends JFrame {
 		analyzeBtn.setEnabled(false);
 		bottomBtns.add(analyzeBtn);
 
-		
-		results.setBorder(BorderFactory.createCompoundBorder(
-		        results.getBorder(), 
-		        BorderFactory.createEmptyBorder(10, 10, 10, 10)));
-		
+		results.setBorder(BorderFactory.createCompoundBorder(results.getBorder(),
+				BorderFactory.createEmptyBorder(10, 10, 10, 10)));
+
 		centerWindowOnCurrentDisplay();
 
 	}// end of initialize gui method
@@ -151,7 +148,6 @@ public class View extends JFrame {
 	protected void viewOfAnalyze() {
 		// next window stuff after pressed analyze button
 		panel1.setVisible(false);
-		secView = new SecondView();
 	}
 
 	protected void centerWindowOnCurrentDisplay() {
@@ -187,11 +183,11 @@ public class View extends JFrame {
 	protected void addSelectResultsComboBoxListener(ItemListener SelectResultsComboBox) {
 		resultSelection.addItemListener(SelectResultsComboBox);
 	}
-	
+
 	protected void addSaveDataButtonListener(ActionListener SaveDataButton) {
 		saveDataInAcsv.addActionListener(SaveDataButton);
 	}
-	
+
 	protected void addGoBackToStartListener(ActionListener GoBackToStartButton) {
 		goBackToStart.addActionListener(GoBackToStartButton);
 	}

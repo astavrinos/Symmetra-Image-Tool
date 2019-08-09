@@ -1,6 +1,6 @@
 import javax.swing.ImageIcon;
 
-public class ImageDetails {
+public class StoreImageDetails {
 
 	private ImageIcon originalImage;
 	private ImageIcon resizedImage;
@@ -10,8 +10,8 @@ public class ImageDetails {
 	private int imageWidth;
 	private int imageHeight;
 
-	protected ImageDetails(ImageIcon originalImage, ImageIcon resizedImage, String imagePath, String imageName, String imageSize, int imageWidth,
-			int imageHeight) {
+	protected StoreImageDetails(ImageIcon originalImage, ImageIcon resizedImage, String imagePath, String imageName,
+			String imageSize, int imageWidth, int imageHeight) {
 		this.originalImage = originalImage;
 		this.resizedImage = resizedImage;
 		this.imagePath = imagePath;
@@ -24,8 +24,8 @@ public class ImageDetails {
 
 	// check the values
 	public String toString() {
-		String foo = "Image: " + originalImage + ". Resized Image: " + resizedImage + ". Image Path: " + imagePath + ". Image Name: "
-				+ imageName + ". Image Size: " + imageSize + ". Image Width: " + imageWidth
+		String foo = "Image: " + originalImage + ". Resized Image: " + resizedImage + ". Image Path: " + imagePath
+				+ ". Image Name: " + imageName + ". Image Size: " + imageSize + ". Image Width: " + imageWidth
 				+ ". Image Height: " + imageHeight;
 		return foo;
 	}// end of to string method
