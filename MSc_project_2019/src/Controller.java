@@ -111,12 +111,11 @@ public class Controller {
 				if (e1.getItem().equals(model.getCalculations().get(i).getInput().getName())) {
 
 					view.results.setText("Area value is: " + model.getCalculations().get(i).getPixelsNumber()
-							+ "\nThe mean of gray values is: "
-							+ model.getCalculations().get(i).getMeanGrayValueResult() + "\nThe median is: "
-							+ model.getCalculations().get(i).getMedianResult() + "\nThe variance is: "
-							+ model.getCalculations().get(i).getVarianceResult() + "\nThe standard deviation is: "
-							+ model.getCalculations().get(i).getStdDeviationResult() + "\nThe skewness is: "
-							+ model.getCalculations().get(i).getSkewnessResult());
+							+ "\nThe mean of gray values is: " + model.getCalculations().get(i).getMeanGrayValueResult()
+							+ "\nThe median is: " + model.getCalculations().get(i).getMedianResult()
+							+ "\nThe variance is: " + model.getCalculations().get(i).getVarianceResult()
+							+ "\nThe standard deviation is: " + model.getCalculations().get(i).getStdDeviationResult()
+							+ "\nThe skewness is: " + model.getCalculations().get(i).getSkewnessResult());
 
 					double skewnessResult = model.getCalculations().get(i).getSkewnessResult();
 					String imageName = model.getCalculations().get(i).getInput().getName();
@@ -152,12 +151,13 @@ public class Controller {
 							view.progressBar.setValue(valueOfProgressBar);
 						}
 					});
-					
-					Calculations calculations = new Calculations(new File(model.getImageDetails().get(i).getImagePath()),
+
+					Calculations calculations = new Calculations(
+							new File(model.getImageDetails().get(i).getImagePath()),
 							model.getImageDetails().get(i).getOriginalImage());
-					
+
 					model.getCalculations().add(calculations);
-					
+
 					view.resultsDropdownMenu.addItem(model.getCalculations().get(i).getInput().getName());
 				}
 				view.presentResults();
@@ -246,8 +246,8 @@ public class Controller {
 
 		ImageIcon resizedImage = model.resizeImageForPreviewImageGUI(imageIcon, 644, 541);
 
-		ImageDetails imgDetails = new ImageDetails(imageIcon, resizedImage, imagePath, imageName, imageSize,
-				imageWidth, imageHeight);
+		ImageDetails imgDetails = new ImageDetails(imageIcon, resizedImage, imagePath, imageName, imageSize, imageWidth,
+				imageHeight);
 		model.getImageDetails().add(imgDetails);
 		addItemsToComboBox();
 		view.comboBox.setVisible(true);
