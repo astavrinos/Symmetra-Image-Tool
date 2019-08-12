@@ -9,7 +9,7 @@ public class Model {
 
 	private int itemsInsideComboBoxCurrently = 0;
 
-	private List<StoreImageDetails> imageDetailsList = new ArrayList<StoreImageDetails>();
+	private List<ImageDetails> imageDetailsList = new ArrayList<ImageDetails>();
 	private List<Calculations> calcImageColors = new ArrayList<Calculations>();
 
 	/*
@@ -41,11 +41,11 @@ public class Model {
 		this.itemsInsideComboBoxCurrently = itemsInsideComboBox;
 	}
 
-	public List<StoreImageDetails> getImageDetailsList() {
+	public List<ImageDetails> getImageDetails() {
 		return imageDetailsList;
 	}
 
-	public List<Calculations> getCalcImageColors() {
+	public List<Calculations> getCalculations() {
 		return calcImageColors;
 	}
 

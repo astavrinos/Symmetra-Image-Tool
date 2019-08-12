@@ -3,6 +3,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.io.File;
 import java.text.DecimalFormat;
 import java.util.Iterator;
 
@@ -87,9 +88,9 @@ public class Controller {
 		imageIcon = new ImageIcon(chooser.getSelectedFile().getAbsolutePath());
 		if ((imageIcon.getIconHeight() <= 1000 && imageIcon.getIconWidth() <= 1000)) {
 			if (checkIfImageAlreadyExist() == true) {
-				if (model.getImageDetailsList().size() < 3) {
+				if (model.getImageDetails().size() < 3) {
 					view.msgbox("Image " + model.getItemsInsideComboBoxCurrently() + " out of 3 imported.");
-					if (model.getImageDetailsList().size() == 2) {
+					if (model.getImageDetails().size() == 2) {
 						view.browseBtn.setEnabled(false);
 						view.msgbox("Image limit reached.");
 					}
@@ -105,20 +106,20 @@ public class Controller {
 	}
 
 	private void dropdownMenuForResultsActions(ItemEvent e1) {
-		for (int i = 0; i < model.getCalcImageColors().size(); i++) {
+		for (int i = 0; i < model.getCalculations().size(); i++) {
 			if (e1.getStateChange() == ItemEvent.SELECTED) {
-				if (e1.getItem().equals(model.getCalcImageColors().get(i).getInput().getName())) {
+				if (e1.getItem().equals(model.getCalculations().get(i).getInput().getName())) {
 
-					view.results.setText("Area value is: " + model.getCalcImageColors().get(i).getPixelsNumber()
+					view.results.setText("Area value is: " + model.getCalculations().get(i).getPixelsNumber()
 							+ "\nThe mean of gray values is: "
-							+ model.getCalcImageColors().get(i).getMeanGrayValueResult() + "\nThe median is: "
-							+ model.getCalcImageColors().get(i).getMedianResult() + "\nThe variance is: "
-							+ model.getCalcImageColors().get(i).getVarianceResult() + "\nThe standard deviation is: "
-							+ model.getCalcImageColors().get(i).getStdDeviationResult() + "\nThe skewness is: "
-							+ model.getCalcImageColors().get(i).getSkewnessResult());
+							+ model.getCalculations().get(i).getMeanGrayValueResult() + "\nThe median is: "
+							+ model.getCalculations().get(i).getMedianResult() + "\nThe variance is: "
+							+ model.getCalculations().get(i).getVarianceResult() + "\nThe standard deviation is: "
+							+ model.getCalculations().get(i).getStdDeviationResult() + "\nThe skewness is: "
+							+ model.getCalculations().get(i).getSkewnessResult());
 
-					double skewnessResult = model.getCalcImageColors().get(i).getSkewnessResult();
-					String imageName = model.getCalcImageColors().get(i).getInput().getName();
+					double skewnessResult = model.getCalculations().get(i).getSkewnessResult();
+					String imageName = model.getCalculations().get(i).getInput().getName();
 
 					checkIfItsSymmetrical(skewnessResult, imageName);
 				}
@@ -144,16 +145,20 @@ public class Controller {
 
 		Thread t = new Thread() {
 			public void run() {
-				for (int i = 0; i < model.getImageDetailsList().size(); i++) {
+				for (int i = 0; i < model.getImageDetails().size(); i++) {
 					SwingUtilities.invokeLater(new Runnable() {
 						public void run() {
-							valueOfProgressBar = valueOfProgressBar + (100 / (model.getImageDetailsList().size()));
+							valueOfProgressBar = valueOfProgressBar + (100 / (model.getImageDetails().size()));
 							view.progressBar.setValue(valueOfProgressBar);
 						}
 					});
-					model.runTheProcessOfGettingColors(model.getImageDetailsList().get(i).getImagePath(),
-							model.getImageDetailsList().get(i).getOriginalImage());
-					view.resultSelection.addItem(model.getCalcImageColors().get(i).getInput().getName());
+					
+					Calculations calculations = new Calculations(new File(model.getImageDetails().get(i).getImagePath()),
+							model.getImageDetails().get(i).getOriginalImage());
+					
+					model.getCalculations().add(calculations);
+					
+					view.resultsDropdownMenu.addItem(model.getCalculations().get(i).getInput().getName());
 				}
 				view.presentResults();
 			}
@@ -180,14 +185,14 @@ public class Controller {
 
 	private void removeImageButtonActions() {
 		Object selected = view.comboBox.getSelectedItem();
-		for (int i = 0; i < model.getImageDetailsList().size(); i++) {
-			if (model.getImageDetailsList().get(i).getImageName().equals(selected)) {
-				model.getImageDetailsList().remove(i);
+		for (int i = 0; i < model.getImageDetails().size(); i++) {
+			if (model.getImageDetails().get(i).getImageName().equals(selected)) {
+				model.getImageDetails().remove(i);
 				view.imagePreviewGUI.setIcon(null);
 				view.imagePreviewGUI.revalidate();
 				model.setItemsInsideComboBoxCurrently(model.getItemsInsideComboBoxCurrently() - 1);
 				view.browseBtn.setEnabled(true);
-				if (model.getImageDetailsList().isEmpty()) {
+				if (model.getImageDetails().isEmpty()) {
 					view.returnEverythingToNormal();
 				}
 			}
@@ -203,9 +208,9 @@ public class Controller {
 		}
 		for (int i = 0; i < view.comboBox.getItemCount(); i++) {
 			if (selected.toString().equals(view.comboBox.getItemAt(i))) {
-				Iterator<StoreImageDetails> iter = model.getImageDetailsList().iterator();
+				Iterator<ImageDetails> iter = model.getImageDetails().iterator();
 				while (iter.hasNext()) {
-					StoreImageDetails imageDetailsIter = iter.next();
+					ImageDetails imageDetailsIter = iter.next();
 					if (imageDetailsIter.getImageName().equals(selected)) {
 						view.imagePreviewGUI.setIcon(imageDetailsIter.getOriginalImage());
 						view.imageSizeStatus.setText("Image size: " + imageDetailsIter.getImageSize());
@@ -216,8 +221,8 @@ public class Controller {
 	}
 
 	private boolean checkIfImageAlreadyExist() {
-		for (int i = 0; i < model.getImageDetailsList().size(); i++) {
-			if (chooser.getSelectedFile().getName().equals(model.getImageDetailsList().get(i).getImageName())) {
+		for (int i = 0; i < model.getImageDetails().size(); i++) {
+			if (chooser.getSelectedFile().getName().equals(model.getImageDetails().get(i).getImageName())) {
 				view.msgbox("You already imported this image.");
 				model.setItemsInsideComboBoxCurrently(model.getItemsInsideComboBoxCurrently() - 1);
 				return false;
@@ -241,9 +246,9 @@ public class Controller {
 
 		ImageIcon resizedImage = model.resizeImageForPreviewImageGUI(imageIcon, 644, 541);
 
-		StoreImageDetails imgDetails = new StoreImageDetails(imageIcon, resizedImage, imagePath, imageName, imageSize,
+		ImageDetails imgDetails = new ImageDetails(imageIcon, resizedImage, imagePath, imageName, imageSize,
 				imageWidth, imageHeight);
-		model.getImageDetailsList().add(imgDetails);
+		model.getImageDetails().add(imgDetails);
 		addItemsToComboBox();
 		view.comboBox.setVisible(true);
 		view.removeImageBtn.setVisible(true);
@@ -251,17 +256,17 @@ public class Controller {
 
 	private void addItemsToComboBox() {
 		view.comboBox.removeAllItems();
-		Iterator<StoreImageDetails> iter = model.getImageDetailsList().iterator();
+		Iterator<ImageDetails> iter = model.getImageDetails().iterator();
 		while (iter.hasNext()) {
-			StoreImageDetails storeImageDetails = iter.next();
-			view.comboBox.addItem(storeImageDetails.getImageName());
-			view.comboBox.setSelectedItem(storeImageDetails.getImageName());
-			view.imagePreviewGUI.setIcon(storeImageDetails.getOriginalImage());
+			ImageDetails imageDetails = iter.next();
+			view.comboBox.addItem(imageDetails.getImageName());
+			view.comboBox.setSelectedItem(imageDetails.getImageName());
+			view.imagePreviewGUI.setIcon(imageDetails.getOriginalImage());
 		}
 	}
 
 	private void saveDataToAcsv() {
-		ExportDataToCSV exportData = new ExportDataToCSV(model.getImageDetailsList(), model.getCalcImageColors());
+		ExportDataToCSV exportData = new ExportDataToCSV(model.getImageDetails(), model.getCalculations());
 		view.saveDataInAcsv.setEnabled(false);
 		view.msgbox("Successfully exported to Desktop");
 	}

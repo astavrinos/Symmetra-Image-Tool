@@ -6,7 +6,7 @@ import java.util.List;
 
 public class ExportDataToCSV extends Model {
 
-	protected ExportDataToCSV(List<StoreImageDetails> imageDetailsList, List<Calculations> calcImageColors) {
+	protected ExportDataToCSV(List<ImageDetails> imageDetailsList, List<Calculations> calcImageColors) {
 
 		DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("yyyy_MM_dd-HH_mm_ss");
 		LocalDateTime getTime = LocalDateTime.now();

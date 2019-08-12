@@ -45,7 +45,7 @@ public class View extends JFrame {
 	protected JLabel imageSizeStatus = new JLabel();
 	protected JButton removeImageBtn = new JButton("Remove Image");
 	protected JTextArea results = new JTextArea();
-	protected JComboBox<String> resultSelection = new JComboBox<String>();
+	protected JComboBox<String> resultsDropdownMenu = new JComboBox<String>();
 	protected JButton saveDataInAcsv = new JButton("Export data");
 
 	final JProgressBar progressBar = new JProgressBar(0, 100);
@@ -172,7 +172,7 @@ public class View extends JFrame {
 		panel3.setVisible(true);
 		panel3.add(results, BorderLayout.CENTER);
 		panel3.add(panel4, BorderLayout.SOUTH);
-		panel4.add(resultSelection);
+		panel4.add(resultsDropdownMenu);
 		panel4.add(isImageSymmetrical);
 		panel4.add(saveDataInAcsv);
 		getContentPane().add(panel3);
@@ -202,7 +202,7 @@ public class View extends JFrame {
 	}
 
 	protected void addSelectResultsComboBoxListener(ItemListener SelectResultsComboBox) {
-		resultSelection.addItemListener(SelectResultsComboBox);
+		resultsDropdownMenu.addItemListener(SelectResultsComboBox);
 	}
 
 	protected void addSaveDataButtonListener(ActionListener SaveDataButton) {

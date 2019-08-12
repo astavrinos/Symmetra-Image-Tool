@@ -1,6 +1,6 @@
 import javax.swing.ImageIcon;
 
-public class StoreImageDetails {
+public class ImageDetails {
 
 	private ImageIcon originalImage;
 	private ImageIcon resizedImage;
@@ -10,7 +10,7 @@ public class StoreImageDetails {
 	private int imageWidth;
 	private int imageHeight;
 
-	protected StoreImageDetails(ImageIcon originalImage, ImageIcon resizedImage, String imagePath, String imageName,
+	protected ImageDetails(ImageIcon originalImage, ImageIcon resizedImage, String imagePath, String imageName,
 			String imageSize, int imageWidth, int imageHeight) {
 		this.originalImage = originalImage;
 		this.resizedImage = resizedImage;
