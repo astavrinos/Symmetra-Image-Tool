@@ -30,6 +30,7 @@ public class View extends JFrame {
 	protected JPanel panel3 = new JPanel(new BorderLayout());
 	protected JPanel panel4 = new JPanel(new FlowLayout());
 	protected JLabel imagePreviewGUI = new JLabel();
+	protected JLabel isImageSymmetrical = new JLabel();
 	protected String imgPath;
 	protected ImageIcon image;
 
@@ -163,6 +164,19 @@ public class View extends JFrame {
 		getContentPane().add(panel2);
 		pack();
 		setVisible(true);
+	}
+
+	protected void presentResults() {
+		panel2.setVisible(false);
+		setVisible(true);
+		panel3.setVisible(true);
+		panel3.add(results, BorderLayout.CENTER);
+		panel3.add(panel4, BorderLayout.SOUTH);
+		panel4.add(resultSelection);
+		panel4.add(isImageSymmetrical);
+		panel4.add(saveDataInAcsv);
+		getContentPane().add(panel3);
+		pack();
 	}
 
 	/*

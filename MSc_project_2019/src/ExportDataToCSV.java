@@ -10,11 +10,11 @@ public class ExportDataToCSV extends Model {
 
 		DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("yyyy_MM_dd-HH_mm_ss");
 		LocalDateTime getTime = LocalDateTime.now();
-		
 
 		try {
 
-			FileWriter csvWriter = new FileWriter(System.getProperty("user.home") + "//Desktop//symmetra_analyzation_" + dateFormat.format(getTime) + ".csv");
+			FileWriter csvWriter = new FileWriter(System.getProperty("user.home") + "//Desktop//symmetra_analyzation_"
+					+ dateFormat.format(getTime) + ".csv");
 			csvWriter.append("image_path");
 			csvWriter.append(",");
 			csvWriter.append("image_name");

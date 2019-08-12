@@ -1,4 +1,5 @@
 import java.awt.Color;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.text.DecimalFormat;
@@ -52,19 +53,17 @@ public class Calculations extends Model {
 		calculateTheSkewness();
 	}// end of constructor
 
-
-	
 	/*
 	 * METHODS
 	 */
 	private void getTheColorsOfTheImageAndTheArea() {
 
 		try {
-			setBufferedImage(ImageIO.read(input));
+			BufferedImage bufferedImage = ImageIO.read(input);
 			for (int i = 0; i < imageIcon.getIconHeight(); i++) {
 				for (int j = 0; j < imageIcon.getIconWidth(); j++) {
 
-					color = new Color(getBufferedImage().getRGB(j, i));
+					color = new Color(bufferedImage.getRGB(j, i));
 					int r = color.getRed();
 					int g = color.getGreen();
 					int b = color.getBlue();
@@ -222,7 +221,5 @@ public class Calculations extends Model {
 	public void setSkewnessResult(double skewnessResult) {
 		this.skewnessResult = skewnessResult;
 	}
-
-
 
 }// end of calculate pixels colors class
