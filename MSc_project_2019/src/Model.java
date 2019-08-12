@@ -7,8 +7,6 @@ import java.util.List;
 
 import javax.swing.ImageIcon;
 
-// storing data and calculations
-
 public class Model {
 
 	private String imageSize;
@@ -23,7 +21,6 @@ public class Model {
 	private int imageHeight;
 	private int imageWidth;
 
-	// list that saves image details as objects
 	private List<StoreImageDetails> imageDetailsList = new ArrayList<StoreImageDetails>();
 	private List<Calculations> calcImageColors = new ArrayList<Calculations>();
 
@@ -34,22 +31,26 @@ public class Model {
 		int scaledImageWidth = scaledImage.getWidth(null);
 		if ((false && scaledImageWidth > width) || (!false && scaledImageWidth < width)) {
 			scaledImage = image.getScaledInstance(width, -1, java.awt.Image.SCALE_SMOOTH);
-		} // end of if
+		}
 		return new ImageIcon(scaledImage);
-	}// end of resize image method
+	}
 
 	// add the elements to the array list of image details
 	protected void addingElementsList(ImageIcon originalImage, ImageIcon resizedImage, String imagePath,
 			String imageName, String imageSize, int imageWidth, int imageHeight) {
-		StoreImageDetails imgDetails = new StoreImageDetails(originalImage, resizedImage, imagePath, imageName, imageSize,
-				imageWidth, imageHeight);
+		StoreImageDetails imgDetails = new StoreImageDetails(originalImage, resizedImage, imagePath, imageName,
+				imageSize, imageWidth, imageHeight);
 
 		imageDetailsList.add(imgDetails);
-	}// end of adding elements to the list method
+	}
 
 	protected void runTheProcessOfGettingColors(String imagePath, ImageIcon imageIcon) {
 		calcImageColors.add(new Calculations(new File(imagePath), imageIcon));
-	}// end of run the process of getting colors method
+	}
+
+	protected void saveData() {
+		ExportDataToCSV exportData = new ExportDataToCSV(imageDetailsList, calcImageColors);
+	}
 
 	public BufferedImage getBufferedImage() {
 		return bufferedImage;
@@ -151,4 +152,4 @@ public class Model {
 		this.calcImageColors = calcImageColors;
 	}
 
-}// end of model class
+}

@@ -27,13 +27,14 @@ public class View extends JFrame {
 
 	protected JPanel panel1 = new JPanel(new BorderLayout());
 	protected JPanel panel2 = new JPanel();
-	protected JPanel panel3 = new JPanel();
+	protected JPanel panel3 = new JPanel(new BorderLayout());
+	protected JPanel panel4 = new JPanel(new FlowLayout());
 	protected JLabel imagePreviewGUI = new JLabel();
 	protected String imgPath;
 	protected ImageIcon image;
 
 	protected JLabel introMsg = new JLabel(
-			"<html>Welcome to Image Analyzer Tool.<br>Press the browse button to start.</html>");
+			"<html><center>Welcome to Symmetra.<br>Press the browse button to start.</center></html>");
 	protected JPanel bottomBtns = new JPanel();
 	protected JButton browseBtn = new JButton("Browse");
 	protected JLabel status = new JLabel("Waiting");
@@ -45,7 +46,6 @@ public class View extends JFrame {
 	protected JTextArea results = new JTextArea();
 	protected JComboBox<String> resultSelection = new JComboBox<String>();
 	protected JButton saveDataInAcsv = new JButton("Export data");
-	protected JButton goBackToStart = new JButton("Home");
 
 	final JProgressBar progressBar = new JProgressBar(0, 100);
 	final JLabel analyzingLabel = new JLabel("Analyzing...");
@@ -56,11 +56,11 @@ public class View extends JFrame {
 	protected View() {
 		// initGUI
 		initializeFirstFrame();
-	}// end of constructor
+	}
 
 	protected void initializeFirstFrame() {
 		// Window title
-		setTitle("Image Analyzer Tool");
+		setTitle("Symmetra");
 		// Exit on close
 		setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		// Set the size of the window
@@ -82,7 +82,7 @@ public class View extends JFrame {
 		imagePreviewGUI.setText("Image Preview when selected.");
 		imagePreviewGUI.setHorizontalAlignment(SwingConstants.CENTER);
 		imagePreviewGUI.setPreferredSize(panel1.getPreferredSize());
-//		imgPreview.setVisible(false);
+		// imgPreview.setVisible(false);
 		panel1.add(imagePreviewGUI, BorderLayout.CENTER);
 
 		// Bottom panel
@@ -117,7 +117,7 @@ public class View extends JFrame {
 
 		centerWindowOnCurrentDisplay();
 
-	}// end of initialize gui method
+	}
 
 	/*
 	 * METHODS
@@ -132,7 +132,7 @@ public class View extends JFrame {
 		status.setText("Waiting");
 		status.setForeground(Color.ORANGE);
 		imageSizeStatus.setText(null);
-	}// end of return everything to normal method
+	}
 
 	// change the view if the image imported was correct format
 	protected void callViewToChange() {
@@ -143,11 +143,6 @@ public class View extends JFrame {
 		status.setForeground(Color.green);
 		status.setText("Ready");
 		analyzeBtn.setEnabled(true);
-	}// end of call view to change method
-
-	protected void viewOfAnalyze() {
-		// next window stuff after pressed analyze button
-		panel1.setVisible(false);
 	}
 
 	protected void centerWindowOnCurrentDisplay() {
@@ -158,27 +153,39 @@ public class View extends JFrame {
 		JOptionPane.showMessageDialog(null, s);
 	}
 
+	protected void showProgressBar() {
+		panel1.setVisible(false);
+		update(getGraphics());
+		progressBar.setStringPainted(true);
+		setVisible(false);
+		panel2.add(analyzingLabel);
+		panel2.add(progressBar);
+		getContentPane().add(panel2);
+		pack();
+		setVisible(true);
+	}
+
 	/*
 	 * ACTION LISTENERS
 	 */
 	// function when you press the browse button
 	protected void addMainViewListener(ActionListener listenImageButton) {
 		browseBtn.addActionListener(listenImageButton);
-	}// end of add main view listeners
+	}
 
 	// function when your press the analyze button
 	protected void addProceedAnalyzeListener(ActionListener ProceedAnalyze) {
 		analyzeBtn.addActionListener(ProceedAnalyze);
-	}// end of add proceed analyze listener
+	}
 
 	// function when you press the combo box to select something inside it
 	protected void addComboBoxSelect(ActionListener ComboBoxSelect) {
 		comboBox.addActionListener(ComboBoxSelect);
-	}// end of add combo box select
+	}
 
 	protected void addRemoveImageButtonListener(ActionListener RemoveImageButton) {
 		removeImageBtn.addActionListener(RemoveImageButton);
-	}// end of add remove image button listener
+	}
 
 	protected void addSelectResultsComboBoxListener(ItemListener SelectResultsComboBox) {
 		resultSelection.addItemListener(SelectResultsComboBox);
@@ -187,8 +194,4 @@ public class View extends JFrame {
 	protected void addSaveDataButtonListener(ActionListener SaveDataButton) {
 		saveDataInAcsv.addActionListener(SaveDataButton);
 	}
-
-	protected void addGoBackToStartListener(ActionListener GoBackToStartButton) {
-		goBackToStart.addActionListener(GoBackToStartButton);
-	}
-}// end of view class
+}

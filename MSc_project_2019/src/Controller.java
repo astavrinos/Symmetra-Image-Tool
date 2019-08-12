@@ -1,12 +1,9 @@
+import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.text.DecimalFormat;
-import java.util.ArrayList;
 import java.util.Iterator;
 
 import javax.swing.ImageIcon;
@@ -14,7 +11,7 @@ import javax.swing.JFileChooser;
 import javax.swing.SwingUtilities;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
-public class Controller extends Thread {
+public class Controller {
 
 	protected View view;
 	protected Model model;
@@ -35,7 +32,6 @@ public class Controller extends Thread {
 		this.view.addRemoveImageButtonListener(new RemoveImageButton());
 		this.view.addSelectResultsComboBoxListener(new SelectResultsComboBox());
 		this.view.addSaveDataButtonListener(new SaveDataInAcsv());
-		this.view.addGoBackToStartListener(new GoBackToStartButton());
 	}
 
 	/*
@@ -53,18 +49,6 @@ public class Controller extends Thread {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			saveDataToAcsv();
-		}
-	}
-
-	private class GoBackToStartButton implements ActionListener {
-		@Override
-		public void actionPerformed(ActionEvent e) {
-			try {
-				goBackToHome();
-			} catch (IOException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
 		}
 	}
 
@@ -141,18 +125,16 @@ public class Controller extends Thread {
 		view.panel2.setVisible(false);
 		view.setVisible(true);
 		view.panel3.setVisible(true);
-		view.panel3.add(view.results);
-		view.panel3.add(view.resultSelection);
-		view.panel3.add(view.saveDataInAcsv);
-		view.panel3.add(view.goBackToStart);
+		view.panel3.add(view.results, BorderLayout.CENTER);
+		view.panel3.add(view.panel4, BorderLayout.SOUTH);
+		view.panel4.add(view.resultSelection);
+		view.panel4.add(view.saveDataInAcsv);
 		view.getContentPane().add(view.panel3);
 		view.pack();
 	}
 
 	private void proceedOnAnalyzingImages() {
-		view.viewOfAnalyze();
-		view.update(view.getGraphics());
-		view.progressBar.setStringPainted(true);
+
 		Thread t = new Thread() {
 			public void run() {
 				for (int i = 0; i < model.getImageDetailsList().size(); i++) {
@@ -162,26 +144,14 @@ public class Controller extends Thread {
 							view.progressBar.setValue(valueOfProgressBar);
 						}
 					});
-					try {
-						model.runTheProcessOfGettingColors(model.getImageDetailsList().get(i).getImagePath(),
-								model.getImageDetailsList().get(i).getOriginalImage());
-						Thread.sleep(100);
-					} catch (InterruptedException e) {
-						e.printStackTrace();
-					}
-				}
-				for (int i = 0; i < model.getCalcImageColors().size(); i++) {
+					model.runTheProcessOfGettingColors(model.getImageDetailsList().get(i).getImagePath(),
+							model.getImageDetailsList().get(i).getOriginalImage());
 					view.resultSelection.addItem(model.getCalcImageColors().get(i).getInput().getName());
 				}
 				presentResults();
 			}
 		};
-		view.setVisible(false);
-		view.panel2.add(view.analyzingLabel);
-		view.panel2.add(view.progressBar);
-		view.getContentPane().add(view.panel2);
-		view.pack();
-		view.setVisible(true);
+		view.showProgressBar();
 		t.start();
 	}
 
@@ -194,8 +164,11 @@ public class Controller extends Thread {
 			imageIcon = new ImageIcon(chooser.getSelectedFile().getAbsolutePath());
 			if (filter.accept(chooser.getSelectedFile()) && checkImageIfItsObligatedToRules() == true) {
 				proceedActionIfTrue();
-			} // end of if
-		} // end of if
+			} else if (!filter.accept(chooser.getSelectedFile())) {
+				view.msgbox("The type of file is not .JPG or .PNG");
+			}
+		}
+
 	}
 
 	private void removeImageButtonActions() {
@@ -282,70 +255,9 @@ public class Controller extends Thread {
 	}// end of add items to combo box method
 
 	private void saveDataToAcsv() {
-		/*
-		 * HERE NEEDS A METHOD TO SAVE THE DATA IN A CSV
-		 */
-		try {
-			FileWriter csvWriter = new FileWriter("new.csv");
-			csvWriter.append("image_path");
-			csvWriter.append(",");
-			csvWriter.append("image_name");
-			csvWriter.append(",");
-			csvWriter.append("image_size");
-			csvWriter.append(",");
-			csvWriter.append("image_width");
-			csvWriter.append(",");
-			csvWriter.append("image_height");
-			csvWriter.append(",");
-			csvWriter.append("gray_values_mean");
-			csvWriter.append(",");
-			csvWriter.append("median");
-			csvWriter.append(",");
-			csvWriter.append("variance");
-			csvWriter.append(",");
-			csvWriter.append("standard_deviation");
-			csvWriter.append(",");
-			csvWriter.append("skewness");
-			csvWriter.append("\n");
-
-			for (int i = 0; i < model.getImageDetailsList().size(); i++) {
-				csvWriter.append("" + model.getImageDetailsList().get(i).getImagePath());
-				csvWriter.append(",");
-				csvWriter.append("" + model.getImageDetailsList().get(i).getImageName());
-				csvWriter.append(",");
-				csvWriter.append("" + model.getImageDetailsList().get(i).getImageSize());
-				csvWriter.append(",");
-				csvWriter.append("" + model.getImageDetailsList().get(i).getImageWidth());
-				csvWriter.append(",");
-				csvWriter.append("" + model.getImageDetailsList().get(i).getImageHeight());
-				csvWriter.append(",");
-				csvWriter.append("" + model.getCalcImageColors().get(i).getMeanGrayValueResult());
-				csvWriter.append(",");
-				csvWriter.append("" + model.getCalcImageColors().get(i).getMedianResult());
-				csvWriter.append(",");
-				csvWriter.append("" + model.getCalcImageColors().get(i).getVarianceResult());
-				csvWriter.append(",");
-				csvWriter.append("" + model.getCalcImageColors().get(i).getStdDeviationResult());
-				csvWriter.append(",");
-				csvWriter.append("" + model.getCalcImageColors().get(i).getSkewnessResult());
-				csvWriter.append("\n");
-			}
-
-			csvWriter.flush();
-			csvWriter.close();
-		} catch (IOException a) {
-			a.printStackTrace();
-		}
-
-	}
-
-	private void goBackToHome() throws IOException {
-//		view.panel3.removeAll();
-//		view.panel3.setVisible(false);
-//
-//		view.initializeFirstFrame();
-//		view.returnEverythingToNormal();
-		
+		model.saveData();
+		view.saveDataInAcsv.setEnabled(false);
+		view.msgbox("Successfully exported to Desktop");
 	}
 
 }// end of controller class

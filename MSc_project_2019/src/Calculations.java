@@ -41,16 +41,23 @@ public class Calculations extends Model {
 	DecimalFormat numberFormat = new DecimalFormat("#.000");
 
 	protected Calculations(File input, ImageIcon imageIcon) {
+
 		this.input = input;
 		this.imageIcon = imageIcon;
 
-		startCalculation();
+		getTheColorsOfTheImageAndTheArea();
+		calculateTheMean();
+		calculateTheMedian();
+		calculateTheStdDeviation();
+		calculateTheSkewness();
 	}// end of constructor
 
+
+	
 	/*
 	 * METHODS
 	 */
-	private void startCalculation() {
+	private void getTheColorsOfTheImageAndTheArea() {
 
 		try {
 			setBufferedImage(ImageIO.read(input));
@@ -66,18 +73,12 @@ public class Calculations extends Model {
 
 					pixelsNumber++;
 
-				} // End of inside for
-			} // End of outer for
-
-			calculateTheMean();
-			calculateTheMedian();
-			calculateTheStdDeviation();
-			calculateTheSkewness();
+				}
+			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-
-	}// end of start Calculation
+	}
 
 	private void calculateTheMean() {
 
@@ -94,7 +95,6 @@ public class Calculations extends Model {
 		}
 
 		meanGrayValueResult = sumAllGrayValues / pixelsNumber;
-
 		String temp = numberFormat.format(meanGrayValueResult);
 		meanGrayValueResult = Double.parseDouble(temp);
 	}
@@ -137,7 +137,7 @@ public class Calculations extends Model {
 			sumOfPowResultsOfStdDev = sumOfPowResultsOfStdDev + powResultOfStdDev;
 		}
 
-		varianceResult = ((1.0 / powValuesOfStdDev.size()) * sumOfPowResultsOfStdDev);
+		varianceResult = sumOfPowResultsOfStdDev / (powValuesOfStdDev.size() - 1);
 
 		String temp = numberFormat.format(varianceResult);
 		varianceResult = Double.parseDouble(temp);
@@ -153,13 +153,15 @@ public class Calculations extends Model {
 		for (int i = 0; i < sortedGrayValues.size(); i++) {
 			skewEquationPartAbove = skewEquationPartAbove
 					+ (Math.pow(sortedGrayValues.get(i) - meanGrayValueResult, 3));
-			skewEquationPartBelow = (sortedGrayValues.size() - 1) * Math.pow(stdDeviationResult, 3);
 		}
+
+		skewEquationPartBelow = (sortedGrayValues.size() - 1) * Math.pow(stdDeviationResult, 3);
 
 		skewnessResult = skewEquationPartAbove / skewEquationPartBelow;
 
 		String temp = numberFormat.format(skewnessResult);
 		skewnessResult = Double.parseDouble(temp);
+
 	}
 
 	/*
@@ -220,5 +222,7 @@ public class Calculations extends Model {
 	public void setSkewnessResult(double skewnessResult) {
 		this.skewnessResult = skewnessResult;
 	}
+
+
 
 }// end of calculate pixels colors class
