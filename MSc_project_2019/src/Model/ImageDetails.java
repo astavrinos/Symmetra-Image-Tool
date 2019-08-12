@@ -1,3 +1,4 @@
+package Model;
 import javax.swing.ImageIcon;
 
 public class ImageDetails {
@@ -10,7 +11,7 @@ public class ImageDetails {
 	private int imageWidth;
 	private int imageHeight;
 
-	protected ImageDetails(ImageIcon originalImage, ImageIcon resizedImage, String imagePath, String imageName,
+	public ImageDetails(ImageIcon originalImage, ImageIcon resizedImage, String imagePath, String imageName,
 			String imageSize, int imageWidth, int imageHeight) {
 		this.originalImage = originalImage;
 		this.resizedImage = resizedImage;

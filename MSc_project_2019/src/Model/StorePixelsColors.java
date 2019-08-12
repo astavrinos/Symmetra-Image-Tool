@@ -1,4 +1,5 @@
-public class SavePixelsColors {
+package Model;
+public class StorePixelsColors {
 
 	private int x;
 	private int y;
@@ -6,7 +7,7 @@ public class SavePixelsColors {
 	private int green;
 	private int blue;
 
-	SavePixelsColors(int x, int y, int red, int green, int blue) {
+	StorePixelsColors(int x, int y, int red, int green, int blue) {
 		this.x = x;
 		this.y = y;
 		this.red = red;

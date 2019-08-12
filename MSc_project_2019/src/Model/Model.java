@@ -1,3 +1,4 @@
+package Model;
 import java.awt.Image;
 import java.io.File;
 import java.util.ArrayList;
@@ -16,7 +17,7 @@ public class Model {
 	 * METHODS
 	 */
 	@SuppressWarnings("unused")
-	protected ImageIcon resizeImageForPreviewImageGUI(ImageIcon actualImage, int width, int height) {
+	public ImageIcon resizeImageForPreviewImageGUI(ImageIcon actualImage, int width, int height) {
 		Image image = actualImage.getImage();
 		Image scaledImage = image.getScaledInstance(-1, height, java.awt.Image.SCALE_SMOOTH);
 		int scaledImageWidth = scaledImage.getWidth(null);

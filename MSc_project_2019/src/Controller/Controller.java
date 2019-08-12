@@ -1,3 +1,4 @@
+package Controller;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -12,6 +13,12 @@ import javax.swing.JFileChooser;
 import javax.swing.SwingUtilities;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
+import Model.Calculations;
+import Model.ExportData;
+import Model.ImageDetails;
+import Model.Model;
+import View.View;
+
 public class Controller {
 
 	protected View view;
@@ -23,7 +30,7 @@ public class Controller {
 	private ImageIcon imageIcon;
 	private int valueOfProgressBar = 0;
 
-	protected Controller(View view, Model model) {
+	public Controller(View view, Model model) {
 		this.view = view;
 		this.model = model;
 
@@ -91,7 +98,7 @@ public class Controller {
 				if (model.getImageDetails().size() < 3) {
 					view.msgbox("Image " + model.getItemsInsideComboBoxCurrently() + " out of 3 imported.");
 					if (model.getImageDetails().size() == 2) {
-						view.browseBtn.setEnabled(false);
+						view.getBrowseBtn().setEnabled(false);
 						view.msgbox("Image limit reached.");
 					}
 					return true;
@@ -110,7 +117,7 @@ public class Controller {
 			if (e1.getStateChange() == ItemEvent.SELECTED) {
 				if (e1.getItem().equals(model.getCalculations().get(i).getInput().getName())) {
 
-					view.results.setText("Area value is: " + model.getCalculations().get(i).getPixelsNumber()
+					view.getResults().setText("Area value is: " + model.getCalculations().get(i).getPixelsNumber()
 							+ "\nThe mean of gray values is: " + model.getCalculations().get(i).getMeanGrayValueResult()
 							+ "\nThe median is: " + model.getCalculations().get(i).getMedianResult()
 							+ "\nThe variance is: " + model.getCalculations().get(i).getVarianceResult()
@@ -129,14 +136,14 @@ public class Controller {
 
 	protected void checkIfItsSymmetrical(double skewnessResult, String imageName) {
 		if (skewnessResult < 0.5 && skewnessResult > -0.5) {
-			view.isImageSymmetrical.setForeground(Color.GREEN);
-			view.isImageSymmetrical.setText(imageName + " is fairly symmetrical.");
+			view.getIsImageSymmetrical().setForeground(Color.GREEN);
+			view.getIsImageSymmetrical().setText(imageName + " is fairly symmetrical.");
 		} else if (skewnessResult > 0.5 && skewnessResult < 1.0 || skewnessResult < -0.5 && skewnessResult > -1.0) {
-			view.isImageSymmetrical.setForeground(Color.ORANGE);
-			view.isImageSymmetrical.setText(imageName + " is moderately symmetrical.");
+			view.getIsImageSymmetrical().setForeground(Color.ORANGE);
+			view.getIsImageSymmetrical().setText(imageName + " is moderately symmetrical.");
 		} else {
-			view.isImageSymmetrical.setForeground(Color.RED);
-			view.isImageSymmetrical.setText(imageName + " is not symmetrical.");
+			view.getIsImageSymmetrical().setForeground(Color.RED);
+			view.getIsImageSymmetrical().setText(imageName + " is not symmetrical.");
 		}
 	}
 
@@ -148,7 +155,7 @@ public class Controller {
 					SwingUtilities.invokeLater(new Runnable() {
 						public void run() {
 							valueOfProgressBar = valueOfProgressBar + (100 / (model.getImageDetails().size()));
-							view.progressBar.setValue(valueOfProgressBar);
+							view.getProgressBar().setValue(valueOfProgressBar);
 						}
 					});
 
@@ -158,7 +165,7 @@ public class Controller {
 
 					model.getCalculations().add(calculations);
 
-					view.resultsDropdownMenu.addItem(model.getCalculations().get(i).getInput().getName());
+					view.getResultsDropdownMenu().addItem(model.getCalculations().get(i).getInput().getName());
 				}
 				view.presentResults();
 			}
@@ -184,14 +191,14 @@ public class Controller {
 	}
 
 	private void removeImageButtonActions() {
-		Object selected = view.comboBox.getSelectedItem();
+		Object selected = view.getComboBox().getSelectedItem();
 		for (int i = 0; i < model.getImageDetails().size(); i++) {
 			if (model.getImageDetails().get(i).getImageName().equals(selected)) {
 				model.getImageDetails().remove(i);
-				view.imagePreviewGUI.setIcon(null);
-				view.imagePreviewGUI.revalidate();
+				view.getImagePreviewGUI().setIcon(null);
+				view.getImagePreviewGUI().revalidate();
 				model.setItemsInsideComboBoxCurrently(model.getItemsInsideComboBoxCurrently() - 1);
-				view.browseBtn.setEnabled(true);
+				view.getBrowseBtn().setEnabled(true);
 				if (model.getImageDetails().isEmpty()) {
 					view.returnEverythingToNormal();
 				}
@@ -202,18 +209,18 @@ public class Controller {
 
 	private void imageSelectionForPreviewImage() {
 		Object selected = null;
-		selected = view.comboBox.getSelectedItem();
+		selected = view.getComboBox().getSelectedItem();
 		if (selected == null) {
-			view.comboBox.removeAllItems();
+			view.getComboBox().removeAllItems();
 		}
-		for (int i = 0; i < view.comboBox.getItemCount(); i++) {
-			if (selected.toString().equals(view.comboBox.getItemAt(i))) {
+		for (int i = 0; i < view.getComboBox().getItemCount(); i++) {
+			if (selected.toString().equals(view.getComboBox().getItemAt(i))) {
 				Iterator<ImageDetails> iter = model.getImageDetails().iterator();
 				while (iter.hasNext()) {
 					ImageDetails imageDetailsIter = iter.next();
 					if (imageDetailsIter.getImageName().equals(selected)) {
-						view.imagePreviewGUI.setIcon(imageDetailsIter.getOriginalImage());
-						view.imageSizeStatus.setText("Image size: " + imageDetailsIter.getImageSize());
+						view.getImagePreviewGUI().setIcon(imageDetailsIter.getOriginalImage());
+						view.getImageSizeStatus().setText("Image size: " + imageDetailsIter.getImageSize());
 					}
 				}
 			}
@@ -242,7 +249,7 @@ public class Controller {
 		int imageWidth = imageIcon.getIconWidth();
 
 		view.callViewToChange();
-		view.imagePreviewGUI.setVisible(true);
+		view.getImagePreviewGUI().setVisible(true);
 
 		ImageIcon resizedImage = model.resizeImageForPreviewImageGUI(imageIcon, 644, 541);
 
@@ -250,24 +257,24 @@ public class Controller {
 				imageHeight);
 		model.getImageDetails().add(imgDetails);
 		addItemsToComboBox();
-		view.comboBox.setVisible(true);
-		view.removeImageBtn.setVisible(true);
+		view.getComboBox().setVisible(true);
+		view.getRemoveImageBtn().setVisible(true);
 	}
 
 	private void addItemsToComboBox() {
-		view.comboBox.removeAllItems();
+		view.getComboBox().removeAllItems();
 		Iterator<ImageDetails> iter = model.getImageDetails().iterator();
 		while (iter.hasNext()) {
 			ImageDetails imageDetails = iter.next();
-			view.comboBox.addItem(imageDetails.getImageName());
-			view.comboBox.setSelectedItem(imageDetails.getImageName());
-			view.imagePreviewGUI.setIcon(imageDetails.getOriginalImage());
+			view.getComboBox().addItem(imageDetails.getImageName());
+			view.getComboBox().setSelectedItem(imageDetails.getImageName());
+			view.getImagePreviewGUI().setIcon(imageDetails.getOriginalImage());
 		}
 	}
 
 	private void saveDataToAcsv() {
-		ExportDataToCSV exportData = new ExportDataToCSV(model.getImageDetails(), model.getCalculations());
-		view.saveDataInAcsv.setEnabled(false);
+		ExportData exportData = new ExportData(model.getImageDetails(), model.getCalculations());
+		view.getSaveDataInAcsv().setEnabled(false);
 		view.msgbox("Successfully exported to Desktop");
 	}
 }

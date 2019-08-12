@@ -1,3 +1,4 @@
+package Model;
 import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -34,14 +35,14 @@ public class Calculations extends Model {
 	private double stdDeviationResult;
 	private double skewnessResult;
 
-	private HashMap<Integer, SavePixelsColors> imageColorStorage = new HashMap<Integer, SavePixelsColors>();
+	private HashMap<Integer, StorePixelsColors> imageColorStorage = new HashMap<Integer, StorePixelsColors>();
 	private HashMap<Integer, Double> unsortedGrayValuesOfRGB = new HashMap<Integer, Double>();
 	private Map<Integer, Double> sortedGrayValues;
 	private Map<Integer, Double> powValuesOfStdDev = new HashMap<Integer, Double>();
 
 	DecimalFormat numberFormat = new DecimalFormat("#.000");
 
-	protected Calculations(File input, ImageIcon imageIcon) {
+	public Calculations(File input, ImageIcon imageIcon) {
 
 		this.input = input;
 		this.imageIcon = imageIcon;
@@ -68,7 +69,7 @@ public class Calculations extends Model {
 					int g = color.getGreen();
 					int b = color.getBlue();
 
-					imageColorStorage.put(pixelsNumber, new SavePixelsColors(i, j, r, g, b));
+					imageColorStorage.put(pixelsNumber, new StorePixelsColors(i, j, r, g, b));
 
 					pixelsNumber++;
 

@@ -1,3 +1,7 @@
+import Controller.Controller;
+import Model.Model;
+import View.View;
+
 public class Main {
 
 	@SuppressWarnings("unused")
