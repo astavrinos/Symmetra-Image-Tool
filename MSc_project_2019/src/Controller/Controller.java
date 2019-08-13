@@ -40,6 +40,8 @@ public class Controller {
 		this.view.addRemoveImageButtonListener(new RemoveImageButton());
 		this.view.addSelectResultsComboBoxListener(new SelectResultsComboBox());
 		this.view.addSaveDataButtonListener(new SaveDataInAcsv());
+		this.view.addBrowseButtonImportWindowListener(new MainViewListener());
+		this.view.addHomeButtonListener(new ListenHomeButton());
 	}
 
 	/*
@@ -49,6 +51,18 @@ public class Controller {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			imageSelectionWindow();
+		}
+	}
+	
+	private class ListenHomeButton implements ActionListener {
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			view.goBackHome();
+			model.setItemsInsideComboBoxCurrently(1);
+			
+				model.getImageDetails().clear();
+				model.getCalculations().clear();
+				
 		}
 	}
 
@@ -117,12 +131,12 @@ public class Controller {
 			if (e1.getStateChange() == ItemEvent.SELECTED) {
 				if (e1.getItem().equals(model.getCalculations().get(i).getInput().getName())) {
 
-					view.getResults().setText("Area value is: " + model.getCalculations().get(i).getPixelsNumber()
-							+ "\nThe mean of gray values is: " + model.getCalculations().get(i).getMeanGrayValueResult()
-							+ "\nThe median is: " + model.getCalculations().get(i).getMedianResult()
-							+ "\nThe variance is: " + model.getCalculations().get(i).getVarianceResult()
-							+ "\nThe standard deviation is: " + model.getCalculations().get(i).getStdDeviationResult()
-							+ "\nThe skewness is: " + model.getCalculations().get(i).getSkewnessResult());
+//					view.getResults().setText("Area value is: " + model.getCalculations().get(i).getPixelsNumber()
+//							+ "\nThe mean of gray values is: " + model.getCalculations().get(i).getMeanGrayValueResult()
+//							+ "\nThe median is: " + model.getCalculations().get(i).getMedianResult()
+//							+ "\nThe variance is: " + model.getCalculations().get(i).getVarianceResult()
+//							+ "\nThe standard deviation is: " + model.getCalculations().get(i).getStdDeviationResult()
+//							+ "\nThe skewness is: " + model.getCalculations().get(i).getSkewnessResult());
 
 					double skewnessResult = model.getCalculations().get(i).getSkewnessResult();
 					String imageName = model.getCalculations().get(i).getInput().getName();
@@ -135,16 +149,16 @@ public class Controller {
 	}
 
 	protected void checkIfItsSymmetrical(double skewnessResult, String imageName) {
-		if (skewnessResult < 0.5 && skewnessResult > -0.5) {
-			view.getIsImageSymmetrical().setForeground(Color.GREEN);
-			view.getIsImageSymmetrical().setText(imageName + " is fairly symmetrical.");
-		} else if (skewnessResult > 0.5 && skewnessResult < 1.0 || skewnessResult < -0.5 && skewnessResult > -1.0) {
-			view.getIsImageSymmetrical().setForeground(Color.ORANGE);
-			view.getIsImageSymmetrical().setText(imageName + " is moderately symmetrical.");
-		} else {
-			view.getIsImageSymmetrical().setForeground(Color.RED);
-			view.getIsImageSymmetrical().setText(imageName + " is not symmetrical.");
-		}
+//		if (skewnessResult < 0.5 && skewnessResult > -0.5) {
+//			view.getIsImageSymmetrical().setForeground(Color.GREEN);
+//			view.getIsImageSymmetrical().setText(imageName + " is fairly symmetrical.");
+//		} else if (skewnessResult > 0.5 && skewnessResult < 1.0 || skewnessResult < -0.5 && skewnessResult > -1.0) {
+//			view.getIsImageSymmetrical().setForeground(Color.ORANGE);
+//			view.getIsImageSymmetrical().setText(imageName + " is moderately symmetrical.");
+//		} else {
+//			view.getIsImageSymmetrical().setForeground(Color.RED);
+//			view.getIsImageSymmetrical().setText(imageName + " is not symmetrical.");
+//		}
 	}
 
 	private void proceedOnAnalyzingImages() {
@@ -273,6 +287,7 @@ public class Controller {
 	}
 
 	private void saveDataToAcsv() {
+		@SuppressWarnings("unused")
 		ExportData exportData = new ExportData(model.getImageDetails(), model.getCalculations());
 		view.getSaveDataInAcsv().setEnabled(false);
 		view.msgbox("Successfully exported to Desktop");

@@ -1,7 +1,7 @@
 package View;
 
-
 import java.awt.BorderLayout;
+import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
@@ -10,8 +10,6 @@ import java.awt.Toolkit;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemListener;
 
-import javax.swing.BorderFactory;
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
@@ -19,107 +17,138 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
-import javax.swing.JTextArea;
 import javax.swing.SwingConstants;
 import javax.swing.WindowConstants;
-import javax.swing.border.LineBorder;
+import javax.swing.border.EmptyBorder;
 
 @SuppressWarnings("serial")
 public class View extends JFrame {
 
-	protected JPanel panel1 = new JPanel(new BorderLayout());
-	protected JPanel panel2 = new JPanel();
-	protected JPanel panel3 = new JPanel(new BorderLayout());
-	protected JPanel panel4 = new JPanel(new FlowLayout());
-	private JLabel imagePreviewGUI = new JLabel();
-	private JLabel isImageSymmetrical = new JLabel();
-	protected String imgPath;
-	protected ImageIcon image;
+	JPanel welcomeWindow = new JPanel();
 
-	protected JLabel introMsg = new JLabel(
-			"<html><center>Welcome to Symmetra.<br>Press the browse button to start.</center></html>");
-	protected JPanel bottomBtns = new JPanel();
-	private JButton browseBtn = new JButton("Browse");
-	protected JLabel status = new JLabel("Waiting");
-	protected JButton analyzeBtn = new JButton("Analyze");
+	JPanel importWindow = new JPanel();
+	JPanel analyzeWindow = new JPanel();
+	JPanel resultsWindow = new JPanel();
 
-	private JComboBox<String> comboBox = new JComboBox<String>();
-	private JLabel imageSizeStatus = new JLabel();
-	private JButton removeImageBtn = new JButton("Remove Image");
-	private JTextArea results = new JTextArea();
-	private JComboBox<String> resultsDropdownMenu = new JComboBox<String>();
-	private JButton saveDataInAcsv = new JButton("Export data");
+	JLabel imageSizeStatus = new JLabel("");
+	JLabel imagePreviewGUI = new JLabel("", JLabel.CENTER);
+	JLabel analyzingLabel = new JLabel("Analyzing...");
 
-	private final JProgressBar progressBar = new JProgressBar(0, 100);
-	final JLabel analyzingLabel = new JLabel("Analyzing...");
-	int i = 0, num = 0;
+	JButton browseBtn = new JButton("Browse");
+	JButton browseBtnImportWindow = new JButton("Browse");
+	JButton removeImageBtn = new JButton("Remove current image");
+	JButton analyzeBtn = new JButton("Analyze");
+	JButton saveDataInAcsv = new JButton("Export data");
+	JButton homeBtn = new JButton("Home");
+
+	JComboBox<String> comboBox = new JComboBox<String>();
+	JComboBox<String> resultsDropdownMenu = new JComboBox<String>();
+
+	JProgressBar progressBar = new JProgressBar();
 
 	Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 
+//	final smallWindow = this.setSize(300, 150);
+
 	public View() {
-		// initGUI
-		initializeFirstFrame();
+		setTitle("Symmetra");
+		setBackground(Color.WHITE);
+		setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+		getContentPane().setBackground(new Color(255, 255, 255));
+		getContentPane().setForeground(Color.BLACK);
+		getContentPane().setFont(new Font("Segoe UI", Font.PLAIN, 11));
+		getContentPane().setLayout(new CardLayout(0, 0));
+		welcomeWindow.setVisible(true);
+		welcomeWindow();
+		importWindow.setVisible(false);
+		importWindow();
+		analyzeWindow.setVisible(false);
+		analyzeWindow();
+		resultsWindow.setVisible(false);
+		resultsWindow();
+
 	}
 
-	protected void initializeFirstFrame() {
-		// Window title
-		setTitle("Symmetra");
-		// Exit on close
-		setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-		// Set the size of the window
-		setSize(500, 200);
+	public void welcomeWindow() {
 
-		// The panel
-		validate();
-		panel1.setBackground(Color.WHITE);
-		getContentPane().add(panel1);
-
-		// intro msg
-		introMsg.setFont(new Font("Segoe UI", Font.PLAIN, 16));
-		introMsg.setHorizontalAlignment(SwingConstants.CENTER);
-		panel1.setForeground(Color.WHITE);
-		panel1.setBorder(new LineBorder(null, 20));
-		panel1.add(introMsg, BorderLayout.NORTH);
-
-		// img preview
-		getImagePreviewGUI().setText("Image Preview when selected.");
-		getImagePreviewGUI().setHorizontalAlignment(SwingConstants.CENTER);
-		getImagePreviewGUI().setPreferredSize(panel1.getPreferredSize());
-		// imgPreview.setVisible(false);
-		panel1.add(getImagePreviewGUI(), BorderLayout.CENTER);
-
-		// Bottom panel
-		panel1.add(bottomBtns, BorderLayout.SOUTH);
-		bottomBtns.setBackground(Color.WHITE);
-		bottomBtns.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
-		bottomBtns.add(getBrowseBtn());
-
-		// program status
-		status.setFont(new Font("Segoe UI", Font.BOLD, 14));
-		status.setForeground(Color.ORANGE);
-		bottomBtns.add(status);
-
-		// dropdown menu
-		getComboBox().setVisible(false);
-		getComboBox().setFont(new Font("Segoe UI", Font.PLAIN, 11));
-		bottomBtns.add(getComboBox());
-
-		// imageSizeStatus
-		bottomBtns.add(getImageSizeStatus());
-
-		// remove image button
-		getRemoveImageBtn().setVisible(false);
-		bottomBtns.add(getRemoveImageBtn());
-
-		// analyze button
-		analyzeBtn.setEnabled(false);
-		bottomBtns.add(analyzeBtn);
-
-		getResults().setBorder(BorderFactory.createCompoundBorder(getResults().getBorder(),
-				BorderFactory.createEmptyBorder(10, 10, 10, 10)));
-
+		setSize(300, 150);
 		centerWindowOnCurrentDisplay();
 
+		getContentPane().add(welcomeWindow, "name_40604121145100");
+		welcomeWindow.setLayout(new BorderLayout(0, 0));
+
+		JLabel introMsg = new JLabel(
+				"<html><center>Welcome to Symmetra. <br>Press the browse button to start.</center></html>");
+		introMsg.setHorizontalAlignment(SwingConstants.CENTER);
+		introMsg.setFont(new Font("Segoe UI", Font.PLAIN, 15));
+		welcomeWindow.add(introMsg, BorderLayout.NORTH);
+
+		JPanel bottomButtonWelcomeWindow = new JPanel();
+		welcomeWindow.add(bottomButtonWelcomeWindow, BorderLayout.SOUTH);
+		bottomButtonWelcomeWindow.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
+
+		browseBtn.setFont(new Font("Segoe UI", Font.PLAIN, 11));
+		bottomButtonWelcomeWindow.add(browseBtn);
+	}
+
+	public void importWindow() {
+
+		getContentPane().add(importWindow, "name_40604143170700");
+		importWindow.setLayout(new BorderLayout(0, 0));
+		imagePreviewGUI.setBorder(new EmptyBorder(20, 20, 20, 20));
+		importWindow.add(imagePreviewGUI);
+
+		JPanel bottomButtonsImportWindow = new JPanel();
+		importWindow.add(bottomButtonsImportWindow, BorderLayout.SOUTH);
+
+		bottomButtonsImportWindow.add(browseBtnImportWindow);
+		browseBtn.setFont(new Font("Segoe UI", Font.PLAIN, 11));
+
+		comboBox.setFont(new Font("Segoe UI", Font.PLAIN, 11));
+		bottomButtonsImportWindow.add(comboBox);
+
+		imageSizeStatus.setHorizontalAlignment(SwingConstants.CENTER);
+		imageSizeStatus.setFont(new Font("Segoe UI", Font.PLAIN, 11));
+		bottomButtonsImportWindow.add(imageSizeStatus);
+
+		removeImageBtn.setFont(new Font("Segoe UI", Font.PLAIN, 11));
+		bottomButtonsImportWindow.add(removeImageBtn);
+
+		analyzeBtn.setFont(new Font("Segoe UI", Font.PLAIN, 11));
+		bottomButtonsImportWindow.add(analyzeBtn);
+	}
+
+	public void analyzeWindow() {
+
+		getContentPane().add(analyzeWindow, "name_40604163746800");
+		analyzeWindow.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
+
+		analyzingLabel.setFont(new Font("Segoe UI", Font.PLAIN, 15));
+		analyzeWindow.add(analyzingLabel);
+
+		progressBar.setStringPainted(true);
+		analyzeWindow.add(progressBar);
+	}
+
+	public void resultsWindow() {
+
+		getContentPane().add(resultsWindow, "name_40604185542600");
+		resultsWindow.setLayout(new BorderLayout(0, 0));
+
+		JPanel graphicalRepresentation = new JPanel();
+		resultsWindow.add(graphicalRepresentation, BorderLayout.CENTER);
+
+		JPanel bottomButtonsResultsWindow = new JPanel();
+		resultsWindow.add(bottomButtonsResultsWindow, BorderLayout.SOUTH);
+
+		resultsDropdownMenu.setFont(new Font("Segoe UI", Font.PLAIN, 11));
+		bottomButtonsResultsWindow.add(resultsDropdownMenu);
+
+		saveDataInAcsv.setFont(new Font("Segoe UI", Font.PLAIN, 11));
+		bottomButtonsResultsWindow.add(saveDataInAcsv);
+
+		homeBtn.setFont(new Font("Segoe UI", Font.PLAIN, 11));
+		bottomButtonsResultsWindow.add(homeBtn);
 	}
 
 	/*
@@ -127,29 +156,24 @@ public class View extends JFrame {
 	 */
 	// if every image is removed then this method will
 	// return everything to normal as the beginning
+
+	protected void centerWindowOnCurrentDisplay() {
+		setLocation(screenSize.width / 2 - getSize().width / 2, screenSize.height / 2 - getSize().height / 2);
+	}
+
 	public void returnEverythingToNormal() {
-		getRemoveImageBtn().setVisible(false);
-		analyzeBtn.setEnabled(false);
-		getComboBox().setVisible(false);
-		setSize(500, 200);
-		status.setText("Waiting");
-		status.setForeground(Color.ORANGE);
-		getImageSizeStatus().setText(null);
+		welcomeWindow.setVisible(true);
+		setSize(300, 150);
+		centerWindowOnCurrentDisplay();
+		importWindow.setVisible(false);
 	}
 
 	// change the view if the image imported was correct format
 	public void callViewToChange() {
+		importWindow.setVisible(true);
 		setSize(700, 700);
 		centerWindowOnCurrentDisplay();
-		getImagePreviewGUI().setVisible(true);
-		getImagePreviewGUI().setText(null);
-		status.setForeground(Color.green);
-		status.setText("Ready");
-		analyzeBtn.setEnabled(true);
-	}
-
-	protected void centerWindowOnCurrentDisplay() {
-		setLocation(screenSize.width / 2 - getSize().width / 2, screenSize.height / 2 - getSize().height / 2);
+		welcomeWindow.setVisible(false);
 	}
 
 	public void msgbox(String s) {
@@ -157,28 +181,27 @@ public class View extends JFrame {
 	}
 
 	public void showProgressBar() {
-		panel1.setVisible(false);
+		analyzeWindow.setVisible(true);
 		update(getGraphics());
-		getProgressBar().setStringPainted(true);
-		setVisible(false);
-		panel2.add(analyzingLabel);
-		panel2.add(getProgressBar());
-		getContentPane().add(panel2);
-		pack();
-		setVisible(true);
+		setSize(200, 100);
+		centerWindowOnCurrentDisplay();
+		importWindow.setVisible(false);
 	}
 
 	public void presentResults() {
-		panel2.setVisible(false);
-		setVisible(true);
-		panel3.setVisible(true);
-		panel3.add(getResults(), BorderLayout.CENTER);
-		panel3.add(panel4, BorderLayout.SOUTH);
-		panel4.add(getResultsDropdownMenu());
-		panel4.add(getIsImageSymmetrical());
-		panel4.add(getSaveDataInAcsv());
-		getContentPane().add(panel3);
-		pack();
+		resultsWindow.setVisible(true);
+//		centerWindowOnCurrentDisplay();
+		setSize(700, 700);
+		centerWindowOnCurrentDisplay();
+		analyzeWindow.setVisible(false);
+//		pack();
+	}
+
+	public void goBackHome() {
+		welcomeWindow.setVisible(true);
+		setSize(300, 150);
+		centerWindowOnCurrentDisplay();
+		resultsWindow.setVisible(false);
 	}
 
 	/*
@@ -187,6 +210,14 @@ public class View extends JFrame {
 	// function when you press the browse button
 	public void addMainViewListener(ActionListener listenImageButton) {
 		getBrowseBtn().addActionListener(listenImageButton);
+	}
+
+	public void addBrowseButtonImportWindowListener(ActionListener listenBrowseButton) {
+		getBrowseBtnImportWindow().addActionListener(listenBrowseButton);
+	}
+
+	public void addHomeButtonListener(ActionListener listenHomeButton) {
+		getHomeBtn().addActionListener(listenHomeButton);
 	}
 
 	// function when your press the analyze button
@@ -215,25 +246,21 @@ public class View extends JFrame {
 		return browseBtn;
 	}
 
-	public void setBrowseBtn(JButton browseBtn) {
-		this.browseBtn = browseBtn;
+	public JButton getHomeBtn() {
+		return homeBtn;
 	}
 
-	public JTextArea getResults() {
-		return results;
+	public JButton getBrowseBtnImportWindow() {
+		return browseBtnImportWindow;
 	}
 
-	public void setResults(JTextArea results) {
-		this.results = results;
-	}
-
-	public JLabel getIsImageSymmetrical() {
-		return isImageSymmetrical;
-	}
-
-	public void setIsImageSymmetrical(JLabel isImageSymmetrical) {
-		this.isImageSymmetrical = isImageSymmetrical;
-	}
+//	public JTextArea getResults() {
+//		return results;
+//	}
+//
+//	public JLabel getIsImageSymmetrical() {
+//		return isImageSymmetrical;
+//	}
 
 	public JProgressBar getProgressBar() {
 		return progressBar;
@@ -243,47 +270,23 @@ public class View extends JFrame {
 		return resultsDropdownMenu;
 	}
 
-	public void setResultsDropdownMenu(JComboBox<String> resultsDropdownMenu) {
-		this.resultsDropdownMenu = resultsDropdownMenu;
-	}
-
 	public JComboBox<String> getComboBox() {
 		return comboBox;
-	}
-
-	public void setComboBox(JComboBox<String> comboBox) {
-		this.comboBox = comboBox;
 	}
 
 	public JLabel getImagePreviewGUI() {
 		return imagePreviewGUI;
 	}
 
-	public void setImagePreviewGUI(JLabel imagePreviewGUI) {
-		this.imagePreviewGUI = imagePreviewGUI;
-	}
-
 	public JLabel getImageSizeStatus() {
 		return imageSizeStatus;
-	}
-
-	public void setImageSizeStatus(JLabel imageSizeStatus) {
-		this.imageSizeStatus = imageSizeStatus;
 	}
 
 	public JButton getRemoveImageBtn() {
 		return removeImageBtn;
 	}
 
-	public void setRemoveImageBtn(JButton removeImageBtn) {
-		this.removeImageBtn = removeImageBtn;
-	}
-
 	public JButton getSaveDataInAcsv() {
 		return saveDataInAcsv;
-	}
-
-	public void setSaveDataInAcsv(JButton saveDataInAcsv) {
-		this.saveDataInAcsv = saveDataInAcsv;
 	}
 }
