@@ -48,8 +48,6 @@ public class View extends JFrame {
 
 	Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 
-//	final smallWindow = this.setSize(300, 150);
-
 	public View() {
 		setTitle("Symmetra");
 		setBackground(Color.WHITE);
@@ -66,10 +64,9 @@ public class View extends JFrame {
 		analyzeWindow();
 		resultsWindow.setVisible(false);
 		resultsWindow();
-
 	}
 
-	public void welcomeWindow() {
+	private void welcomeWindow() {
 
 		setSize(300, 150);
 		centerWindowOnCurrentDisplay();
@@ -91,8 +88,7 @@ public class View extends JFrame {
 		bottomButtonWelcomeWindow.add(browseBtn);
 	}
 
-	public void importWindow() {
-
+	private void importWindow() {
 		getContentPane().add(importWindow, "name_40604143170700");
 		importWindow.setLayout(new BorderLayout(0, 0));
 		imagePreviewGUI.setBorder(new EmptyBorder(20, 20, 20, 20));
@@ -118,8 +114,7 @@ public class View extends JFrame {
 		bottomButtonsImportWindow.add(analyzeBtn);
 	}
 
-	public void analyzeWindow() {
-
+	private void analyzeWindow() {
 		getContentPane().add(analyzeWindow, "name_40604163746800");
 		analyzeWindow.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
 
@@ -130,7 +125,7 @@ public class View extends JFrame {
 		analyzeWindow.add(progressBar);
 	}
 
-	public void resultsWindow() {
+	private void resultsWindow() {
 
 		getContentPane().add(resultsWindow, "name_40604185542600");
 		resultsWindow.setLayout(new BorderLayout(0, 0));
@@ -154,10 +149,7 @@ public class View extends JFrame {
 	/*
 	 * METHODS
 	 */
-	// if every image is removed then this method will
-	// return everything to normal as the beginning
-
-	protected void centerWindowOnCurrentDisplay() {
+	private void centerWindowOnCurrentDisplay() {
 		setLocation(screenSize.width / 2 - getSize().width / 2, screenSize.height / 2 - getSize().height / 2);
 	}
 
@@ -190,11 +182,9 @@ public class View extends JFrame {
 
 	public void presentResults() {
 		resultsWindow.setVisible(true);
-//		centerWindowOnCurrentDisplay();
 		setSize(700, 700);
 		centerWindowOnCurrentDisplay();
 		analyzeWindow.setVisible(false);
-//		pack();
 	}
 
 	public void goBackHome() {
@@ -253,14 +243,6 @@ public class View extends JFrame {
 	public JButton getBrowseBtnImportWindow() {
 		return browseBtnImportWindow;
 	}
-
-//	public JTextArea getResults() {
-//		return results;
-//	}
-//
-//	public JLabel getIsImageSymmetrical() {
-//		return isImageSymmetrical;
-//	}
 
 	public JProgressBar getProgressBar() {
 		return progressBar;

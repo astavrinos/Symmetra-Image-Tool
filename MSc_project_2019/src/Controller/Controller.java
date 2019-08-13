@@ -1,5 +1,4 @@
 package Controller;
-import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
@@ -34,27 +33,27 @@ public class Controller {
 		this.view = view;
 		this.model = model;
 
-		this.view.addMainViewListener(new MainViewListener());
-		this.view.addProceedAnalyzeListener(new ProceedAnalyze());
-		this.view.addComboBoxSelect(new ComboBoxSelect());
+		this.view.addMainViewListener(new BrowseButton());
+		this.view.addProceedAnalyzeListener(new AnalyzeButton());
+		this.view.addComboBoxSelect(new SwitchBetweenImages());
 		this.view.addRemoveImageButtonListener(new RemoveImageButton());
-		this.view.addSelectResultsComboBoxListener(new SelectResultsComboBox());
-		this.view.addSaveDataButtonListener(new SaveDataInAcsv());
-		this.view.addBrowseButtonImportWindowListener(new MainViewListener());
-		this.view.addHomeButtonListener(new ListenHomeButton());
+		this.view.addSelectResultsComboBoxListener(new ResultsDropdownMenu());
+		this.view.addSaveDataButtonListener(new ExportDataToCSV());
+		this.view.addBrowseButtonImportWindowListener(new BrowseButton());
+		this.view.addHomeButtonListener(new HomeButton());
 	}
 
 	/*
 	 * ACTION LISTENERS
 	 */
-	private class MainViewListener implements ActionListener {
+	private class BrowseButton implements ActionListener {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			imageSelectionWindow();
 		}
 	}
 	
-	private class ListenHomeButton implements ActionListener {
+	private class HomeButton implements ActionListener {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			view.goBackHome();
@@ -67,21 +66,21 @@ public class Controller {
 	}
 
 //	https://stackabuse.com/reading-and-writing-csvs-in-java/
-	private class SaveDataInAcsv implements ActionListener {
+	private class ExportDataToCSV implements ActionListener {
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			saveDataToAcsv();
+			exportDataToCSV();
 		}
 	}
 
-	private class ProceedAnalyze implements ActionListener {
+	private class AnalyzeButton implements ActionListener {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			proceedOnAnalyzingImages();
 		}
 	}
 
-	private class SelectResultsComboBox implements ItemListener {
+	private class ResultsDropdownMenu implements ItemListener {
 		public void itemStateChanged(ItemEvent e1) {
 			dropdownMenuForResultsActions(e1);
 		}
@@ -94,7 +93,7 @@ public class Controller {
 		}
 	}
 
-	private class ComboBoxSelect implements ActionListener {
+	private class SwitchBetweenImages implements ActionListener {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			imageSelectionForPreviewImage();
@@ -286,7 +285,7 @@ public class Controller {
 		}
 	}
 
-	private void saveDataToAcsv() {
+	private void exportDataToCSV() {
 		@SuppressWarnings("unused")
 		ExportData exportData = new ExportData(model.getImageDetails(), model.getCalculations());
 		view.getSaveDataInAcsv().setEnabled(false);
