@@ -127,6 +127,7 @@ public class Controller {
 					if (model.getImageDetails().size() == 2) {
 						view.getBrowseBtn().setEnabled(false);
 						view.msgbox("Image limit reached.");
+//						Rules rules = mew 	rules (kdgkdksd)
 					}
 					return true;
 				}

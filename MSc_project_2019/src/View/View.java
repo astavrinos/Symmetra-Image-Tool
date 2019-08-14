@@ -178,14 +178,15 @@ public class View extends JFrame {
 	public void showAnalyzeWindow() {
 		analyzeWindow.setVisible(true);
 		update(getGraphics());
-		setSize(200, 100);
+		setSize(300, 80);
 		centerWindowOnCurrentDisplay();
 		importWindow.setVisible(false);
 	}
 
 	public void showPresentResults() {
 		resultsWindow.setVisible(true);
-		setSize(700, 700);
+		setSize(700, 600);
+		
 		centerWindowOnCurrentDisplay();
 		analyzeWindow.setVisible(false);
 	}
