@@ -1,4 +1,6 @@
 package Controller;
+
+import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
@@ -11,6 +13,20 @@ import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.SwingUtilities;
 import javax.swing.filechooser.FileNameExtensionFilter;
+
+import org.jfree.chart.ChartFactory;
+import org.jfree.chart.ChartPanel;
+import org.jfree.chart.JFreeChart;
+import org.jfree.chart.labels.ItemLabelAnchor;
+import org.jfree.chart.labels.ItemLabelPosition;
+import org.jfree.chart.labels.StandardCategoryItemLabelGenerator;
+import org.jfree.chart.plot.CategoryPlot;
+import org.jfree.chart.plot.PlotOrientation;
+import org.jfree.chart.plot.ValueMarker;
+import org.jfree.chart.renderer.category.BarRenderer;
+import org.jfree.data.category.DefaultCategoryDataset;
+import org.jfree.ui.RectangleAnchor;
+import org.jfree.ui.TextAnchor;
 
 import Model.Calculations;
 import Model.ExportData;
@@ -52,16 +68,14 @@ public class Controller {
 			imageSelectionWindow();
 		}
 	}
-	
+
 	private class HomeButton implements ActionListener {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			view.goBackHome();
-			model.setItemsInsideComboBoxCurrently(1);
-			
-				model.getImageDetails().clear();
-				model.getCalculations().clear();
-				
+			model.setItemsInsideComboBoxCurrently(0);
+			model.getImageDetails().clear();
+			model.getCalculations().clear();
 		}
 	}
 
@@ -126,20 +140,49 @@ public class Controller {
 	}
 
 	private void dropdownMenuForResultsActions(ItemEvent e1) {
+		view.getGraphicalRepresentation().removeAll();
 		for (int i = 0; i < model.getCalculations().size(); i++) {
 			if (e1.getStateChange() == ItemEvent.SELECTED) {
 				if (e1.getItem().equals(model.getCalculations().get(i).getInput().getName())) {
-
-//					view.getResults().setText("Area value is: " + model.getCalculations().get(i).getPixelsNumber()
-//							+ "\nThe mean of gray values is: " + model.getCalculations().get(i).getMeanGrayValueResult()
-//							+ "\nThe median is: " + model.getCalculations().get(i).getMedianResult()
-//							+ "\nThe variance is: " + model.getCalculations().get(i).getVarianceResult()
-//							+ "\nThe standard deviation is: " + model.getCalculations().get(i).getStdDeviationResult()
-//							+ "\nThe skewness is: " + model.getCalculations().get(i).getSkewnessResult());
-
+					int areaResult = model.getCalculations().get(i).getPixelsNumber();
+					double meanResult = model.getCalculations().get(i).getMeanGrayValueResult();
+					double medianResult = model.getCalculations().get(i).getMedianResult();
+					double varianceResult = model.getCalculations().get(i).getVarianceResult();
+					double standardDevResult = model.getCalculations().get(i).getStdDeviationResult();
 					double skewnessResult = model.getCalculations().get(i).getSkewnessResult();
 					String imageName = model.getCalculations().get(i).getInput().getName();
 
+					DefaultCategoryDataset dcd = new DefaultCategoryDataset();
+//					dcd.setValue(areaResult, "Area", imageName);
+					dcd.setValue(meanResult, "Mean gray values", imageName);
+					dcd.setValue(medianResult, "Median", imageName);
+//					dcd.setValue(varianceResult, "Variance", imageName);
+					dcd.setValue(skewnessResult, "Skewness", imageName);
+
+					JFreeChart jchart = ChartFactory.createBarChart3D("Results of " + imageName, "Image name",
+							"Metrics", dcd, PlotOrientation.VERTICAL, true, false, false);
+					CategoryPlot plot = jchart.getCategoryPlot();
+
+					ValueMarker marker = new ValueMarker(0.5);
+					marker.setLabel("Required Maximum Level of Symmetry 0.5");
+					marker.setLabelAnchor(RectangleAnchor.TOP);
+					marker.setLabelTextAnchor(TextAnchor.BOTTOM_CENTER);
+					marker.setPaint(Color.BLACK);
+					plot.addRangeMarker(marker);
+
+					BarRenderer renderer = (BarRenderer) plot.getRenderer();
+					DecimalFormat decimalformat = new DecimalFormat("##.###");
+					renderer.setItemLabelGenerator(new StandardCategoryItemLabelGenerator("{2}", decimalformat));
+					plot.setRenderer(renderer);
+					renderer.setBasePositiveItemLabelPosition(
+							new ItemLabelPosition(ItemLabelAnchor.OUTSIDE12, TextAnchor.HALF_ASCENT_CENTER));
+					renderer.setItemLabelsVisible(true);
+					jchart.getCategoryPlot().setRenderer(renderer);
+
+					plot.setRangeGridlinePaint(Color.black);
+					ChartPanel chartPanel = new ChartPanel(jchart);
+
+					view.getGraphicalRepresentation().add(chartPanel);
 					checkIfItsSymmetrical(skewnessResult, imageName);
 				}
 
@@ -148,16 +191,16 @@ public class Controller {
 	}
 
 	protected void checkIfItsSymmetrical(double skewnessResult, String imageName) {
-//		if (skewnessResult < 0.5 && skewnessResult > -0.5) {
-//			view.getIsImageSymmetrical().setForeground(Color.GREEN);
-//			view.getIsImageSymmetrical().setText(imageName + " is fairly symmetrical.");
-//		} else if (skewnessResult > 0.5 && skewnessResult < 1.0 || skewnessResult < -0.5 && skewnessResult > -1.0) {
-//			view.getIsImageSymmetrical().setForeground(Color.ORANGE);
-//			view.getIsImageSymmetrical().setText(imageName + " is moderately symmetrical.");
-//		} else {
-//			view.getIsImageSymmetrical().setForeground(Color.RED);
-//			view.getIsImageSymmetrical().setText(imageName + " is not symmetrical.");
-//		}
+		if (skewnessResult < 0.5 && skewnessResult > -0.5) {
+			view.getIsImageSymmetrical().setForeground(Color.GREEN);
+			view.getIsImageSymmetrical().setText(imageName + " is fairly symmetrical.");
+		} else if (skewnessResult > 0.5 && skewnessResult < 1.0 || skewnessResult < -0.5 && skewnessResult > -1.0) {
+			view.getIsImageSymmetrical().setForeground(Color.ORANGE);
+			view.getIsImageSymmetrical().setText(imageName + " is moderately symmetrical.");
+		} else {
+			view.getIsImageSymmetrical().setForeground(Color.RED);
+			view.getIsImageSymmetrical().setText(imageName + " is not symmetrical.");
+		}
 	}
 
 	private void proceedOnAnalyzingImages() {
@@ -180,10 +223,10 @@ public class Controller {
 
 					view.getResultsDropdownMenu().addItem(model.getCalculations().get(i).getInput().getName());
 				}
-				view.presentResults();
+				view.showPresentResults();
 			}
 		};
-		view.showProgressBar();
+		view.showAnalyzeWindow();
 		t.start();
 	}
 
@@ -261,8 +304,7 @@ public class Controller {
 		int imageHeight = imageIcon.getIconHeight();
 		int imageWidth = imageIcon.getIconWidth();
 
-		view.callViewToChange();
-		view.getImagePreviewGUI().setVisible(true);
+		view.showImportWindow();
 
 		ImageIcon resizedImage = model.resizeImageForPreviewImageGUI(imageIcon, 644, 541);
 
@@ -289,6 +331,6 @@ public class Controller {
 		@SuppressWarnings("unused")
 		ExportData exportData = new ExportData(model.getImageDetails(), model.getCalculations());
 		view.getSaveDataInAcsv().setEnabled(false);
-		view.msgbox("Successfully exported to Desktop");
+		view.msgbox("Successfully exported to Desktop with file name " + exportData.getPathToSave());
 	}
 }

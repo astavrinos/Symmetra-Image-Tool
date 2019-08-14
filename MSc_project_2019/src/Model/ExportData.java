@@ -1,4 +1,5 @@
 package Model;
+
 import java.io.FileWriter;
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -6,16 +7,16 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 public class ExportData extends Model {
+	DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("yyyyMMdd-HHmmss");
+	LocalDateTime getTime = LocalDateTime.now();
+
+	String pathToSave = "symmetra_analyzation_" + dateFormat.format(getTime) + ".csv";
 
 	public ExportData(List<ImageDetails> imageDetailsList, List<Calculations> calcImageColors) {
 
-		DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("yyyy_MM_dd-HH_mm_ss");
-		LocalDateTime getTime = LocalDateTime.now();
-
 		try {
 
-			FileWriter csvWriter = new FileWriter(System.getProperty("user.home") + "//Desktop//symmetra_analyzation_"
-					+ dateFormat.format(getTime) + ".csv");
+			FileWriter csvWriter = new FileWriter(System.getProperty("user.home") + "//Desktop//" + pathToSave);
 			csvWriter.append("image_path");
 			csvWriter.append(",");
 			csvWriter.append("image_name");
@@ -69,6 +70,10 @@ public class ExportData extends Model {
 		} catch (IOException a) {
 			a.printStackTrace();
 		}
+	}
+
+	public String getPathToSave() {
+		return pathToSave;
 	}
 
 }

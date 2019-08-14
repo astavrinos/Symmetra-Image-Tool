@@ -24,29 +24,30 @@ import javax.swing.border.EmptyBorder;
 @SuppressWarnings("serial")
 public class View extends JFrame {
 
-	JPanel welcomeWindow = new JPanel();
+	private JPanel welcomeWindow = new JPanel();
+	private JPanel importWindow = new JPanel();
+	private JPanel analyzeWindow = new JPanel();
+	private JPanel resultsWindow = new JPanel();
+	private JPanel graphicalRepresentation = new JPanel();
 
-	JPanel importWindow = new JPanel();
-	JPanel analyzeWindow = new JPanel();
-	JPanel resultsWindow = new JPanel();
+	private JLabel imageSizeStatus = new JLabel("");
+	private JLabel imagePreviewGUI = new JLabel("", JLabel.CENTER);
+	private JLabel analyzingLabel = new JLabel("Analyzing...");
 
-	JLabel imageSizeStatus = new JLabel("");
-	JLabel imagePreviewGUI = new JLabel("", JLabel.CENTER);
-	JLabel analyzingLabel = new JLabel("Analyzing...");
+	private JButton browseBtn = new JButton("Browse");
+	private JButton browseBtnImportWindow = new JButton("Browse");
+	private JButton removeImageBtn = new JButton("Remove current image");
+	private JButton analyzeBtn = new JButton("Analyze");
+	private JButton saveDataInAcsv = new JButton("Export data");
+	private JButton homeBtn = new JButton("Home");
 
-	JButton browseBtn = new JButton("Browse");
-	JButton browseBtnImportWindow = new JButton("Browse");
-	JButton removeImageBtn = new JButton("Remove current image");
-	JButton analyzeBtn = new JButton("Analyze");
-	JButton saveDataInAcsv = new JButton("Export data");
-	JButton homeBtn = new JButton("Home");
+	private JComboBox<String> comboBox = new JComboBox<String>();
+	private JComboBox<String> resultsDropdownMenu = new JComboBox<String>();
 
-	JComboBox<String> comboBox = new JComboBox<String>();
-	JComboBox<String> resultsDropdownMenu = new JComboBox<String>();
+	private JProgressBar progressBar = new JProgressBar();
 
-	JProgressBar progressBar = new JProgressBar();
-
-	Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+	private Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+	private JLabel isImageSymmetrical = new JLabel("", JLabel.CENTER);
 
 	public View() {
 		setTitle("Symmetra");
@@ -130,7 +131,6 @@ public class View extends JFrame {
 		getContentPane().add(resultsWindow, "name_40604185542600");
 		resultsWindow.setLayout(new BorderLayout(0, 0));
 
-		JPanel graphicalRepresentation = new JPanel();
 		resultsWindow.add(graphicalRepresentation, BorderLayout.CENTER);
 
 		JPanel bottomButtonsResultsWindow = new JPanel();
@@ -144,6 +144,9 @@ public class View extends JFrame {
 
 		homeBtn.setFont(new Font("Segoe UI", Font.PLAIN, 11));
 		bottomButtonsResultsWindow.add(homeBtn);
+		resultsWindow.add(isImageSymmetrical, BorderLayout.NORTH);
+		isImageSymmetrical.setFont(new Font("Segoe UI", Font.BOLD, 14));
+
 	}
 
 	/*
@@ -161,7 +164,7 @@ public class View extends JFrame {
 	}
 
 	// change the view if the image imported was correct format
-	public void callViewToChange() {
+	public void showImportWindow() {
 		importWindow.setVisible(true);
 		setSize(700, 700);
 		centerWindowOnCurrentDisplay();
@@ -172,7 +175,7 @@ public class View extends JFrame {
 		JOptionPane.showMessageDialog(null, s);
 	}
 
-	public void showProgressBar() {
+	public void showAnalyzeWindow() {
 		analyzeWindow.setVisible(true);
 		update(getGraphics());
 		setSize(200, 100);
@@ -180,7 +183,7 @@ public class View extends JFrame {
 		importWindow.setVisible(false);
 	}
 
-	public void presentResults() {
+	public void showPresentResults() {
 		resultsWindow.setVisible(true);
 		setSize(700, 700);
 		centerWindowOnCurrentDisplay();
@@ -203,11 +206,11 @@ public class View extends JFrame {
 	}
 
 	public void addBrowseButtonImportWindowListener(ActionListener listenBrowseButton) {
-		getBrowseBtnImportWindow().addActionListener(listenBrowseButton);
+		browseBtnImportWindow.addActionListener(listenBrowseButton);
 	}
 
 	public void addHomeButtonListener(ActionListener listenHomeButton) {
-		getHomeBtn().addActionListener(listenHomeButton);
+		homeBtn.addActionListener(listenHomeButton);
 	}
 
 	// function when your press the analyze button
@@ -232,16 +235,11 @@ public class View extends JFrame {
 		getSaveDataInAcsv().addActionListener(SaveDataButton);
 	}
 
+	/*
+	 * GETTERS AND SETTERS
+	 */
 	public JButton getBrowseBtn() {
 		return browseBtn;
-	}
-
-	public JButton getHomeBtn() {
-		return homeBtn;
-	}
-
-	public JButton getBrowseBtnImportWindow() {
-		return browseBtnImportWindow;
 	}
 
 	public JProgressBar getProgressBar() {
@@ -270,5 +268,13 @@ public class View extends JFrame {
 
 	public JButton getSaveDataInAcsv() {
 		return saveDataInAcsv;
+	}
+
+	public JPanel getGraphicalRepresentation() {
+		return graphicalRepresentation;
+	}
+
+	public JLabel getIsImageSymmetrical() {
+		return isImageSymmetrical;
 	}
 }
