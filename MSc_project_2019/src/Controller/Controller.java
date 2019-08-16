@@ -9,10 +9,12 @@ import java.io.File;
 import java.text.DecimalFormat;
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
-import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
@@ -46,6 +48,7 @@ public class Controller {
 	private FileNameExtensionFilter filter;
 	private ImageIcon imageIcon;
 	private int valueOfProgressBar = 0;
+	private int j = 0;
 
 	public Controller(View view, Model model) {
 		this.view = view;
@@ -129,7 +132,6 @@ public class Controller {
 					if (model.getImageDetails().size() == 2) {
 						view.getBrowseBtn().setEnabled(false);
 						view.msgbox("Image limit reached.");
-//						Rules rules = mew 	rules (kdgkdksd)
 					}
 					return true;
 				}
@@ -217,40 +219,37 @@ public class Controller {
 			@Override
 			protected Void doInBackground() throws Exception {
 
-				for (int i = 0; i < model.getImageDetails().size(); i++) {
-					Thread.sleep(1000);
+				for (int x = 0; x < model.getImageDetails().size(); x++) {
 					valueOfProgressBar = valueOfProgressBar + (100 / (model.getImageDetails().size()));
-
 					Calculations calculations = new Calculations(
-							new File(model.getImageDetails().get(i).getImagePath()),
-							model.getImageDetails().get(i).getOriginalImage());
-					model.getCalculations().add(calculations);
+							new File(model.getImageDetails().get(x).getImagePath()),
+							model.getImageDetails().get(x).getOriginalImage());
 
-					Thread t1 = new Thread(calculations, "thread." + i);
+					Thread t1 = new Thread(calculations, "thread." + x);
+
+					System.out.println("hey " + t1.getName());
+
 					t1.start();
 
-					view.getResultsDropdownMenu().addItem(model.getCalculations().get(i).getInput().getName());
+					model.getCalculations().add(calculations);
 
 					publish(valueOfProgressBar);
-
+					Thread.sleep(1000);
 				}
 				return null;
-
 			}
 
 			@Override
 			protected void process(List<Integer> chunks) {
 				int value = chunks.get(chunks.size() - 1);
-
 				view.getProgressBar().setValue(value);
 			}
 
 			@Override
 			protected void done() {
 				for (int i = 0; i < model.getImageDetails().size(); i++) {
-
+					view.getResultsDropdownMenu().addItem(model.getCalculations().get(i).getInput().getName());
 				}
-
 				view.showPresentResults();
 			}
 
