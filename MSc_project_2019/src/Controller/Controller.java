@@ -8,10 +8,12 @@ import java.awt.event.ItemListener;
 import java.io.File;
 import java.text.DecimalFormat;
 import java.util.Iterator;
+import java.util.List;
 
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.SwingUtilities;
+import javax.swing.SwingWorker;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import org.jfree.chart.ChartFactory;
@@ -141,7 +143,9 @@ public class Controller {
 	}
 
 	private void dropdownMenuForResultsActions(ItemEvent e1) {
+
 		view.getGraphicalRepresentation().removeAll();
+
 		for (int i = 0; i < model.getCalculations().size(); i++) {
 			if (e1.getStateChange() == ItemEvent.SELECTED) {
 				if (e1.getItem().equals(model.getCalculations().get(i).getInput().getName())) {
@@ -185,6 +189,7 @@ public class Controller {
 
 					view.getGraphicalRepresentation().add(chartPanel);
 					checkIfItsSymmetrical(skewnessResult, imageName);
+
 				}
 
 			}
@@ -205,30 +210,54 @@ public class Controller {
 	}
 
 	private void proceedOnAnalyzingImages() {
+		view.showAnalyzeWindow();
 
-		Thread t = new Thread() {
-			public void run() {
+		SwingWorker<Void, Integer> progressSwing = new SwingWorker<Void, Integer>() {
+
+			@Override
+			protected Void doInBackground() throws Exception {
+
 				for (int i = 0; i < model.getImageDetails().size(); i++) {
-					SwingUtilities.invokeLater(new Runnable() {
-						public void run() {
-							valueOfProgressBar = valueOfProgressBar + (100 / (model.getImageDetails().size()));
-							view.getProgressBar().setValue(valueOfProgressBar);
-						}
-					});
+					Thread.sleep(1000);
+					valueOfProgressBar = valueOfProgressBar + (100 / (model.getImageDetails().size()));
 
 					Calculations calculations = new Calculations(
 							new File(model.getImageDetails().get(i).getImagePath()),
 							model.getImageDetails().get(i).getOriginalImage());
-
 					model.getCalculations().add(calculations);
 
+					Thread t1 = new Thread(calculations, "thread." + i);
+					t1.start();
+
 					view.getResultsDropdownMenu().addItem(model.getCalculations().get(i).getInput().getName());
+
+					publish(valueOfProgressBar);
+
 				}
+				return null;
+
+			}
+
+			@Override
+			protected void process(List<Integer> chunks) {
+				int value = chunks.get(chunks.size() - 1);
+
+				view.getProgressBar().setValue(value);
+			}
+
+			@Override
+			protected void done() {
+				for (int i = 0; i < model.getImageDetails().size(); i++) {
+
+				}
+
 				view.showPresentResults();
 			}
+
 		};
-		view.showAnalyzeWindow();
-		t.start();
+
+		progressSwing.execute();
+
 	}
 
 	private void imageSelectionWindow() {

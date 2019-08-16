@@ -16,7 +16,7 @@ import java.util.Map.Entry;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 
-public class Calculations extends Model {
+public class Calculations extends Model implements Runnable {
 
 	private File input;
 	private ImageIcon imageIcon;
@@ -48,13 +48,19 @@ public class Calculations extends Model {
 		this.input = input;
 		this.imageIcon = imageIcon;
 
+
+	}// end of constructor
+
+	
+	@Override
+	public void run() {
 		getTheColorsOfTheImageAndTheArea();
 		calculateTheMean();
 		calculateTheMedian();
 		calculateTheStdDeviation();
 		calculateTheSkewness();
-	}// end of constructor
-
+	}
+	
 	/*
 	 * METHODS
 	 */
@@ -223,5 +229,7 @@ public class Calculations extends Model {
 	public void setSkewnessResult(double skewnessResult) {
 		this.skewnessResult = skewnessResult;
 	}
+
+
 
 }// end of calculate pixels colors class
