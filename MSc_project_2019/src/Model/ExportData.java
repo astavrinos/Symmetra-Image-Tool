@@ -16,7 +16,7 @@ public class ExportData extends Model {
 
 		try {
 
-			FileWriter csvWriter = new FileWriter(System.getProperty("user.home") + "//Desktop//" + pathToSave);
+			FileWriter csvWriter = new FileWriter(System.getProperty("user.home") + "//Desktop//" + pathToSave);			
 			csvWriter.append("image_path");
 			csvWriter.append(",");
 			csvWriter.append("image_name");

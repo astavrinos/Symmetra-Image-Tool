@@ -6,13 +6,13 @@ public class Main {
 
 	@SuppressWarnings("unused")
 	public static void main(String[] args) {
-		// init model
+		// initialize model
 		Model model = new Model();
-		// init view
+		// initialize view
 		View view = new View();
-		// init controller
+		// initialize controller
 		Controller controller = new Controller(view, model);
 
 		view.setVisible(true);
-	}// end of main
-}// end of main class
+	}
+}

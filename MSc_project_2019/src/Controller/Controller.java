@@ -9,28 +9,11 @@ import java.io.File;
 import java.text.DecimalFormat;
 import java.util.Iterator;
 import java.util.List;
-import java.util.concurrent.locks.Condition;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.SwingWorker;
 import javax.swing.filechooser.FileNameExtensionFilter;
-
-import org.jfree.chart.ChartFactory;
-import org.jfree.chart.ChartPanel;
-import org.jfree.chart.JFreeChart;
-import org.jfree.chart.labels.ItemLabelAnchor;
-import org.jfree.chart.labels.ItemLabelPosition;
-import org.jfree.chart.labels.StandardCategoryItemLabelGenerator;
-import org.jfree.chart.plot.CategoryPlot;
-import org.jfree.chart.plot.PlotOrientation;
-import org.jfree.chart.plot.ValueMarker;
-import org.jfree.chart.renderer.category.BarRenderer;
-import org.jfree.data.category.DefaultCategoryDataset;
-import org.jfree.ui.RectangleAnchor;
-import org.jfree.ui.TextAnchor;
 
 import Model.Calculations;
 import Model.ExportData;
@@ -40,26 +23,25 @@ import View.View;
 
 public class Controller {
 
-	protected View view;
-	protected Model model;
-	private DecimalFormat decimalFormat = new DecimalFormat("#.##");
+	private View view;
+	private Model model;
+
+	private DecimalFormat decimalFormatForImageSize = new DecimalFormat("#.##");
+	private JFileChooser chooser;
+
 	private int userSelectionOfImage;
-	protected JFileChooser chooser;
-	private FileNameExtensionFilter filter;
-	private ImageIcon imageIcon;
 	private int valueOfProgressBar = 0;
-	private int j = 0;
 
 	public Controller(View view, Model model) {
 		this.view = view;
 		this.model = model;
 
-		this.view.addMainViewListener(new BrowseButton());
+		this.view.addBrowseButtonWelcomeWindowListener(new BrowseButton());
 		this.view.addProceedAnalyzeListener(new AnalyzeButton());
-		this.view.addComboBoxSelect(new SwitchBetweenImages());
+		this.view.addDropdownMenuImportListener(new SwitchBetweenImages());
 		this.view.addRemoveImageButtonListener(new RemoveImageButton());
-		this.view.addSelectResultsComboBoxListener(new ResultsDropdownMenu());
-		this.view.addSaveDataButtonListener(new ExportDataToCSV());
+		this.view.addDropdownMenuResultsListener(new ResultsDropdownMenu());
+		this.view.addExportDataListener(new ExportDataToCSV());
 		this.view.addBrowseButtonImportWindowListener(new BrowseButton());
 		this.view.addHomeButtonListener(new HomeButton());
 	}
@@ -67,18 +49,22 @@ public class Controller {
 	/*
 	 * ACTION LISTENERS
 	 */
+
+	// Browse button that will open a jfilechooser window to select image
 	private class BrowseButton implements ActionListener {
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			imageSelectionWindow();
+			imageChooserWindow();
 		}
 	}
 
+	// home button action that will return everything back to normal (welcome
+	// window)
 	private class HomeButton implements ActionListener {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			view.goBackHome();
-			model.setItemsInsideComboBoxCurrently(0);
+			model.setItemsInsideDropdownMenuCurrently(0);
 			model.getImageDetails().clear();
 			model.getCalculations().clear();
 			valueOfProgressBar = 0;
@@ -86,7 +72,7 @@ public class Controller {
 		}
 	}
 
-//	https://stackabuse.com/reading-and-writing-csvs-in-java/
+	// action when export data button is pressed to export the data to a csv file
 	private class ExportDataToCSV implements ActionListener {
 		@Override
 		public void actionPerformed(ActionEvent e) {
@@ -94,6 +80,7 @@ public class Controller {
 		}
 	}
 
+	// action when analyze button is pressed
 	private class AnalyzeButton implements ActionListener {
 		@Override
 		public void actionPerformed(ActionEvent e) {
@@ -101,12 +88,15 @@ public class Controller {
 		}
 	}
 
+	// action when the dropdown menu of results is pressed
 	private class ResultsDropdownMenu implements ItemListener {
 		public void itemStateChanged(ItemEvent e1) {
 			dropdownMenuForResultsActions(e1);
 		}
 	}
 
+	// action when the remove image button is pressed to remove an image from the
+	// list
 	private class RemoveImageButton implements ActionListener {
 		@Override
 		public void actionPerformed(ActionEvent e) {
@@ -114,6 +104,7 @@ public class Controller {
 		}
 	}
 
+	// action when dropdown menu is selected an item to show the corresponding image
 	private class SwitchBetweenImages implements ActionListener {
 		@Override
 		public void actionPerformed(ActionEvent e) {
@@ -124,32 +115,39 @@ public class Controller {
 	/*
 	 * METHODS
 	 */
+
+	/*
+	 * Check if image is obligated to the rules implemented: 1. image is not more
+	 * than 1000 x 1000 pixels 2. image is type .jpg and .png 3. image is not
+	 * duplicate 4. maximum images allowed to import is 3
+	 */
 	private boolean checkImageIfItsObligatedToRules() {
-		model.setItemsInsideComboBoxCurrently(model.getItemsInsideComboBoxCurrently() + 1);
-		imageIcon = new ImageIcon(chooser.getSelectedFile().getAbsolutePath());
+		model.setItemsInsideDropdownMenuCurrently(model.getItemsInsideDropdownMenuCurrently() + 1);
+		ImageIcon imageIcon = new ImageIcon(chooser.getSelectedFile().getAbsolutePath());
 		if ((imageIcon.getIconHeight() <= 1000 && imageIcon.getIconWidth() <= 1000)) {
 			if (checkIfImageAlreadyExist() == true) {
 				if (model.getImageDetails().size() < 3) {
-					view.msgbox("Image " + model.getItemsInsideComboBoxCurrently() + " out of 3 imported.");
+					view.notificationMessagePopUp(
+							"Image " + model.getItemsInsideDropdownMenuCurrently() + " out of 3 imported.");
 					if (model.getImageDetails().size() == 2) {
-						view.msgbox("Image limit reached.");
-						view.getBrowseBtnImportWindow().setEnabled(false);
+						view.notificationMessagePopUp("Image limit reached.");
+						view.getBrowseButton_ImportWindow().setEnabled(false);
 					}
 					return true;
 				}
 			}
 		} else {
-			view.msgbox("Image is more than 1000 x 1000 pixels.");
-			model.setItemsInsideComboBoxCurrently(model.getItemsInsideComboBoxCurrently() - 1);
+			view.notificationMessagePopUp("Image is more than 1000 x 1000 pixels.");
+			model.setItemsInsideDropdownMenuCurrently(model.getItemsInsideDropdownMenuCurrently() - 1);
 			return false;
 		}
 		return false;
 	}
 
+	// when a certain image name is selected from the dropdown menu then represent
+	// the data for it
 	private void dropdownMenuForResultsActions(ItemEvent e1) {
-
 		view.getGraphicalRepresentation().removeAll();
-
 		for (int i = 0; i < model.getCalculations().size(); i++) {
 			if (e1.getStateChange() == ItemEvent.SELECTED) {
 				if (e1.getItem().equals(model.getCalculations().get(i).getInput().getName())) {
@@ -161,58 +159,31 @@ public class Controller {
 					double skewnessResult = model.getCalculations().get(i).getSkewnessResult();
 					String imageName = model.getCalculations().get(i).getInput().getName();
 
-					DefaultCategoryDataset dcd = new DefaultCategoryDataset();
-//					dcd.setValue(areaResult, "Area", imageName);
-					dcd.setValue(meanResult, "Mean gray values", imageName);
-					dcd.setValue(medianResult, "Median", imageName);
-//					dcd.setValue(varianceResult, "Variance", imageName);
-					dcd.setValue(skewnessResult, "Skewness", imageName);
+					view.produce3DBarChart(areaResult, meanResult, medianResult, varianceResult, standardDevResult,
+							skewnessResult, imageName);
 
-					JFreeChart jchart = ChartFactory.createBarChart3D("Results of " + imageName, "Image name",
-							"Metrics", dcd, PlotOrientation.VERTICAL, true, false, false);
-					CategoryPlot plot = jchart.getCategoryPlot();
-
-					ValueMarker marker = new ValueMarker(0.5);
-					marker.setLabel("Required Maximum Level of Symmetry 0.5");
-					marker.setLabelAnchor(RectangleAnchor.TOP);
-					marker.setLabelTextAnchor(TextAnchor.BOTTOM_CENTER);
-					marker.setPaint(Color.BLACK);
-					plot.addRangeMarker(marker);
-
-					BarRenderer renderer = (BarRenderer) plot.getRenderer();
-					DecimalFormat decimalformat = new DecimalFormat("##.###");
-					renderer.setItemLabelGenerator(new StandardCategoryItemLabelGenerator("{2}", decimalformat));
-					plot.setRenderer(renderer);
-					renderer.setBasePositiveItemLabelPosition(
-							new ItemLabelPosition(ItemLabelAnchor.OUTSIDE12, TextAnchor.HALF_ASCENT_CENTER));
-					renderer.setItemLabelsVisible(true);
-					jchart.getCategoryPlot().setRenderer(renderer);
-
-					plot.setRangeGridlinePaint(Color.black);
-					ChartPanel chartPanel = new ChartPanel(jchart);
-
-					view.getGraphicalRepresentation().add(chartPanel);
 					checkIfItsSymmetrical(skewnessResult, imageName);
-
 				}
-
 			}
 		}
 	}
 
-	protected void checkIfItsSymmetrical(double skewnessResult, String imageName) {
+	// checker method to check if the current image selected is symmetrical or not
+	private void checkIfItsSymmetrical(double skewnessResult, String imageName) {
 		if (skewnessResult < 0.5 && skewnessResult > -0.5) {
-			view.getIsImageSymmetrical().setForeground(Color.GREEN);
-			view.getIsImageSymmetrical().setText(imageName + " is fairly symmetrical.");
+			view.getImageSymmetryNotification().setForeground(Color.GREEN);
+			view.getImageSymmetryNotification().setText(imageName + " is fairly symmetrical.");
 		} else if (skewnessResult > 0.5 && skewnessResult < 1.0 || skewnessResult < -0.5 && skewnessResult > -1.0) {
-			view.getIsImageSymmetrical().setForeground(Color.ORANGE);
-			view.getIsImageSymmetrical().setText(imageName + " is moderately symmetrical.");
+			view.getImageSymmetryNotification().setForeground(Color.ORANGE);
+			view.getImageSymmetryNotification().setText(imageName + " is moderately symmetrical.");
 		} else {
-			view.getIsImageSymmetrical().setForeground(Color.RED);
-			view.getIsImageSymmetrical().setText(imageName + " is not symmetrical.");
+			view.getImageSymmetryNotification().setForeground(Color.RED);
+			view.getImageSymmetryNotification().setText(imageName + " is not symmetrical.");
 		}
 	}
 
+	// method that creates a swingworker to increment the value on progressbar and
+	// also creating threads to analyze many images in one go
 	private void proceedOnAnalyzingImages() {
 		view.showAnalyzeWindow();
 
@@ -244,13 +215,13 @@ public class Controller {
 			@Override
 			protected void process(List<Integer> chunks) {
 				int value = chunks.get(chunks.size() - 1);
-				view.getProgressBar().setValue(value);
+				view.getAnalyzeProgressBar().setValue(value);
 			}
 
 			@Override
 			protected void done() {
 				for (int i = 0; i < model.getImageDetails().size(); i++) {
-					view.getResultsDropdownMenu().addItem(model.getCalculations().get(i).getInput().getName());
+					view.getDropdownMenu_ResultsWindow().addItem(model.getCalculations().get(i).getInput().getName());
 				}
 				view.showPresentResults();
 			}
@@ -261,52 +232,57 @@ public class Controller {
 
 	}
 
-	private void imageSelectionWindow() {
+	// initiate file chooser window to select an image
+	private void imageChooserWindow() {
 		chooser = new JFileChooser(System.getProperty("user.home") + "//Pictures");
-		filter = new FileNameExtensionFilter("JPG & PNG Images", "jpg", "png");
+		FileNameExtensionFilter filter = new FileNameExtensionFilter("JPG & PNG Images", "jpg", "png");
 		chooser.setFileFilter(filter);
 		userSelectionOfImage = chooser.showOpenDialog(null);
 		if (userSelectionOfImage == JFileChooser.APPROVE_OPTION) {
-			imageIcon = new ImageIcon(chooser.getSelectedFile().getAbsolutePath());
+			ImageIcon imageIcon = new ImageIcon(chooser.getSelectedFile().getAbsolutePath());
 			if (filter.accept(chooser.getSelectedFile()) && checkImageIfItsObligatedToRules() == true) {
 				proceedActionIfTrue();
 			} else if (!filter.accept(chooser.getSelectedFile())) {
-				view.msgbox("The type of file is not .JPG or .PNG");
+				view.notificationMessagePopUp("The type of file is not .JPG or .PNG");
 			}
 		}
 
 	}
 
+	// when the remove current image button pressed then remove the image from the
+	// image details arraylist and remove from dropdown menu
 	private void removeImageButtonActions() {
-		Object selected = view.getComboBox().getSelectedItem();
+		Object selected = view.getDropdownMenu_ImportWindow().getSelectedItem();
 		for (int i = 0; i < model.getImageDetails().size(); i++) {
 			if (model.getImageDetails().get(i).getImageName().equals(selected)) {
 				model.getImageDetails().remove(i);
-				view.getImagePreviewGUI().setIcon(null);
-				view.getImagePreviewGUI().revalidate();
-				model.setItemsInsideComboBoxCurrently(model.getItemsInsideComboBoxCurrently() - 1);
-				view.getBrowseBtnImportWindow().setEnabled(true);
+				view.getImagePreview().setIcon(null);
+				view.getImagePreview().revalidate();
+				model.setItemsInsideDropdownMenuCurrently(model.getItemsInsideDropdownMenuCurrently() - 1);
+				view.getBrowseButton_ImportWindow().setEnabled(true);
 				if (model.getImageDetails().isEmpty()) {
-					view.returnEverythingToNormal();
+					view.goBackHome();
 				}
 			}
 		}
-		addItemsToComboBox();
+		addItemsToDropdownMenuImportWindow();
 	}
 
+	// show the image in the preview image when the according image name is selected
+	// on dropdown menu
 	private void imageSelectionForPreviewImage() {
 		Object selected = null;
-		selected = view.getComboBox().getSelectedItem();
+		selected = view.getDropdownMenu_ImportWindow().getSelectedItem();
 		if (selected == null) {
-			view.getComboBox().removeAllItems();
+			view.getDropdownMenu_ImportWindow().removeAllItems();
 		}
-		for (int i = 0; i < view.getComboBox().getItemCount(); i++) {
-			if (selected.toString().equals(view.getComboBox().getItemAt(i))) {
+		for (int i = 0; i < view.getDropdownMenu_ImportWindow().getItemCount(); i++) {
+			if (selected.toString().equals(view.getDropdownMenu_ImportWindow().getItemAt(i))) {
 				Iterator<ImageDetails> iter = model.getImageDetails().iterator();
 				while (iter.hasNext()) {
 					ImageDetails imageDetailsIter = iter.next();
 					if (imageDetailsIter.getImageName().equals(selected)) {
-						view.getImagePreviewGUI().setIcon(imageDetailsIter.getOriginalImage());
+						view.getImagePreview().setIcon(imageDetailsIter.getOriginalImage());
 						view.getImageSizeStatus().setText("Image size: " + imageDetailsIter.getImageSize());
 					}
 				}
@@ -314,54 +290,52 @@ public class Controller {
 		}
 	}
 
+	// checker method that returns if true or false if an image already exist in the
+	// list
 	private boolean checkIfImageAlreadyExist() {
 		for (int i = 0; i < model.getImageDetails().size(); i++) {
 			if (chooser.getSelectedFile().getName().equals(model.getImageDetails().get(i).getImageName())) {
-				view.msgbox("You already imported this image.");
-				model.setItemsInsideComboBoxCurrently(model.getItemsInsideComboBoxCurrently() - 1);
+				view.notificationMessagePopUp("You already imported this image.");
+				model.setItemsInsideDropdownMenuCurrently(model.getItemsInsideDropdownMenuCurrently() - 1);
 				return false;
 			}
 		}
 		return true;
 	}
 
-	// if the import image is true then proceed to this method
+	// if the image is obligated to the rules then proceed on importing the image
+	// details to the list and show the import window
 	private void proceedActionIfTrue() {
-		// get the details ready to implement to the image details
+		// get the details ready to implement to the image details array list
 		String imagePath = chooser.getSelectedFile().getAbsolutePath();
 		ImageIcon imageIcon = new ImageIcon(imagePath);
 		String imageName = chooser.getSelectedFile().getName();
-		String imageSize = decimalFormat.format(chooser.getSelectedFile().length() / (1 * Math.pow(10, 6)));
+		String imageSize = decimalFormatForImageSize.format(chooser.getSelectedFile().length() / (1 * Math.pow(10, 6)));
 		int imageHeight = imageIcon.getIconHeight();
 		int imageWidth = imageIcon.getIconWidth();
 
 		view.showImportWindow();
 
-		ImageIcon resizedImage = model.resizeImageForPreviewImageGUI(imageIcon, 644, 541);
-
-		ImageDetails imgDetails = new ImageDetails(imageIcon, resizedImage, imagePath, imageName, imageSize, imageWidth,
-				imageHeight);
+		ImageDetails imgDetails = new ImageDetails(imageIcon, imagePath, imageName, imageSize, imageWidth, imageHeight);
 		model.getImageDetails().add(imgDetails);
-		addItemsToComboBox();
-		view.getComboBox().setVisible(true);
-		view.getRemoveImageBtn().setVisible(true);
+		addItemsToDropdownMenuImportWindow();
 	}
 
-	private void addItemsToComboBox() {
-		view.getComboBox().removeAllItems();
+	// add items to the dropdown menu from the image details arraylist
+	private void addItemsToDropdownMenuImportWindow() {
+		view.getDropdownMenu_ImportWindow().removeAllItems();
 		Iterator<ImageDetails> iter = model.getImageDetails().iterator();
 		while (iter.hasNext()) {
 			ImageDetails imageDetails = iter.next();
-			view.getComboBox().addItem(imageDetails.getImageName());
-			view.getComboBox().setSelectedItem(imageDetails.getImageName());
-			view.getImagePreviewGUI().setIcon(imageDetails.getOriginalImage());
+			view.getDropdownMenu_ImportWindow().addItem(imageDetails.getImageName());
+			view.getDropdownMenu_ImportWindow().setSelectedItem(imageDetails.getImageName());
 		}
 	}
 
+	// method that will execute to export data to a csv file
 	private void exportDataToCSV() {
-		@SuppressWarnings("unused")
 		ExportData exportData = new ExportData(model.getImageDetails(), model.getCalculations());
-		view.getSaveDataInAcsv().setEnabled(false);
-		view.msgbox("Successfully exported to Desktop with file name " + exportData.getPathToSave());
+		view.getExportDataButton().setEnabled(false);
+		view.notificationMessagePopUp("Successfully exported to Desktop with file name " + exportData.getPathToSave());
 	}
 }
