@@ -81,6 +81,8 @@ public class Controller {
 			model.setItemsInsideComboBoxCurrently(0);
 			model.getImageDetails().clear();
 			model.getCalculations().clear();
+			valueOfProgressBar = 0;
+
 		}
 	}
 
@@ -130,8 +132,8 @@ public class Controller {
 				if (model.getImageDetails().size() < 3) {
 					view.msgbox("Image " + model.getItemsInsideComboBoxCurrently() + " out of 3 imported.");
 					if (model.getImageDetails().size() == 2) {
-						view.getBrowseBtn().setEnabled(false);
 						view.msgbox("Image limit reached.");
+						view.getBrowseBtnImportWindow().setEnabled(false);
 					}
 					return true;
 				}
@@ -283,7 +285,7 @@ public class Controller {
 				view.getImagePreviewGUI().setIcon(null);
 				view.getImagePreviewGUI().revalidate();
 				model.setItemsInsideComboBoxCurrently(model.getItemsInsideComboBoxCurrently() - 1);
-				view.getBrowseBtn().setEnabled(true);
+				view.getBrowseBtnImportWindow().setEnabled(true);
 				if (model.getImageDetails().isEmpty()) {
 					view.returnEverythingToNormal();
 				}

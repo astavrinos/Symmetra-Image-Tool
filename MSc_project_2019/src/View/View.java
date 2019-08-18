@@ -195,6 +195,10 @@ public class View extends JFrame {
 		welcomeWindow.setVisible(true);
 		setSize(300, 150);
 		centerWindowOnCurrentDisplay();
+		getResultsDropdownMenu().removeAllItems();
+		getBrowseBtn().setEnabled(true);
+		getSaveDataInAcsv().setEnabled(true);
+		getProgressBar().setValue(0);
 		resultsWindow.setVisible(false);
 	}
 
@@ -241,6 +245,10 @@ public class View extends JFrame {
 	 */
 	public JButton getBrowseBtn() {
 		return browseBtn;
+	}
+
+	public JButton getBrowseBtnImportWindow() {
+		return browseBtnImportWindow;
 	}
 
 	public JProgressBar getProgressBar() {
