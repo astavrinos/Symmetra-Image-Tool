@@ -1,45 +1,26 @@
 package Model;
-import java.awt.Image;
-import java.io.File;
+
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.ImageIcon;
-
 public class Model {
 
-	private int itemsInsideComboBoxCurrently = 0;
+	private int itemsInsideDropdownMenuCurrently = 0;
 
+	// Arraylist that saves objects of image details
 	private List<ImageDetails> imageDetailsList = new ArrayList<ImageDetails>();
-	private List<Calculations> calcImageColors = new ArrayList<Calculations>();
-
-	/*
-	 * METHODS
-	 */
-	@SuppressWarnings("unused")
-	public ImageIcon resizeImageForPreviewImageGUI(ImageIcon actualImage, int width, int height) {
-		Image image = actualImage.getImage();
-		Image scaledImage = image.getScaledInstance(-1, height, java.awt.Image.SCALE_SMOOTH);
-		int scaledImageWidth = scaledImage.getWidth(null);
-		if ((false && scaledImageWidth > width) || (!false && scaledImageWidth < width)) {
-			scaledImage = image.getScaledInstance(width, -1, java.awt.Image.SCALE_SMOOTH);
-		}
-		return new ImageIcon(scaledImage);
-	}
-
-	protected void runTheProcessOfGettingColors(String imagePath, ImageIcon imageIcon) {
-		calcImageColors.add(new Calculations(new File(imagePath), imageIcon));
-	}
+	// Arraylist to save the calculations of the image
+	private List<Calculations> calculations = new ArrayList<Calculations>();
 
 	/*
 	 * GETTERS AND SETTERS
 	 */
-	public int getItemsInsideComboBoxCurrently() {
-		return itemsInsideComboBoxCurrently;
+	public int getItemsInsideDropdownMenuCurrently() {
+		return itemsInsideDropdownMenuCurrently;
 	}
 
-	public void setItemsInsideComboBoxCurrently(int itemsInsideComboBox) {
-		this.itemsInsideComboBoxCurrently = itemsInsideComboBox;
+	public void setItemsInsideDropdownMenuCurrently(int itemsInsideComboBox) {
+		this.itemsInsideDropdownMenuCurrently = itemsInsideComboBox;
 	}
 
 	public List<ImageDetails> getImageDetails() {
@@ -47,7 +28,7 @@ public class Model {
 	}
 
 	public List<Calculations> getCalculations() {
-		return calcImageColors;
+		return calculations;
 	}
 
 }

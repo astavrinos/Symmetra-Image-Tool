@@ -1,5 +1,5 @@
 package Model;
-public class StorePixelsColors {
+public class StoreColors {
 
 	private int x;
 	private int y;
@@ -7,7 +7,7 @@ public class StorePixelsColors {
 	private int green;
 	private int blue;
 
-	StorePixelsColors(int x, int y, int red, int green, int blue) {
+	StoreColors(int x, int y, int red, int green, int blue) {
 		this.x = x;
 		this.y = y;
 		this.red = red;
@@ -18,10 +18,11 @@ public class StorePixelsColors {
 	/*
 	 * METHODS
 	 */
+	// toString method to print the values for double check
 	public String toString() {
 		String print = "[" + x + "," + y + "]" + " - Red: " + red + ". Green: " + green + ". Blue: " + blue;
 		return print;
-	}// end of to string method
+	}
 
 	/*
 	 * GETTERS AND SETTERS

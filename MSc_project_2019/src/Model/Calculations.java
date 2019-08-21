@@ -16,19 +16,19 @@ import java.util.Map.Entry;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 
-public class Calculations extends Model {
+public class Calculations extends Model implements Runnable {
 
 	private File input;
 	private ImageIcon imageIcon;
 	private Color color;
 
-	private final double typesOfColors = 3.0;
-	private int pixelsNumber;
+	private final int typesOfColors = 3;
+	private int area;
 	private double sumOfPowResultsOfStdDev;
 
-	private double skewEquationPartAbove = 0.0;
-	private double skewEquationPartBelow = 0.0;
-	private double sumAllGrayValues = 0.0;
+	private double skewEquationPartAbove;
+	private double skewEquationPartBelow;
+	private double sumAllGrayValues;
 
 	private double meanGrayValueResult;
 	private double medianResult;
@@ -36,7 +36,7 @@ public class Calculations extends Model {
 	private double stdDeviationResult;
 	private double skewnessResult;
 
-	private HashMap<Integer, StorePixelsColors> imageColorStorage = new HashMap<Integer, StorePixelsColors>();
+	private HashMap<Integer, StoreColors> imageColorStorage = new HashMap<Integer, StoreColors>();
 	private HashMap<Integer, Double> unsortedGrayValuesOfRGB = new HashMap<Integer, Double>();
 	private Map<Integer, Double> sortedGrayValues;
 	private Map<Integer, Double> powValuesOfStdDev = new HashMap<Integer, Double>();
@@ -44,20 +44,25 @@ public class Calculations extends Model {
 	DecimalFormat numberFormat = new DecimalFormat("#.000");
 
 	public Calculations(File input, ImageIcon imageIcon) {
-
 		this.input = input;
 		this.imageIcon = imageIcon;
+	}// end of constructor
 
+	@Override
+	public void run() {
 		getTheColorsOfTheImageAndTheArea();
 		calculateTheMean();
 		calculateTheMedian();
 		calculateTheStdDeviation();
 		calculateTheSkewness();
-	}// end of constructor
+	}
 
 	/*
 	 * METHODS
 	 */
+
+	// method that gets the colors of each individual pixel and saves them to a
+	// hashmap
 	private void getTheColorsOfTheImageAndTheArea() {
 
 		try {
@@ -70,9 +75,9 @@ public class Calculations extends Model {
 					int g = color.getGreen();
 					int b = color.getBlue();
 
-					imageColorStorage.put(pixelsNumber, new StorePixelsColors(i, j, r, g, b));
+					imageColorStorage.put(area, new StoreColors(i, j, r, g, b));
 
-					pixelsNumber++;
+					area++;
 
 				}
 			}
@@ -81,9 +86,11 @@ public class Calculations extends Model {
 		}
 	}
 
+	// method that gets all the colors and devides them by 3 then gather all the sum
+	// and divides by the hashmap size
 	private void calculateTheMean() {
 
-		for (int i = 0; i < pixelsNumber; i++) {
+		for (int i = 0; i < area; i++) {
 			int redValue = imageColorStorage.get(i).getRed();
 			int greenValue = imageColorStorage.get(i).getGreen();
 			int blueValue = imageColorStorage.get(i).getBlue();
@@ -95,11 +102,13 @@ public class Calculations extends Model {
 			sumAllGrayValues = sumAllGrayValues + grayValueCalculation;
 		}
 
-		meanGrayValueResult = sumAllGrayValues / pixelsNumber;
+		meanGrayValueResult = sumAllGrayValues / area;
 		String temp = numberFormat.format(meanGrayValueResult);
 		meanGrayValueResult = Double.parseDouble(temp);
 	}
 
+	// method that sorts the hashmap and divides the size of the hashmap by 2 and
+	// gets the value at that index
 	private void calculateTheMedian() {
 
 		sortedGrayValues = sortTheGrayValueHashMap(unsortedGrayValuesOfRGB);
@@ -109,6 +118,7 @@ public class Calculations extends Model {
 		medianResult = Double.parseDouble(temp);
 	}
 
+	// method that will sort the gray values of the hashmap
 	private HashMap<Integer, Double> sortTheGrayValueHashMap(HashMap<Integer, Double> unsortedGrayValues) {
 		// Create a list from elements of HashMap
 		LinkedList<Entry<Integer, Double>> list = new LinkedList<Map.Entry<Integer, Double>>(
@@ -129,6 +139,10 @@ public class Calculations extends Model {
 		return sorted;
 	}
 
+	// method that will calculate the standard deviation by using math.pow and then
+	// save the values in a seperate hashmap. After this is done it gets the sum
+	// value of the values. Then by using square root of the variance gets the
+	// standard deviation final result
 	private void calculateTheStdDeviation() {
 
 		for (int i = 0; i < sortedGrayValues.size(); i++) {
@@ -149,6 +163,11 @@ public class Calculations extends Model {
 		stdDeviationResult = Double.parseDouble(temp1);
 	}
 
+	// method that will calculate the skewness which is seperated into two parts.
+	// first part is the top part of the equation and second part is the bottom part
+	// of the equation. After both parts of the equation has finished then it
+	// devides the upper part of the equation with the down part of the equation and
+	// the result of skewness comes out.
 	private void calculateTheSkewness() {
 
 		for (int i = 0; i < sortedGrayValues.size(); i++) {
@@ -169,11 +188,11 @@ public class Calculations extends Model {
 	 * GETTERS AND SETTERS
 	 */
 	public int getPixelsNumber() {
-		return pixelsNumber;
+		return area;
 	}
 
 	public void setPixelsNumber(int pixelsNumber) {
-		this.pixelsNumber = pixelsNumber;
+		this.area = pixelsNumber;
 	}
 
 	public double getMeanGrayValueResult() {
@@ -224,4 +243,4 @@ public class Calculations extends Model {
 		this.skewnessResult = skewnessResult;
 	}
 
-}// end of calculate pixels colors class
+}
