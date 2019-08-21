@@ -191,7 +191,7 @@ public class Controller {
 
 			@Override
 			protected Void doInBackground() throws Exception {
-				Thread myThreads[] = new Thread[model.getImageDetails().size()];
+				Thread calculationsThreads[] = new Thread[model.getImageDetails().size()];
 				Calculations calculations = null;
 				for (int i = 0; i < model.getImageDetails().size(); i++) {
 					valueOfProgressBar = valueOfProgressBar + (100 / (model.getImageDetails().size()));
@@ -200,12 +200,12 @@ public class Controller {
 						for (int j = 0; j < model.getImageDetails().size(); j++) {
 							calculations = new Calculations(new File(model.getImageDetails().get(j).getImagePath()),
 									model.getImageDetails().get(j).getOriginalImage());
-							myThreads[j] = new Thread(calculations, "thread." + j);
+							calculationsThreads[j] = new Thread(calculations, "thread." + j);
 							model.getCalculations().add(calculations);
 						}
 					}
-					myThreads[i].start();
-					myThreads[i].join();
+					calculationsThreads[i].start();
+					calculationsThreads[i].join();
 					publish(valueOfProgressBar);
 				}
 				return null;

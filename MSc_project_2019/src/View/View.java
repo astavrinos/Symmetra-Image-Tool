@@ -21,6 +21,7 @@ import javax.swing.JProgressBar;
 import javax.swing.SwingConstants;
 import javax.swing.WindowConstants;
 import javax.swing.border.EmptyBorder;
+import javax.swing.event.ListSelectionListener;
 
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
@@ -35,6 +36,8 @@ import org.jfree.chart.renderer.category.BarRenderer;
 import org.jfree.data.category.DefaultCategoryDataset;
 import org.jfree.ui.RectangleAnchor;
 import org.jfree.ui.TextAnchor;
+
+//import Controller.Controller.ListSelection;
 
 @SuppressWarnings("serial")
 public class View extends JFrame {
@@ -200,7 +203,7 @@ public class View extends JFrame {
 		centerWindowOnCurrentDisplay();
 		analyzeWindow.setVisible(false);
 	}
-	
+
 	public void produce3DBarChart(int areaResult, double meanResult, double medianResult, double varianceResult,
 			double standardDevResult, double skewnessResult, String imageName) {
 		DefaultCategoryDataset dcd = new DefaultCategoryDataset();
@@ -290,6 +293,11 @@ public class View extends JFrame {
 	// function for export data to a csv file button
 	public void addExportDataListener(ActionListener a) {
 		exportDataButton.addActionListener(a);
+	}
+
+	public void addListSelectListener(ListSelectionListener e) {
+		System.out.println("HELLO");
+
 	}
 
 	/*
