@@ -191,23 +191,22 @@ public class Controller {
 
 			@Override
 			protected Void doInBackground() throws Exception {
-
-				for (int x = 0; x < model.getImageDetails().size(); x++) {
+				Thread myThreads[] = new Thread[model.getImageDetails().size()];
+				Calculations calculations = null;
+				for (int i = 0; i < model.getImageDetails().size(); i++) {
 					valueOfProgressBar = valueOfProgressBar + (100 / (model.getImageDetails().size()));
-					Calculations calculations = new Calculations(
-							new File(model.getImageDetails().get(x).getImagePath()),
-							model.getImageDetails().get(x).getOriginalImage());
 
-					Thread t1 = new Thread(calculations, "thread." + x);
-
-					System.out.println("hey " + t1.getName());
-
-					t1.start();
-
-					model.getCalculations().add(calculations);
-
+					if (calculations == null) {
+						for (int j = 0; j < model.getImageDetails().size(); j++) {
+							calculations = new Calculations(new File(model.getImageDetails().get(j).getImagePath()),
+									model.getImageDetails().get(j).getOriginalImage());
+							myThreads[j] = new Thread(calculations, "thread." + j);
+							model.getCalculations().add(calculations);
+						}
+					}
+					myThreads[i].start();
+					myThreads[i].join();
 					publish(valueOfProgressBar);
-					Thread.sleep(1000);
 				}
 				return null;
 			}
@@ -223,7 +222,11 @@ public class Controller {
 				for (int i = 0; i < model.getImageDetails().size(); i++) {
 					view.getDropdownMenu_ResultsWindow().addItem(model.getCalculations().get(i).getInput().getName());
 				}
-				view.showPresentResults();
+				while (model.getCalculations().size() == model.getImageDetails().size()) {
+					view.showPresentResults();
+					break;
+				}
+
 			}
 
 		};

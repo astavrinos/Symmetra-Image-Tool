@@ -55,7 +55,6 @@ public class Calculations extends Model implements Runnable {
 		calculateTheMedian();
 		calculateTheStdDeviation();
 		calculateTheSkewness();
-		System.out.println("DONE");
 	}
 
 	/*
