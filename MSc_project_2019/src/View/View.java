@@ -70,9 +70,7 @@ public class View extends JFrame {
 	private JComboBox<String> dropdownMenu_ResultsWindow = new JComboBox<String>();
 	private JComboBox<String> dropdownMenu_ResultsWindow_2 = new JComboBox<String>();
 
-	public JComboBox<String> getDropdownMenu_ResultsWindow_2() {
-		return dropdownMenu_ResultsWindow_2;
-	}
+	private JFreeChart jchart = null;
 
 	private JProgressBar analyzeProgressBar = new JProgressBar();
 
@@ -227,11 +225,19 @@ public class View extends JFrame {
 	}
 
 	public void produce3DBarChart(double skewnessResult, String imageName, double skewnessResult2, String imageName2) {
+
 		DefaultCategoryDataset dcd = new DefaultCategoryDataset();
 		dcd.setValue(skewnessResult, "Skewness " + imageName, imageName);
 		dcd.setValue(skewnessResult2, "Skewness " + imageName2, imageName2);
-		JFreeChart jchart = ChartFactory.createBarChart3D("Results of " + imageName + " and " + imageName2,
-				"Image name", "Metrics", dcd, PlotOrientation.VERTICAL, true, false, false);
+
+		if (imageName.equals(imageName2)) {
+			jchart = ChartFactory.createBarChart3D("Results of " + imageName, "Image name", "Metrics", dcd,
+					PlotOrientation.VERTICAL, true, false, false);
+		} else {
+			jchart = ChartFactory.createBarChart3D("Results of " + imageName + " and " + imageName2, "Image name",
+					"Metrics", dcd, PlotOrientation.VERTICAL, true, false, false);
+		}
+
 		CategoryPlot plot = jchart.getCategoryPlot();
 
 		ValueMarker marker = new ValueMarker(0.5);
@@ -376,6 +382,10 @@ public class View extends JFrame {
 
 	public JLabel getImageSymmetryNotificationSelectionTwo() {
 		return imageSymmetryNotificationSelectionTwo;
+	}
+
+	public JComboBox<String> getDropdownMenu_ResultsWindow_2() {
+		return dropdownMenu_ResultsWindow_2;
 	}
 
 }

@@ -193,8 +193,14 @@ public class Controller {
 	private void updateGraph() {
 		view.getGraphicalRepresentation().removeAll();
 		view.getGraphicalRepresentation().revalidate();
-		checkIfSymmetricalSelectionOne(skewnessSelectionOne, imageNameSelectionOne);
-		checkIfSymmetricalSelectionTwo(skewnessSelectionTwo, imageNameSelectionTwo);
+		if (imageNameSelectionOne.equals(imageNameSelectionTwo)) {
+			checkIfSymmetricalSelectionOne(skewnessSelectionOne, imageNameSelectionOne);
+			view.getImageSymmetryNotificationSelectionTwo().setVisible(false);
+		} else {
+			view.getImageSymmetryNotificationSelectionTwo().setVisible(true);
+			checkIfSymmetricalSelectionOne(skewnessSelectionOne, imageNameSelectionOne);
+			checkIfSymmetricalSelectionTwo(skewnessSelectionTwo, imageNameSelectionTwo);
+		}
 		view.produce3DBarChart(skewnessSelectionOne, imageNameSelectionOne, skewnessSelectionTwo,
 				imageNameSelectionTwo);
 	}
