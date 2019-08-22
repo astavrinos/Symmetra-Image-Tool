@@ -32,6 +32,11 @@ public class Controller {
 	private int userSelectionOfImage;
 	private int valueOfProgressBar = 0;
 
+	private double skewnessSelectionOne = 0;
+	private String imageNameSelectionOne = "";
+	private double skewnessSelectionTwo = 0;
+	private String imageNameSelectionTwo = "";
+
 	public Controller(View view, Model model) {
 		this.view = view;
 		this.model = model;
@@ -41,6 +46,7 @@ public class Controller {
 		this.view.addDropdownMenuImportListener(new SwitchBetweenImages());
 		this.view.addRemoveImageButtonListener(new RemoveImageButton());
 		this.view.addDropdownMenuResultsListener(new ResultsDropdownMenu());
+		this.view.addDropdownMenuResults2Listener(new ResultsDropdownMenu2());
 		this.view.addExportDataListener(new ExportDataToCSV());
 		this.view.addBrowseButtonImportWindowListener(new BrowseButton());
 		this.view.addHomeButtonListener(new HomeButton());
@@ -68,7 +74,6 @@ public class Controller {
 			model.getImageDetails().clear();
 			model.getCalculations().clear();
 			valueOfProgressBar = 0;
-
 		}
 	}
 
@@ -88,11 +93,24 @@ public class Controller {
 		}
 	}
 
-	// action when the dropdown menu of results is pressed
+	// action when the dropdown menu ONE of results is pressed
 	private class ResultsDropdownMenu implements ItemListener {
-		public void itemStateChanged(ItemEvent e1) {
-			dropdownMenuForResultsActions(e1);
+
+		public void itemStateChanged(ItemEvent e) {
+			dropdownMenuOneForResultsActions(e);
+			updateGraph();
 		}
+
+	}
+
+	// action when the dropdown menu TWO of results is pressed
+	private class ResultsDropdownMenu2 implements ItemListener {
+
+		public void itemStateChanged(ItemEvent e) {
+			dropdownMenuTwoForResultsActions(e);
+			updateGraph();
+		}
+
 	}
 
 	// action when the remove image button is pressed to remove an image from the
@@ -144,41 +162,74 @@ public class Controller {
 		return false;
 	}
 
-	// when a certain image name is selected from the dropdown menu then represent
-	// the data for it
-	private void dropdownMenuForResultsActions(ItemEvent e1) {
-		view.getGraphicalRepresentation().removeAll();
+	// when a certain image name is selected from the dropdown menu ONE then save
+	// the data to the variables
+	private void dropdownMenuOneForResultsActions(ItemEvent e) {
 		for (int i = 0; i < model.getCalculations().size(); i++) {
-			if (e1.getStateChange() == ItemEvent.SELECTED) {
-				if (e1.getItem().equals(model.getCalculations().get(i).getInput().getName())) {
-					int areaResult = model.getCalculations().get(i).getPixelsNumber();
-					double meanResult = model.getCalculations().get(i).getMeanGrayValueResult();
-					double medianResult = model.getCalculations().get(i).getMedianResult();
-					double varianceResult = model.getCalculations().get(i).getVarianceResult();
-					double standardDevResult = model.getCalculations().get(i).getStdDeviationResult();
-					double skewnessResult = model.getCalculations().get(i).getSkewnessResult();
-					String imageName = model.getCalculations().get(i).getInput().getName();
-
-					view.produce3DBarChart(areaResult, meanResult, medianResult, varianceResult, standardDevResult,
-							skewnessResult, imageName);
-
-					checkIfItsSymmetrical(skewnessResult, imageName);
+			if (e.getStateChange() == ItemEvent.SELECTED) {
+				if (e.getItem().equals(model.getCalculations().get(i).getInput().getName())) {
+					skewnessSelectionOne = model.getCalculations().get(i).getSkewnessResult();
+					imageNameSelectionOne = model.getCalculations().get(i).getInput().getName();
 				}
 			}
 		}
 	}
 
-	// checker method to check if the current image selected is symmetrical or not
-	private void checkIfItsSymmetrical(double skewnessResult, String imageName) {
+	// when a certain image name is selected from the dropdown menu TWO then save
+	// the data to the variables
+	private void dropdownMenuTwoForResultsActions(ItemEvent e) {
+		for (int i = 0; i < model.getCalculations().size(); i++) {
+			if (e.getStateChange() == ItemEvent.SELECTED) {
+				if (e.getItem().equals(model.getCalculations().get(i).getInput().getName())) {
+					skewnessSelectionTwo = model.getCalculations().get(i).getSkewnessResult();
+					imageNameSelectionTwo = model.getCalculations().get(i).getInput().getName();
+
+				}
+			}
+		}
+	}
+
+	// method that will represent the graph with the selections the user has made
+	private void updateGraph() {
+		view.getGraphicalRepresentation().removeAll();
+		view.getGraphicalRepresentation().revalidate();
+		checkIfSymmetricalSelectionOne(skewnessSelectionOne, imageNameSelectionOne);
+		checkIfSymmetricalSelectionTwo(skewnessSelectionTwo, imageNameSelectionTwo);
+		view.produce3DBarChart(skewnessSelectionOne, imageNameSelectionOne, skewnessSelectionTwo,
+				imageNameSelectionTwo);
+	}
+
+//	 checker method to check if the image selected from dropdown menu ONE is symmetrical or not
+	private void checkIfSymmetricalSelectionOne(double skewnessResult, String imageName) {
 		if (skewnessResult < 0.5 && skewnessResult > -0.5) {
-			view.getImageSymmetryNotification().setForeground(Color.GREEN);
-			view.getImageSymmetryNotification().setText(imageName + " is fairly symmetrical.");
+			view.getImageSymmetryNotificationSelectionOne().setForeground(Color.GREEN);
+			view.getImageSymmetryNotificationSelectionOne()
+					.setText("<html><center>" + imageName + " is fairly symmetrical.</center></html>");
 		} else if (skewnessResult > 0.5 && skewnessResult < 1.0 || skewnessResult < -0.5 && skewnessResult > -1.0) {
-			view.getImageSymmetryNotification().setForeground(Color.ORANGE);
-			view.getImageSymmetryNotification().setText(imageName + " is moderately symmetrical.");
+			view.getImageSymmetryNotificationSelectionOne().setForeground(Color.ORANGE);
+			view.getImageSymmetryNotificationSelectionOne()
+					.setText("<html><center>" + imageName + " is moderately symmetrical.</center></html>");
 		} else {
-			view.getImageSymmetryNotification().setForeground(Color.RED);
-			view.getImageSymmetryNotification().setText(imageName + " is not symmetrical.");
+			view.getImageSymmetryNotificationSelectionOne().setForeground(Color.RED);
+			view.getImageSymmetryNotificationSelectionOne()
+					.setText("<html><center>" + imageName + " is not symmetrical.</center></html>");
+		}
+	}
+
+//	 checker method to check if the image selected from dropdown menu TWO is symmetrical or not
+	private void checkIfSymmetricalSelectionTwo(double skewnessResult, String imageName) {
+		if (skewnessResult < 0.5 && skewnessResult > -0.5) {
+			view.getImageSymmetryNotificationSelectionTwo().setForeground(Color.GREEN);
+			view.getImageSymmetryNotificationSelectionTwo()
+					.setText("<html><center>" + imageName + " is fairly symmetrical.</center></html>");
+		} else if (skewnessResult > 0.5 && skewnessResult < 1.0 || skewnessResult < -0.5 && skewnessResult > -1.0) {
+			view.getImageSymmetryNotificationSelectionTwo().setForeground(Color.ORANGE);
+			view.getImageSymmetryNotificationSelectionTwo()
+					.setText("<html><center>" + imageName + " is moderately symmetrical.</center></html>");
+		} else {
+			view.getImageSymmetryNotificationSelectionTwo().setForeground(Color.RED);
+			view.getImageSymmetryNotificationSelectionTwo()
+					.setText("<html><center>" + imageName + " is not symmetrical.</center></html>");
 		}
 	}
 
@@ -221,6 +272,7 @@ public class Controller {
 			protected void done() {
 				for (int i = 0; i < model.getImageDetails().size(); i++) {
 					view.getDropdownMenu_ResultsWindow().addItem(model.getCalculations().get(i).getInput().getName());
+					view.getDropdownMenu_ResultsWindow_2().addItem(model.getCalculations().get(i).getInput().getName());
 				}
 				while (model.getCalculations().size() == model.getImageDetails().size()) {
 					view.showPresentResults();
@@ -230,9 +282,7 @@ public class Controller {
 			}
 
 		};
-
 		progressSwing.execute();
-
 	}
 
 	// initiate file chooser window to select an image

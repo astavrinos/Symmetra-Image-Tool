@@ -11,6 +11,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.ItemListener;
 import java.text.DecimalFormat;
 
+import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
@@ -21,7 +22,6 @@ import javax.swing.JProgressBar;
 import javax.swing.SwingConstants;
 import javax.swing.WindowConstants;
 import javax.swing.border.EmptyBorder;
-import javax.swing.event.ListSelectionListener;
 
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
@@ -49,11 +49,15 @@ public class View extends JFrame {
 	private JPanel analyzeWindow = new JPanel();
 	private JPanel resultsWindow = new JPanel();
 	private JPanel graphicalRepresentation = new JPanel();
+	private JPanel symmetryNotifications_ResultsWindow = new JPanel();
+	private JPanel bottomButtons_ResultsWindow = new JPanel();
 
 	private JLabel imageSizeStatus = new JLabel("");
 	private JLabel imagePreview = new JLabel("", JLabel.CENTER);
 	private JLabel analyzingLabel = new JLabel("Analyzing...");
-	private JLabel imageSymmetryNotification = new JLabel("", JLabel.CENTER);
+	private JLabel imageSymmetryNotificationSelectionOne = new JLabel("", JLabel.CENTER);
+	private JLabel imageSymmetryNotificationSelectionTwo = new JLabel("", JLabel.CENTER);
+	final private JLabel info = new JLabel("Select images to compare: ");
 
 	private JButton browseButton_WelcomeWindow = new JButton("Browse");
 	private JButton browseButton_ImportWindow = new JButton("Browse");
@@ -64,6 +68,11 @@ public class View extends JFrame {
 
 	private JComboBox<String> dropdownMenu_ImportWindow = new JComboBox<String>();
 	private JComboBox<String> dropdownMenu_ResultsWindow = new JComboBox<String>();
+	private JComboBox<String> dropdownMenu_ResultsWindow_2 = new JComboBox<String>();
+
+	public JComboBox<String> getDropdownMenu_ResultsWindow_2() {
+		return dropdownMenu_ResultsWindow_2;
+	}
 
 	private JProgressBar analyzeProgressBar = new JProgressBar();
 
@@ -146,21 +155,34 @@ public class View extends JFrame {
 		getContentPane().add(resultsWindow, "name_40604185542600");
 		resultsWindow.setLayout(new BorderLayout(0, 0));
 
+		symmetryNotifications_ResultsWindow.add(imageSymmetryNotificationSelectionOne, CENTER_ALIGNMENT);
+		imageSymmetryNotificationSelectionOne.setFont(new Font("Segoe UI", Font.BOLD, 14));
+
+		symmetryNotifications_ResultsWindow.add(imageSymmetryNotificationSelectionTwo, CENTER_ALIGNMENT);
+		imageSymmetryNotificationSelectionTwo.setFont(new Font("Segoe UI", Font.BOLD, 14));
+
+		symmetryNotifications_ResultsWindow
+				.setLayout(new BoxLayout(symmetryNotifications_ResultsWindow, BoxLayout.Y_AXIS));
+		resultsWindow.add(symmetryNotifications_ResultsWindow, BorderLayout.NORTH);
+
 		resultsWindow.add(graphicalRepresentation, BorderLayout.CENTER);
 
-		JPanel bottomButtons_ResultsWindow = new JPanel();
 		resultsWindow.add(bottomButtons_ResultsWindow, BorderLayout.SOUTH);
+
+		info.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+		bottomButtons_ResultsWindow.add(info);
 
 		dropdownMenu_ResultsWindow.setFont(new Font("Segoe UI", Font.PLAIN, 11));
 		bottomButtons_ResultsWindow.add(dropdownMenu_ResultsWindow);
+
+		dropdownMenu_ResultsWindow_2.setFont(new Font("Segoe UI", Font.PLAIN, 11));
+		bottomButtons_ResultsWindow.add(dropdownMenu_ResultsWindow_2);
 
 		exportDataButton.setFont(new Font("Segoe UI", Font.PLAIN, 11));
 		bottomButtons_ResultsWindow.add(exportDataButton);
 
 		returnHomeButton.setFont(new Font("Segoe UI", Font.PLAIN, 11));
 		bottomButtons_ResultsWindow.add(returnHomeButton);
-		resultsWindow.add(imageSymmetryNotification, BorderLayout.NORTH);
-		imageSymmetryNotification.setFont(new Font("Segoe UI", Font.BOLD, 14));
 
 	}
 
@@ -204,17 +226,12 @@ public class View extends JFrame {
 		analyzeWindow.setVisible(false);
 	}
 
-	public void produce3DBarChart(int areaResult, double meanResult, double medianResult, double varianceResult,
-			double standardDevResult, double skewnessResult, String imageName) {
+	public void produce3DBarChart(double skewnessResult, String imageName, double skewnessResult2, String imageName2) {
 		DefaultCategoryDataset dcd = new DefaultCategoryDataset();
-//		dcd.setValue(areaResult, "Area", imageName);
-		dcd.setValue(meanResult, "Mean gray values", imageName);
-		dcd.setValue(medianResult, "Median", imageName);
-//		dcd.setValue(varianceResult, "Variance", imageName);
-		dcd.setValue(skewnessResult, "Skewness", imageName);
-
-		JFreeChart jchart = ChartFactory.createBarChart3D("Results of " + imageName, "Image name", "Metrics", dcd,
-				PlotOrientation.VERTICAL, true, false, false);
+		dcd.setValue(skewnessResult, "Skewness " + imageName, imageName);
+		dcd.setValue(skewnessResult2, "Skewness " + imageName2, imageName2);
+		JFreeChart jchart = ChartFactory.createBarChart3D("Results of " + imageName + " and " + imageName2,
+				"Image name", "Metrics", dcd, PlotOrientation.VERTICAL, true, false, false);
 		CategoryPlot plot = jchart.getCategoryPlot();
 
 		ValueMarker marker = new ValueMarker(0.5);
@@ -223,6 +240,13 @@ public class View extends JFrame {
 		marker.setLabelTextAnchor(TextAnchor.BOTTOM_CENTER);
 		marker.setPaint(Color.BLACK);
 		plot.addRangeMarker(marker);
+
+		ValueMarker marker2 = new ValueMarker(-0.5);
+		marker2.setLabel("Required Maximum Level of Symmetry -0.5");
+		marker2.setLabelAnchor(RectangleAnchor.TOP);
+		marker2.setLabelTextAnchor(TextAnchor.BOTTOM_CENTER);
+		marker2.setPaint(Color.BLACK);
+		plot.addRangeMarker(marker2);
 
 		BarRenderer renderer = (BarRenderer) plot.getRenderer();
 		DecimalFormat decimalformat = new DecimalFormat("##.###");
@@ -251,6 +275,8 @@ public class View extends JFrame {
 		getExportDataButton().setEnabled(true);
 		getAnalyzeProgressBar().setValue(0);
 		resultsWindow.setVisible(false);
+		dropdownMenu_ResultsWindow.removeAllItems();
+		dropdownMenu_ResultsWindow_2.removeAllItems();
 	}
 
 	/*
@@ -288,16 +314,17 @@ public class View extends JFrame {
 	// function for dropdown menu within results window
 	public void addDropdownMenuResultsListener(ItemListener a) {
 		dropdownMenu_ResultsWindow.addItemListener(a);
+
+	}
+
+	// function for dropdown menu within results window
+	public void addDropdownMenuResults2Listener(ItemListener a) {
+		dropdownMenu_ResultsWindow_2.addItemListener(a);
 	}
 
 	// function for export data to a csv file button
 	public void addExportDataListener(ActionListener a) {
 		exportDataButton.addActionListener(a);
-	}
-
-	public void addListSelectListener(ListSelectionListener e) {
-		System.out.println("HELLO");
-
 	}
 
 	/*
@@ -343,7 +370,12 @@ public class View extends JFrame {
 		return graphicalRepresentation;
 	}
 
-	public JLabel getImageSymmetryNotification() {
-		return imageSymmetryNotification;
+	public JLabel getImageSymmetryNotificationSelectionOne() {
+		return imageSymmetryNotificationSelectionOne;
 	}
+
+	public JLabel getImageSymmetryNotificationSelectionTwo() {
+		return imageSymmetryNotificationSelectionTwo;
+	}
+
 }
