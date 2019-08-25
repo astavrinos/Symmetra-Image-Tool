@@ -217,11 +217,13 @@ public class View extends JFrame {
 
 	// present the show results window when its called
 	public void showPresentResults() {
+
 		resultsWindow.setVisible(true);
 		setSize(700, 600);
 
 		centerWindowOnCurrentDisplay();
 		analyzeWindow.setVisible(false);
+
 	}
 
 	public void produce3DBarChart(double skewnessResult, String imageName, double skewnessResult2, String imageName2) {
@@ -231,11 +233,11 @@ public class View extends JFrame {
 		dcd.setValue(skewnessResult2, "Skewness " + imageName2, imageName2);
 
 		if (imageName.equals(imageName2)) {
-			jchart = ChartFactory.createBarChart3D("Results of " + imageName, "Image name", "Metrics", dcd,
+			jchart = ChartFactory.createBarChart("Results of " + imageName, "Image name", "", dcd,
 					PlotOrientation.VERTICAL, true, false, false);
 		} else {
-			jchart = ChartFactory.createBarChart3D("Results of " + imageName + " and " + imageName2, "Image name",
-					"Metrics", dcd, PlotOrientation.VERTICAL, true, false, false);
+			jchart = ChartFactory.createBarChart("Results of " + imageName + " and " + imageName2, "Image name", "",
+					dcd, PlotOrientation.VERTICAL, true, false, false);
 		}
 
 		CategoryPlot plot = jchart.getCategoryPlot();

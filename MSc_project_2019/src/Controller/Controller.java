@@ -31,11 +31,15 @@ public class Controller {
 
 	private int userSelectionOfImage;
 	private int valueOfProgressBar = 0;
+	private int maximumImagesAllowed = 15;
 
 	private double skewnessSelectionOne = 0;
 	private String imageNameSelectionOne = "";
 	private double skewnessSelectionTwo = 0;
 	private String imageNameSelectionTwo = "";
+
+	long startTime;
+	long endTime;
 
 	public Controller(View view, Model model) {
 		this.view = view;
@@ -74,6 +78,8 @@ public class Controller {
 			model.getImageDetails().clear();
 			model.getCalculations().clear();
 			valueOfProgressBar = 0;
+			// garbage collector initialized
+			System.gc();
 		}
 	}
 
@@ -144,10 +150,10 @@ public class Controller {
 		ImageIcon imageIcon = new ImageIcon(chooser.getSelectedFile().getAbsolutePath());
 		if ((imageIcon.getIconHeight() <= 1000 && imageIcon.getIconWidth() <= 1000)) {
 			if (checkIfImageAlreadyExist() == true) {
-				if (model.getImageDetails().size() < 3) {
-					view.notificationMessagePopUp(
-							"Image " + model.getItemsInsideDropdownMenuCurrently() + " out of 3 imported.");
-					if (model.getImageDetails().size() == 2) {
+				if (model.getImageDetails().size() < maximumImagesAllowed) {
+					view.notificationMessagePopUp("Image " + model.getItemsInsideDropdownMenuCurrently() + " out of "
+							+ maximumImagesAllowed + " imported.");
+					if (model.getImageDetails().size() == maximumImagesAllowed - 1) {
 						view.notificationMessagePopUp("Image limit reached.");
 						view.getBrowseButton_ImportWindow().setEnabled(false);
 					}
