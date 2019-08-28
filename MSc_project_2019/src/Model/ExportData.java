@@ -7,10 +7,10 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 public class ExportData extends Model {
-	DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("yyyyMMdd-HHmmss");
+	DateTimeFormatter dateTimeFormat = DateTimeFormatter.ofPattern("yyyyMMdd-HHmmss");
 	LocalDateTime getTime = LocalDateTime.now();
 
-	String pathToSave = "symmetra_analyzation_" + dateFormat.format(getTime) + ".csv";
+	String pathToSave = "symmetra_analyzation_" + dateTimeFormat.format(getTime) + ".csv";
 
 	public ExportData(List<ImageDetails> imageDetailsList, List<Calculations> calcImageColors) {
 

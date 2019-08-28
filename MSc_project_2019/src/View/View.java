@@ -33,6 +33,7 @@ import org.jfree.chart.plot.CategoryPlot;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.plot.ValueMarker;
 import org.jfree.chart.renderer.category.BarRenderer;
+import org.jfree.chart.renderer.category.StandardBarPainter;
 import org.jfree.data.category.DefaultCategoryDataset;
 import org.jfree.ui.RectangleAnchor;
 import org.jfree.ui.TextAnchor;
@@ -42,8 +43,6 @@ import org.jfree.ui.TextAnchor;
 @SuppressWarnings("serial")
 public class View extends JFrame {
 
-	private final String welcomeMessage = "<html><center>Welcome to Symmetra. <br>Press the browse button to start.</center></html>";
-
 	private JPanel welcomeWindow = new JPanel();
 	private JPanel importWindow = new JPanel();
 	private JPanel analyzeWindow = new JPanel();
@@ -52,12 +51,14 @@ public class View extends JFrame {
 	private JPanel symmetryNotifications_ResultsWindow = new JPanel();
 	private JPanel bottomButtons_ResultsWindow = new JPanel();
 
+	private final JLabel introMsg = new JLabel(
+			"<html><center>Welcome to Symmetra. <br>Press the browse button to start.</center></html>");
 	private JLabel imageSizeStatus = new JLabel("");
 	private JLabel imagePreview = new JLabel("", JLabel.CENTER);
-	private JLabel analyzingLabel = new JLabel("Analyzing...");
+	private final JLabel analyzingLabel = new JLabel("Analyzing...");
 	private JLabel imageSymmetryNotificationSelectionOne = new JLabel("", JLabel.CENTER);
 	private JLabel imageSymmetryNotificationSelectionTwo = new JLabel("", JLabel.CENTER);
-	final private JLabel info = new JLabel("Select images to compare: ");
+	private final JLabel info = new JLabel("Select images to compare: ");
 
 	private JButton browseButton_WelcomeWindow = new JButton("Browse");
 	private JButton browseButton_ImportWindow = new JButton("Browse");
@@ -76,6 +77,7 @@ public class View extends JFrame {
 
 	private Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 
+	// initialize the view
 	public View() {
 		setTitle("Symmetra");
 		setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
@@ -90,6 +92,7 @@ public class View extends JFrame {
 		resultsWindow();
 	}
 
+	// first window components
 	private void welcomeWindow() {
 
 		setSize(300, 150);
@@ -98,7 +101,6 @@ public class View extends JFrame {
 		getContentPane().add(welcomeWindow, "name_40604121145100");
 		welcomeWindow.setLayout(new BorderLayout(0, 0));
 
-		JLabel introMsg = new JLabel(welcomeMessage);
 		introMsg.setHorizontalAlignment(SwingConstants.CENTER);
 		introMsg.setFont(new Font("Segoe UI", Font.PLAIN, 15));
 		welcomeWindow.add(introMsg, BorderLayout.NORTH);
@@ -111,6 +113,7 @@ public class View extends JFrame {
 		bottomButton_WelcomeWindow.add(browseButton_WelcomeWindow);
 	}
 
+	// second window components
 	private void importWindow() {
 		getContentPane().add(importWindow, "name_40604143170700");
 		importWindow.setLayout(new BorderLayout(0, 0));
@@ -137,6 +140,7 @@ public class View extends JFrame {
 		bottomButtons_ImportWindow.add(analyzeButton);
 	}
 
+	// third window components
 	private void analyzeWindow() {
 		getContentPane().add(analyzeWindow, "name_40604163746800");
 		analyzeWindow.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
@@ -148,6 +152,7 @@ public class View extends JFrame {
 		analyzeWindow.add(analyzeProgressBar);
 	}
 
+	// fourth window components
 	private void resultsWindow() {
 
 		getContentPane().add(resultsWindow, "name_40604185542600");
@@ -193,17 +198,17 @@ public class View extends JFrame {
 		setLocation(screenSize.width / 2 - getSize().width / 2, screenSize.height / 2 - getSize().height / 2);
 	}
 
+	// method that takes a string and pops up a notification window
+	public void notificationMessagePopUp(String s) {
+		JOptionPane.showMessageDialog(null, s);
+	}
+
 	// change the view if the image imported was correct format to the Import Window
 	public void showImportWindow() {
 		importWindow.setVisible(true);
 		setSize(700, 700);
 		centerWindowOnCurrentDisplay();
 		welcomeWindow.setVisible(false);
-	}
-
-	// method that takes a string and pops up a notification window
-	public void notificationMessagePopUp(String s) {
-		JOptionPane.showMessageDialog(null, s);
 	}
 
 	// present the show analyze window when its called
@@ -217,44 +222,55 @@ public class View extends JFrame {
 
 	// present the show results window when its called
 	public void showPresentResults() {
-
 		resultsWindow.setVisible(true);
 		setSize(700, 600);
-
 		centerWindowOnCurrentDisplay();
 		analyzeWindow.setVisible(false);
-
 	}
 
-	public void produce3DBarChart(double skewnessResult, String imageName, double skewnessResult2, String imageName2) {
+	// method that will produce a bar chart for the values
+	@SuppressWarnings("deprecation")
+	public void produceBarChart(double skewnessResult, String imageName, double skewnessResult2, String imageName2) {
 
-		DefaultCategoryDataset dcd = new DefaultCategoryDataset();
-		dcd.setValue(skewnessResult, "Skewness " + imageName, imageName);
-		dcd.setValue(skewnessResult2, "Skewness " + imageName2, imageName2);
+		DefaultCategoryDataset dataset = new DefaultCategoryDataset();
+		dataset.setValue(skewnessResult, "Skewness " + imageName, imageName);
+		dataset.setValue(skewnessResult2, "Skewness " + imageName2, imageName2);
 
 		if (imageName.equals(imageName2)) {
-			jchart = ChartFactory.createBarChart("Results of " + imageName, "Image name", "", dcd,
+			jchart = ChartFactory.createBarChart("Results of " + imageName, "Image name", "", dataset,
 					PlotOrientation.VERTICAL, true, false, false);
 		} else {
 			jchart = ChartFactory.createBarChart("Results of " + imageName + " and " + imageName2, "Image name", "",
-					dcd, PlotOrientation.VERTICAL, true, false, false);
+					dataset, PlotOrientation.VERTICAL, true, false, false);
 		}
 
 		CategoryPlot plot = jchart.getCategoryPlot();
+		((BarRenderer) plot.getRenderer()).setBarPainter(new StandardBarPainter());
 
+		// create the marks within the plot
 		ValueMarker marker = new ValueMarker(0.5);
 		marker.setLabel("Required Maximum Level of Symmetry 0.5");
+		marker.setLabelFont(getFont().deriveFont(15));
 		marker.setLabelAnchor(RectangleAnchor.TOP);
-		marker.setLabelTextAnchor(TextAnchor.BOTTOM_CENTER);
+		marker.setLabelTextAnchor(TextAnchor.BASELINE_LEFT);
 		marker.setPaint(Color.BLACK);
 		plot.addRangeMarker(marker);
 
 		ValueMarker marker2 = new ValueMarker(-0.5);
 		marker2.setLabel("Required Maximum Level of Symmetry -0.5");
+		marker2.setLabelFont(getFont().deriveFont(15));
 		marker2.setLabelAnchor(RectangleAnchor.TOP);
-		marker2.setLabelTextAnchor(TextAnchor.BOTTOM_CENTER);
+		marker2.setLabelTextAnchor(TextAnchor.BASELINE_LEFT);
 		marker2.setPaint(Color.BLACK);
 		plot.addRangeMarker(marker2);
+
+		ValueMarker marker3 = new ValueMarker(0);
+		marker3.setLabel("This is the 0 point");
+		marker3.setLabelFont(getFont().deriveFont(15));
+		marker3.setLabelAnchor(RectangleAnchor.TOP);
+		marker3.setLabelTextAnchor(TextAnchor.BASELINE_LEFT);
+		marker3.setPaint(Color.BLACK);
+		plot.addRangeMarker(marker3);
 
 		BarRenderer renderer = (BarRenderer) plot.getRenderer();
 		DecimalFormat decimalformat = new DecimalFormat("##.###");

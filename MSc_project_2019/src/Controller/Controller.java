@@ -31,15 +31,12 @@ public class Controller {
 
 	private int userSelectionOfImage;
 	private int valueOfProgressBar = 0;
-	private int maximumImagesAllowed = 15;
+	private final int maximumImagesAllowed = 3;
 
 	private double skewnessSelectionOne = 0;
 	private String imageNameSelectionOne = "";
 	private double skewnessSelectionTwo = 0;
 	private String imageNameSelectionTwo = "";
-
-	long startTime;
-	long endTime;
 
 	public Controller(View view, Model model) {
 		this.view = view;
@@ -207,7 +204,7 @@ public class Controller {
 			checkIfSymmetricalSelectionOne(skewnessSelectionOne, imageNameSelectionOne);
 			checkIfSymmetricalSelectionTwo(skewnessSelectionTwo, imageNameSelectionTwo);
 		}
-		view.produce3DBarChart(skewnessSelectionOne, imageNameSelectionOne, skewnessSelectionTwo,
+		view.produceBarChart(skewnessSelectionOne, imageNameSelectionOne, skewnessSelectionTwo,
 				imageNameSelectionTwo);
 	}
 
@@ -304,6 +301,7 @@ public class Controller {
 		chooser.setFileFilter(filter);
 		userSelectionOfImage = chooser.showOpenDialog(null);
 		if (userSelectionOfImage == JFileChooser.APPROVE_OPTION) {
+			@SuppressWarnings("unused")
 			ImageIcon imageIcon = new ImageIcon(chooser.getSelectedFile().getAbsolutePath());
 			if (filter.accept(chooser.getSelectedFile()) && checkImageIfItsObligatedToRules() == true) {
 				proceedActionIfTrue();

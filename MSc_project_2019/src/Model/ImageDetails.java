@@ -19,14 +19,7 @@ public class ImageDetails {
 		this.imageSize = imageSize;
 		this.imageWidth = imageWidth;
 		this.imageHeight = imageHeight;
-	}// end of constructor
-
-	// check the values
-	public String toString() {
-		String foo = "Image: " + originalImage + ". Image Path: " + imagePath + ". Image Name: " + imageName
-				+ ". Image Size: " + imageSize + ". Image Width: " + imageWidth + ". Image Height: " + imageHeight;
-		return foo;
-	}// end of to string method
+	}
 
 	/*
 	 * GETTERS AND SETTERS
@@ -35,47 +28,23 @@ public class ImageDetails {
 		return originalImage;
 	}
 
-	public void setOriginalImage(ImageIcon originalImage) {
-		this.originalImage = originalImage;
-	}
-
 	public String getImagePath() {
 		return imagePath;
-	}
-
-	public void setImagePath(String imagePath) {
-		this.imagePath = imagePath;
 	}
 
 	public String getImageName() {
 		return imageName;
 	}
 
-	public void setImageName(String imageName) {
-		this.imageName = imageName;
-	}
-
 	public String getImageSize() {
 		return imageSize + "MB";
-	}
-
-	public void setImageSize(String imageSize) {
-		this.imageSize = imageSize;
 	}
 
 	public int getImageWidth() {
 		return imageWidth;
 	}
 
-	public void setImageWidth(int imageWidth) {
-		this.imageWidth = imageWidth;
-	}
-
 	public int getImageHeight() {
 		return imageHeight;
-	}
-
-	public void setImageHeight(int imageHeight) {
-		this.imageHeight = imageHeight;
 	}
 }

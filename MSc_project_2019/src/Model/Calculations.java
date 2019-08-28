@@ -101,7 +101,6 @@ public class Calculations extends Model implements Runnable {
 			unsortedGrayValuesOfRGB.put(i, grayValueCalculation);
 			sumAllGrayValues = sumAllGrayValues + grayValueCalculation;
 		}
-
 		meanGrayValueResult = sumAllGrayValues / area;
 		String temp = numberFormat.format(meanGrayValueResult);
 		meanGrayValueResult = Double.parseDouble(temp);
@@ -110,10 +109,8 @@ public class Calculations extends Model implements Runnable {
 	// method that sorts the hashmap and divides the size of the hashmap by 2 and
 	// gets the value at that index
 	private void calculateTheMedian() {
-
 		sortedGrayValues = sortTheGrayValueHashMap(unsortedGrayValuesOfRGB);
 		medianResult = sortedGrayValues.get(sortedGrayValues.size() / 2);
-
 		String temp = numberFormat.format(medianResult);
 		medianResult = Double.parseDouble(temp);
 	}
@@ -181,66 +178,37 @@ public class Calculations extends Model implements Runnable {
 
 		String temp = numberFormat.format(skewnessResult);
 		skewnessResult = Double.parseDouble(temp);
-
 	}
 
 	/*
 	 * GETTERS AND SETTERS
 	 */
+	public File getInput() {
+		return input;
+	}
+	
 	public int getPixelsNumber() {
 		return area;
-	}
-
-	public void setPixelsNumber(int pixelsNumber) {
-		this.area = pixelsNumber;
 	}
 
 	public double getMeanGrayValueResult() {
 		return meanGrayValueResult;
 	}
 
-	public void setMeanGrayValueResult(double meanGrayValueResult) {
-		this.meanGrayValueResult = meanGrayValueResult;
-	}
-
-	public File getInput() {
-		return input;
-	}
-
-	public void setInput(File input) {
-		this.input = input;
-	}
-
 	public double getMedianResult() {
 		return medianResult;
-	}
-
-	public void setMedianResult(double medianResult) {
-		this.medianResult = medianResult;
 	}
 
 	public double getVarianceResult() {
 		return varianceResult;
 	}
 
-	public void setVarianceResult(double varianceResult) {
-		this.varianceResult = varianceResult;
-	}
-
 	public double getStdDeviationResult() {
 		return stdDeviationResult;
 	}
 
-	public void setStdDeviationResult(double stdDeviationResult) {
-		this.stdDeviationResult = stdDeviationResult;
-	}
-
 	public double getSkewnessResult() {
 		return skewnessResult;
-	}
-
-	public void setSkewnessResult(double skewnessResult) {
-		this.skewnessResult = skewnessResult;
 	}
 
 }

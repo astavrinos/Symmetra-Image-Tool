@@ -1,3 +1,13 @@
+/*
+ * Author: Adamos Stavrinos
+ * Software Name: Symmetra
+ * Date: 30 August 2019
+ * 
+ * Brief Description: A software that can analyze images
+ * and determine if there are symmetrical or not depending
+ * on their colors.
+ */
+
 import Controller.Controller;
 import Model.Model;
 import View.View;
