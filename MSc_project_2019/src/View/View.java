@@ -206,6 +206,9 @@ public class View extends JFrame {
 	// change the view if the image imported was correct format to the Import Window
 	public void showImportWindow() {
 		importWindow.setVisible(true);
+		if (!browseButton_ImportWindow.isVisible()) {
+			browseButton_ImportWindow.setVisible(true);	
+		}
 		setSize(700, 700);
 		centerWindowOnCurrentDisplay();
 		welcomeWindow.setVisible(false);
@@ -292,6 +295,7 @@ public class View extends JFrame {
 	public void goBackHome() {
 		welcomeWindow.setVisible(true);
 		setSize(300, 150);
+		browseButton_ImportWindow.setVisible(false);
 		centerWindowOnCurrentDisplay();
 		getDropdownMenu_ResultsWindow().removeAllItems();
 		getBrowseButton_ImportWindow().setEnabled(true);
