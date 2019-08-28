@@ -3,7 +3,7 @@
   realizations="true" associations="true" dependencies="false" nesting-relationships="true" router="FAN">  
   <class id="1" language="java" name="Model.StoreColors" project="MSc_project_2019" 
     file="/MSc_project_2019/src/Model/StoreColors.java" binary="false" corner="BOTTOM_RIGHT">    
-    <position height="369" width="158" x="912" y="1609"/>    
+    <position height="-1" width="-1" x="913" y="1790"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
       sort-features="false" accessors="true" visibility="true">      
       <attributes public="true" package="true" protected="true" private="true" static="true"/>      
@@ -57,7 +57,7 @@
   </class>  
   <class id="7" language="java" name="Model.Calculations" project="MSc_project_2019" 
     file="/MSc_project_2019/src/Model/Calculations.java" binary="false" corner="BOTTOM_RIGHT">    
-    <position height="783" width="420" x="912" y="786"/>    
+    <position height="-1" width="-1" x="926" y="1179"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
       sort-features="false" accessors="true" visibility="true">      
       <attributes public="true" package="true" protected="true" private="true" static="true"/>      
@@ -66,7 +66,7 @@
   </class>  
   <class id="8" language="java" name="Controller.Controller.AnalyzeButton" project="MSc_project_2019" 
     file="/MSc_project_2019/src/Controller/Controller.java" binary="false" corner="BOTTOM_RIGHT">    
-    <position height="99" width="194" x="1514" y="-235"/>    
+    <position height="-1" width="-1" x="1616" y="-91"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
       sort-features="false" accessors="true" visibility="true">      
       <attributes public="true" package="true" protected="true" private="true" static="true"/>      
@@ -75,7 +75,7 @@
   </class>  
   <class id="9" language="java" name="View.View" project="MSc_project_2019" file="/MSc_project_2019/src/View/View.java" 
     binary="false" corner="BOTTOM_RIGHT">    
-    <position height="981" width="370" x="1748" y="-235"/>    
+    <position height="-1" width="-1" x="1942" y="430"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
       sort-features="false" accessors="true" visibility="true">      
       <attributes public="true" package="true" protected="true" private="true" static="true"/>      
@@ -84,7 +84,7 @@
   </class>  
   <class id="10" language="java" name="Model.ImageDetails" project="MSc_project_2019" 
     file="/MSc_project_2019/src/Model/ImageDetails.java" binary="false" corner="BOTTOM_RIGHT">    
-    <position height="423" width="263" x="1372" y="786"/>    
+    <position height="-1" width="-1" x="1369" y="999"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
       sort-features="false" accessors="true" visibility="true">      
       <attributes public="true" package="true" protected="true" private="true" static="true"/>      
@@ -102,7 +102,7 @@
   </class>  
   <class id="12" language="java" name="Model.Model" project="MSc_project_2019" 
     file="/MSc_project_2019/src/Model/Model.java" binary="false" corner="BOTTOM_RIGHT">    
-    <position height="171" width="257" x="1217" y="-235"/>    
+    <position height="-1" width="-1" x="1307" y="-30"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
       sort-features="false" accessors="true" visibility="true">      
       <attributes public="true" package="true" protected="true" private="true" static="true"/>      
@@ -129,109 +129,109 @@
   </class>  
   <class id="15" language="java" name="Model.ExportData" project="MSc_project_2019" 
     file="/MSc_project_2019/src/Model/ExportData.java" binary="false" corner="BOTTOM_RIGHT">    
-    <position height="153" width="266" x="1675" y="786"/>    
+    <position height="-1" width="-1" x="1718" y="1117"/>    
     <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
       sort-features="false" accessors="true" visibility="true">      
       <attributes public="true" package="true" protected="true" private="true" static="true"/>      
       <operations public="true" package="true" protected="true" private="true" static="true"/>    
     </display>  
   </class>  
-  <generalization id="16">    
-    <end type="SOURCE" refId="15"/>    
-    <end type="TARGET" refId="12"/>  
-  </generalization>  
-  <nesting id="17">    
-    <end type="SOURCE" refId="4"/>    
-    <end type="TARGET" refId="5"/>  
-  </nesting>  
-  <generalization id="18">    
-    <end type="SOURCE" refId="7"/>    
-    <end type="TARGET" refId="12"/>  
-  </generalization>  
-  <nesting id="19">    
-    <end type="SOURCE" refId="4"/>    
-    <end type="TARGET" refId="6"/>  
-  </nesting>  
-  <nesting id="20">    
-    <end type="SOURCE" refId="4"/>    
-    <end type="TARGET" refId="13"/>  
-  </nesting>  
-  <association id="21">    
-    <end type="SOURCE" refId="12" navigable="false">      
-      <attribute id="22" name="imageDetailsList">        
-        <position height="0" width="0" x="0" y="0"/>      
-      </attribute>      
-      <multiplicity id="23" minimum="0" maximum="2147483647">        
-        <position height="0" width="0" x="0" y="0"/>      
-      </multiplicity>    
-    </end>    
-    <end type="TARGET" refId="10" navigable="true"/>    
-    <display labels="true" multiplicity="true"/>  
-  </association>  
-  <association id="24">    
+  <association id="16">    
     <end type="SOURCE" refId="7" navigable="false">      
-      <attribute id="25" name="imageColorStorage">        
-        <position height="0" width="0" x="0" y="0"/>      
+      <attribute id="17" name="imageColorStorage">        
+        <position height="0" width="0" x="-78" y="-3"/>      
       </attribute>      
-      <multiplicity id="26" minimum="0" maximum="2147483647">        
-        <position height="0" width="0" x="0" y="0"/>      
+      <multiplicity id="18" minimum="0" maximum="2147483647">        
+        <position height="0" width="0" x="-78" y="-3"/>      
       </multiplicity>    
     </end>    
     <end type="TARGET" refId="1" navigable="true"/>    
     <display labels="true" multiplicity="true"/>  
   </association>  
-  <nesting id="27">    
+  <nesting id="19">    
     <end type="SOURCE" refId="4"/>    
-    <end type="TARGET" refId="11"/>  
+    <end type="TARGET" refId="5"/>  
   </nesting>  
-  <nesting id="28">    
-    <end type="SOURCE" refId="4"/>    
-    <end type="TARGET" refId="8"/>  
-  </nesting>  
-  <nesting id="29">    
-    <end type="SOURCE" refId="4"/>    
-    <end type="TARGET" refId="14"/>  
-  </nesting>  
-  <association id="30">    
+  <association id="20">    
     <end type="SOURCE" refId="4" navigable="false">      
-      <attribute id="31" name="view">        
-        <position height="0" width="0" x="0" y="0"/>      
+      <attribute id="21" name="view">        
+        <position height="0" width="0" x="9" y="175"/>      
       </attribute>      
-      <multiplicity id="32" minimum="0" maximum="1">        
-        <position height="0" width="0" x="0" y="0"/>      
+      <multiplicity id="22" minimum="0" maximum="1">        
+        <position height="0" width="0" x="9" y="175"/>      
       </multiplicity>    
     </end>    
     <end type="TARGET" refId="9" navigable="true"/>    
     <display labels="true" multiplicity="true"/>  
   </association>  
-  <nesting id="33">    
-    <end type="SOURCE" refId="4"/>    
-    <end type="TARGET" refId="2"/>  
-  </nesting>  
-  <association id="34">    
+  <association id="23">    
     <end type="SOURCE" refId="12" navigable="false">      
-      <attribute id="35" name="calculations">        
-        <position height="0" width="0" x="0" y="0"/>      
+      <attribute id="24" name="calculations">        
+        <position height="0" width="0" x="-196" y="2"/>      
       </attribute>      
-      <multiplicity id="36" minimum="0" maximum="2147483647">        
-        <position height="0" width="0" x="0" y="0"/>      
+      <multiplicity id="25" minimum="0" maximum="2147483647">        
+        <position height="0" width="0" x="-196" y="2"/>      
       </multiplicity>    
     </end>    
     <end type="TARGET" refId="7" navigable="true"/>    
     <display labels="true" multiplicity="true"/>  
   </association>  
-  <association id="37">    
+  <nesting id="26">    
+    <end type="SOURCE" refId="4"/>    
+    <end type="TARGET" refId="2"/>  
+  </nesting>  
+  <nesting id="27">    
+    <end type="SOURCE" refId="4"/>    
+    <end type="TARGET" refId="8"/>  
+  </nesting>  
+  <nesting id="28">    
+    <end type="SOURCE" refId="4"/>    
+    <end type="TARGET" refId="13"/>  
+  </nesting>  
+  <generalization id="29">    
+    <end type="SOURCE" refId="7"/>    
+    <end type="TARGET" refId="12"/>  
+  </generalization>  
+  <nesting id="30">    
+    <end type="SOURCE" refId="4"/>    
+    <end type="TARGET" refId="11"/>  
+  </nesting>  
+  <generalization id="31">    
+    <end type="SOURCE" refId="15"/>    
+    <end type="TARGET" refId="12"/>  
+  </generalization>  
+  <nesting id="32">    
+    <end type="SOURCE" refId="4"/>    
+    <end type="TARGET" refId="14"/>  
+  </nesting>  
+  <association id="33">    
     <end type="SOURCE" refId="4" navigable="false">      
-      <attribute id="38" name="model">        
-        <position height="0" width="0" x="0" y="0"/>      
+      <attribute id="34" name="model">        
+        <position height="0" width="0" x="-38" y="120"/>      
       </attribute>      
-      <multiplicity id="39" minimum="0" maximum="1">        
-        <position height="0" width="0" x="0" y="0"/>      
+      <multiplicity id="35" minimum="0" maximum="1">        
+        <position height="0" width="0" x="-38" y="120"/>      
       </multiplicity>    
     </end>    
     <end type="TARGET" refId="12" navigable="true"/>    
     <display labels="true" multiplicity="true"/>  
   </association>  
+  <association id="36">    
+    <end type="SOURCE" refId="12" navigable="false">      
+      <attribute id="37" name="imageDetailsList">        
+        <position height="0" width="0" x="-134" y="2"/>      
+      </attribute>      
+      <multiplicity id="38" minimum="0" maximum="2147483647">        
+        <position height="0" width="0" x="-134" y="2"/>      
+      </multiplicity>    
+    </end>    
+    <end type="TARGET" refId="10" navigable="true"/>    
+    <display labels="true" multiplicity="true"/>  
+  </association>  
+  <nesting id="39">    
+    <end type="SOURCE" refId="4"/>    
+    <end type="TARGET" refId="6"/>  
+  </nesting>  
   <classifier-display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
     sort-features="false" accessors="true" visibility="true">    
     <attributes public="true" package="true" protected="true" private="true" static="true"/>    
