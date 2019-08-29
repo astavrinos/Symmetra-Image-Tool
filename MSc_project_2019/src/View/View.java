@@ -294,8 +294,8 @@ public class View extends JFrame {
 	// return everything to welcome window and clear any data
 	public void goBackHome() {
 		welcomeWindow.setVisible(true);
+		importWindow.setVisible(false);
 		setSize(300, 150);
-		browseButton_ImportWindow.setVisible(false);
 		centerWindowOnCurrentDisplay();
 		getDropdownMenu_ResultsWindow().removeAllItems();
 		getBrowseButton_ImportWindow().setEnabled(true);
